@@ -1,0 +1,131 @@
+.header-title {
+  color: @brand-primary;
+}
+
+.user-info {
+  background: transparent url('../img/bg_all.png') scroll 0 0 repeat;
+  padding-bottom: 20px;
+  border-bottom: 1px solid @gray-lighter;
+}
+
+.user-block-avatar-img {
+  height: 150px;
+}
+
+.user-block-main-info-name {
+  font-size: @font-size-h3;
+}
+
+.user-block-main-info-login {
+  font-size: @font-size-h4;
+  color: @gray-light;
+}
+
+.user-block-add-info {
+  padding-top: 11px;
+  font-size: @font-size-h5;
+}
+
+.user-block .fa {
+  margin-right: 5px;
+  width: 15px;
+}
+
+.user-block-follow-info {
+  padding-top: 11px;
+  height: 150px;
+  background: transparent url('../img/line_vertical.png') scroll right repeat-y;
+}
+
+.user-block-follow-info-num {
+  color: @brand-primary;
+  font-size: @font-size-h4;
+}
+
+.share-block {
+  padding-top: 11px;
+}
+
+.share-block-info {
+  float: left;
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
+}
+
+.user-block-github {
+  padding-top: 11px;
+  height: 150px;
+  background: transparent url('../img/line_vertical.png') scroll left repeat-y;
+}
+
+.user-block-github .fa {
+  margin-right: 0;
+  width: auto;
+  font-size: 60px;
+}
+
+.SocialMediaShareButton {
+  cursor: pointer;
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.tags-info, .filters-info, .repos-info {
+  margin-top: 20px;
+}
+
+.tag {
+  font-size: @font-size-h4;
+  margin-right: 5px;
+  background: lighten(@brand-primary, 37%);
+  border: 1px solid @brand-primary;
+  border-radius: 7px;
+  color: darken(@brand-primary, 10%);
+  padding: 4px 10px 5px;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+    background: @brand-primary;
+  }
+}
+
+.filter {
+  font-size: @font-size-h4;
+  margin-right: 5px;
+  background: lighten(@gray-lighter, 2%);
+  border: 1px solid lighten(@gray-light, 35%);
+  border-radius: 7px;
+  color: darken(@gray-lighter, 40%);
+  padding: 4px 10px 5px;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+    background: lighten(@gray-light, 25%);
+  }
+}
+
+.repos-info {
+  background: transparent url('../img/bg_all.png') scroll 0 0 repeat;
+  padding: 20px 0;
+  border-top: 1px solid @gray-lighter;
+}
+
+.repo .caption {
+  display: flex;
+}
+
+.repo-name {
+  font-size: @font-size-h3;
+  color: @brand-primary;
+}
+
+.repo-updated {
+  color: lighten(@text-color, 40%);
+}
+
+.repo-language, .repo-stars, .repo-forks {
+  color: lighten(@text-color, 40%);
+  margin-left: 5px;
+}
