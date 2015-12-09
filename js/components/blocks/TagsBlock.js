@@ -18,7 +18,7 @@ const TagsBlock = React.createClass({
   mixins: [Reflux.connect(TagsStore, 'tagsStore')],
 
   componentDidMount() {
-    TagsActions.getTags();
+    TagsActions.getTags(this.props.userID);
   },
 
   render() {
@@ -29,7 +29,7 @@ const TagsBlock = React.createClass({
     if (tagsStore) {
       tags = _.map(tagsStore, (tag, index) => {
         return (
-          <span className="tag" key={'tag' + index}>{tag}</span>
+          <span className="tag" key={'tag' + index}>{tag.title}</span>
         );
       });
     }

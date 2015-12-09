@@ -48,7 +48,7 @@ const MainPage = React.createClass({
                 </Row>,
                 <Row className="tags-info">
                   <div className="container">
-                    <TagsBlock />
+                    <TagsBlock userID={userStore.info.id}/>
                   </div>
                 </Row>,
                 <Row className="filters-info">
@@ -58,7 +58,7 @@ const MainPage = React.createClass({
                 </Row>,
                 <Row className="repos-info">
                   <div className="container">
-                    <ReposBlock accessToken={userStore.accessToken} />
+                    <ReposBlock userStore={userStore} />
                   </div>
                 </Row>
               ] :

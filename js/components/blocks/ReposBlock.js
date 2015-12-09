@@ -1,14 +1,18 @@
 'use strict';
 
 import React from 'react';
+import ReactFireMixin from 'reactfire';
 import Reflux from 'reflux';
 import _ from 'lodash';
 import moment from 'moment';
 //
-import { Col, Thumbnail } from 'react-bootstrap';
+import { Col, Thumbnail, Button, Input } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 //
+import Config from '../../config/Config';
+//
 import ReposActions from '../../actions/ReposActions';
+import TagsActions from '../../actions/TagsActions';
 //
 import ReposStore from '../../stores/ReposStore';
 
@@ -17,10 +21,25 @@ import ReposStore from '../../stores/ReposStore';
  */
 const ReposBlock = React.createClass({
 
-  mixins: [Reflux.connect(ReposStore, 'reposStore')],
+  mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin],
 
   componentDidMount() {
-    ReposActions.getRepos(this.props.accessToken);
+    ReposActions.getRepos(this.props.userStore.accessToken);
+  },
+
+  componentWillMount() {
+    let userID = this.props.userStore.info.id;
+    const ref = new Firebase(Config.FirebaseUrl + 'user' + userID);
+    this.bindAsArray(ref, 'user');
+  },
+
+  addTag(index) {
+    let userID = this.props.userStore.info.id;
+    let tagNames = this.refs['repoTagsInput' + index].getValue().trim();
+    let tagNamesArray = tagNames.split(',');
+    _.forEach(tagNamesArray, (tagName) => {
+      TagsActions.addTag(userID, tagName.trim())
+    });
   },
 
   render() {
@@ -30,6 +49,13 @@ const ReposBlock = React.createClass({
     let repos = null;
     if (reposStore) {
       repos = _.map(reposStore, (repo, index) => {
+        let innerButton = <Button
+          type="reset"
+          onClick={() => this.addTag(index)}
+        >
+          Add tag
+        </Button>;
+        //
         return (
           <Thumbnail key={'repo' + index} className="repo">
             <Col xs={9}>
@@ -39,6 +65,10 @@ const ReposBlock = React.createClass({
               <p>{repo.description}</p>
               <small className="repo-updated">
                 Updated on {moment(repo.updated_at).format('MMM D, YYYY')}
+              </small>
+              <Input type="text" ref={'repoTagsInput' + index} buttonAfter={innerButton} />
+              <small className="repo-tags-tip">
+                Type one or several tags (divided by comma)
               </small>
             </Col>
             <Col xs={3} className="text-right">
