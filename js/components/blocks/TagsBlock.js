@@ -5,24 +5,25 @@ import Reflux from 'reflux';
 import _ from 'lodash';
 //
 import { Input, Button, Alert } from 'react-bootstrap';
+import ReactFireMixin from 'reactfire';
 //
-import TagsActions from '../../actions/TagsActions';
-//
-import TagsStore from '../../stores/TagsStore';
+import Config from '../../config/Config';
 
 /**
  *  TagsBlock contains list of all tags
  */
 const TagsBlock = React.createClass({
 
-  mixins: [Reflux.connect(TagsStore, 'tagsStore')],
+  mixins: [ReactFireMixin],
 
-  componentDidMount() {
-    TagsActions.getTags(this.props.userID);
+  componentWillMount() {
+    let userID = this.props.userID;
+    const ref = new Firebase(Config.FirebaseUrl + 'user' + userID + '/tags');
+    this.bindAsArray(ref, 'tags');
   },
 
   render() {
-    let tagsStore = this.state.tagsStore;
+    let tagsStore = this.state.tags;
     console.log('tagsStore', tagsStore);
     //
     let tags = 'There are no tags for now!';

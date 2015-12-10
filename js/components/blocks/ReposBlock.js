@@ -12,7 +12,6 @@ import FontAwesome from 'react-fontawesome';
 import Config from '../../config/Config';
 //
 import ReposActions from '../../actions/ReposActions';
-import TagsActions from '../../actions/TagsActions';
 //
 import ReposStore from '../../stores/ReposStore';
 
@@ -29,32 +28,50 @@ const ReposBlock = React.createClass({
 
   componentWillMount() {
     let userID = this.props.userStore.info.id;
-    const ref = new Firebase(Config.FirebaseUrl + 'user' + userID);
-    this.bindAsArray(ref, 'user');
+    const ref = new Firebase(Config.FirebaseUrl + 'user' + userID + '/tags');
+    this.bindAsArray(ref, 'tags');
   },
 
-  addTag(index) {
-    let userID = this.props.userStore.info.id;
-    let tagNames = this.refs['repoTagsInput' + index].getValue().trim();
+  addTag(index, repoID) {
+    let _this = this;
+    let tagNames = _this.refs['repoTagsInput' + index].getValue().trim();
     let tagNamesArray = tagNames.split(',');
+    //
     _.forEach(tagNamesArray, (tagName) => {
-      TagsActions.addTag(userID, tagName.trim())
+      let correctTagName = tagName.trim();
+      if (correctTagName.length) {
+        let existingTag = _.findWhere(this.state.tags, {'title': correctTagName});
+        if (!existingTag) {
+          _this.firebaseRefs.tags.push({
+            title: correctTagName
+          });
+        }
+        existingTag = _.findWhere(this.state.tags, {'title': correctTagName});
+        _this.firebaseRefs.tags.child(existingTag['.key']).child('repos').push({
+          id: repoID
+        });
+      }
     });
   },
 
   render() {
     let reposStore = this.state.reposStore;
     console.log('reposStore', reposStore);
+    let tagsStore = this.state.tags;
     //
     let repos = null;
     if (reposStore) {
       repos = _.map(reposStore, (repo, index) => {
         let innerButton = <Button
           type="reset"
-          onClick={() => this.addTag(index)}
+          onClick={() => this.addTag(index, repo.id)}
         >
           Add tag
         </Button>;
+        //
+        let tags = _.filter(tagsStore, (tag) => {
+          return _.includes(tag.repos, {id: repo.id});
+        });
         //
         return (
           <Thumbnail key={'repo' + index} className="repo">
@@ -66,7 +83,13 @@ const ReposBlock = React.createClass({
               <small className="repo-updated">
                 Updated on {moment(repo.updated_at).format('MMM D, YYYY')}
               </small>
-              <Input type="text" ref={'repoTagsInput' + index} buttonAfter={innerButton} />
+              <form>
+                <Input
+                  type="text"
+                  ref={'repoTagsInput' + index}
+                  buttonAfter={innerButton}
+                />
+              </form>
               <small className="repo-tags-tip">
                 Type one or several tags (divided by comma)
               </small>
