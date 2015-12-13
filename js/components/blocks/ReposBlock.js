@@ -5,6 +5,7 @@ import ReactFireMixin from 'reactfire';
 import Reflux from 'reflux';
 import _ from 'lodash';
 import moment from 'moment';
+import createFragment from 'react-addons-create-fragment';
 //
 import { Col, Thumbnail, Button, Input } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
@@ -70,8 +71,14 @@ const ReposBlock = React.createClass({
         </Button>;
         //
         let tags = _.filter(tagsStore, (tag) => {
-          return _.includes(tag.repos, {id: repo.id});
+          return _.find(tag.repos, {id: repo.id});
         });
+        let fragmentTags = {};
+        _.forEach(tags, (tag, index) => {
+          fragmentTags['repo-tags-' + index] =
+            <span className="repo-tag">{tag.title}</span>;
+        });
+        let tagsBlock = createFragment(fragmentTags);
         //
         return (
           <Thumbnail key={'repo' + index} className="repo">
@@ -79,10 +86,16 @@ const ReposBlock = React.createClass({
               <a href={repo.html_url}>
                 <p className="repo-name">{repo.name}</p>
               </a>
-              <p>{repo.description}</p>
+              { repo.description.length ?
+                  <p>{repo.description}</p> :
+                  null
+              }
               <small className="repo-updated">
                 Updated on {moment(repo.updated_at).format('MMM D, YYYY')}
               </small>
+              <div className="clearfix">
+                {tagsBlock}
+              </div>
               <form>
                 <Input
                   type="text"
