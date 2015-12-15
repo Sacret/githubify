@@ -6,8 +6,9 @@ import Reflux from 'reflux';
 import _ from 'lodash';
 import moment from 'moment';
 import createFragment from 'react-addons-create-fragment';
+import Autosuggest from 'react-autosuggest'
 //
-import { Col, Thumbnail, Button, Input } from 'react-bootstrap';
+import { Col, Thumbnail, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 //
 import Config from '../../config/Config';
@@ -23,6 +24,12 @@ const ReposBlock = React.createClass({
 
   mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin],
 
+  getInitialState() {
+    return({
+      defaultValue: ' '
+    });
+  },
+
   componentDidMount() {
     ReposActions.getRepos(this.props.userStore.accessToken);
   },
@@ -35,7 +42,7 @@ const ReposBlock = React.createClass({
 
   addTag(index, repoID) {
     let _this = this;
-    let tagNames = _this.refs['repoTagsInput' + index].getValue().trim();
+    let tagNames = document.getElementById('repo-tag-input-' + index).value.trim();
     let tagNamesArray = tagNames.split(',');
     //
     _.forEach(tagNamesArray, (tagName) => {
@@ -53,6 +60,18 @@ const ReposBlock = React.createClass({
         });
       }
     });
+    //
+    document.getElementById('repo-tag-input-' + index).value = '';
+  },
+
+  getSuggestions(input, callback) {
+    let tagsStore = this.state.tags;
+    let suburbs = _.map(tagsStore, (tag) => {
+      return tag.title;
+    });
+    let regex = new RegExp('^' + input.trim(), 'i');
+    let suggestions = suburbs.filter(suburb => regex.test(suburb));
+    callback(null, suggestions)
   },
 
   render() {
@@ -63,13 +82,6 @@ const ReposBlock = React.createClass({
     let repos = null;
     if (reposStore) {
       repos = _.map(reposStore, (repo, index) => {
-        let innerButton = <Button
-          type="reset"
-          onClick={() => this.addTag(index, repo.id)}
-        >
-          Add tag
-        </Button>;
-        //
         let tags = _.filter(tagsStore, (tag) => {
           return _.find(tag.repos, {id: repo.id});
         });
@@ -79,6 +91,21 @@ const ReposBlock = React.createClass({
             <span className="repo-tag">{tag.title}</span>;
         });
         let tagsBlock = createFragment(fragmentTags);
+        //
+        let inputAttributes = {
+          id: 'repo-tag-input-' + index,
+          key: 'repo-tag-input-key-' + index,
+          placeholder: 'Type tags...',
+          value: '',
+          type: 'search'
+        };
+        //
+        let button = <Button
+        className="repo-add-tag-btn"
+          onClick={() => this.addTag(index, repo.id)}
+        >
+          Add tag
+        </Button>;
         //
         return (
           <Thumbnail key={'repo' + index} className="repo">
@@ -96,13 +123,15 @@ const ReposBlock = React.createClass({
               <div className="clearfix">
                 {tagsBlock}
               </div>
-              <form>
-                <Input
-                  type="text"
-                  ref={'repoTagsInput' + index}
-                  buttonAfter={innerButton}
+              <div className="repo-form">
+                <Autosuggest
+                  id={'repo-autosuggest-' + index}
+                  value={this.state.defaultValue}
+                  suggestions={this.getSuggestions}
+                  inputAttributes={inputAttributes}
                 />
-              </form>
+                {button}
+              </div>
               <small className="repo-tags-tip">
                 Type one or several tags (divided by comma)
               </small>

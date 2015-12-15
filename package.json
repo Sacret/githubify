@@ -30,6 +30,7 @@
     "react": "0.14.2",
     "react-addons-create-fragment": "0.14.2",
     "react-addons-update": "0.14.2",
+    "react-autosuggest": "2.2.0",
     "react-bootstrap": "0.27.3",
     "react-dom": "0.14.2",
     "react-fontawesome": "0.3.3",
@@ -44,7 +45,5 @@
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
     "watchify": "3.4.0"
-  },
-  "dependencies": {
   }
 }
