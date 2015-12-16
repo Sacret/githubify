@@ -16,14 +16,25 @@ const ReposStore = Reflux.createStore({
   reposInfo: {
     repos: [],
     alertType: '',
-    alertMessage: ''
+    alertMessage: '',
+    isScroll: true,
+    nextPage: 2
   },
 
-  getRepos(accessToken) {
+  initRepos() {
+    this.reposInfo.repos = [];
+    this.reposInfo.isScroll = true;
+    this.reposInfo.nextPage = 2;
+    this.trigger(this.reposInfo);
+  },
+
+  getRepos(accessToken, page) {
     let _this = this;
     let requestUrl = Config.GithubApiUrl + 'user/repos';
     let qs = {
-      access_token: accessToken
+      access_token: accessToken,
+      per_page: Config.PerPage,
+      page: page
     };
     //
     request
@@ -39,7 +50,13 @@ const ReposStore = Reflux.createStore({
           return;
         }
         console.log('success GET-request: ' + requestUrl, res);
-        _this.reposInfo = res.body;
+        _this.reposInfo.repos = _.union(_this.reposInfo.repos, res.body);
+        if (res.body.length < Config.PerPage) {
+          _this.reposInfo.isScroll = false;
+        }
+        else {
+          _this.reposInfo.nextPage = page + 1;
+        }
         _this.trigger(_this.reposInfo);
       });
   }

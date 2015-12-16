@@ -11,6 +11,9 @@ import Autosuggest from 'react-autosuggest'
 import { Col, Thumbnail, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 //
+import MoreButton from './MoreButton';
+import InfiniteScrollMixin from '../mixins/InfiniteScrollMixin';
+//
 import Config from '../../config/Config';
 //
 import ReposActions from '../../actions/ReposActions';
@@ -22,7 +25,8 @@ import ReposStore from '../../stores/ReposStore';
  */
 const ReposBlock = React.createClass({
 
-  mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin],
+  mixins: [Reflux.connect(ReposStore, 'reposStore'),
+    ReactFireMixin, InfiniteScrollMixin],
 
   getInitialState() {
     return({
@@ -31,7 +35,7 @@ const ReposBlock = React.createClass({
   },
 
   componentDidMount() {
-    ReposActions.getRepos(this.props.userStore.accessToken);
+    ReposActions.getRepos(this.props.userStore.accessToken, 1);
   },
 
   componentWillMount() {
@@ -80,8 +84,9 @@ const ReposBlock = React.createClass({
     let tagsStore = this.state.tags;
     //
     let repos = null;
+    let nextPage = null, isScroll = false;
     if (reposStore) {
-      repos = _.map(reposStore, (repo, index) => {
+      repos = _.map(reposStore.repos, (repo, index) => {
         let tags = _.filter(tagsStore, (tag) => {
           return _.find(tag.repos, {id: repo.id});
         });
@@ -148,11 +153,19 @@ const ReposBlock = React.createClass({
           </Thumbnail>
         );
       });
+      //
+      nextPage = reposStore.nextPage;
+      isScroll = reposStore.isScroll;
     }
     //
     return (
       <div>
         {repos}
+        <MoreButton
+          nextPage={nextPage}
+          isScroll={isScroll}
+          accessToken={this.props.userStore.accessToken}
+        />
       </div>
     );
   }
