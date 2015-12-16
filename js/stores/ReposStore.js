@@ -17,24 +17,29 @@ const ReposStore = Reflux.createStore({
     repos: [],
     alertType: '',
     alertMessage: '',
+    filter: 'all',
     isScroll: true,
-    nextPage: 2
+    nextPage: null
   },
 
-  initRepos() {
-    this.reposInfo.repos = [];
-    this.reposInfo.isScroll = true;
-    this.reposInfo.nextPage = 2;
-    this.trigger(this.reposInfo);
-  },
-
-  getRepos(accessToken, page) {
+  getRepos(accessToken, page, filter) {
     let _this = this;
-    let requestUrl = Config.GithubApiUrl + 'user/repos';
+    let reposUrl = 'repos';
+    if (page == 1) {
+      this.reposInfo.repos = [];
+      this.reposInfo.isScroll = true;
+      this.reposInfo.nextPage = null;
+      this.reposInfo.filter = filter;
+    }
+    if (this.reposInfo.filter == 'starred') {
+      reposUrl = 'starred';
+    }
+    let requestUrl = Config.GithubApiUrl + 'user/' + reposUrl;
     let qs = {
       access_token: accessToken,
       per_page: Config.PerPage,
-      page: page
+      page: page,
+      type: _this.reposInfo.filter
     };
     //
     request

@@ -53,7 +53,7 @@ const MainPage = React.createClass({
                 </Row>,
                 <Row className="filters-info">
                   <div className="container">
-                    <FilterBlock />
+                    <FilterBlock accessToken={userStore.accessToken} />
                   </div>
                 </Row>,
                 <Row className="repos-info">

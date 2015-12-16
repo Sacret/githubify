@@ -21,6 +21,10 @@ const FilterBlock = React.createClass({
     FilterActions.getFilters();
   },
 
+  filterRepos(filterTitle) {
+    FilterActions.setFilter(this.props.accessToken, filterTitle);
+  },
+
   render() {
     let filterStore = this.state.filterStore;
     console.log('filterStore', filterStore);
@@ -29,7 +33,13 @@ const FilterBlock = React.createClass({
     if (filterStore) {
       filters = _.map(filterStore, (filter, index) => {
         return (
-          <span className="filter" key={'filter' + index}>{filter}</span>
+          <span
+            className={'filter' + (filter.active ? ' active' : '')}
+            key={'filter' + index}
+            onClick={() => this.filterRepos(filter.title)}
+          >
+            {filter.title}
+          </span>
         );
       });
     }

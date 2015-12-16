@@ -35,7 +35,7 @@ const ReposBlock = React.createClass({
   },
 
   componentDidMount() {
-    ReposActions.getRepos(this.props.userStore.accessToken, 1);
+    ReposActions.getRepos(this.props.userStore.accessToken, 1, 'all');
   },
 
   componentWillMount() {
