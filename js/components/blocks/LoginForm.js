@@ -16,10 +16,6 @@ const LoginForm = React.createClass({
 
   mixins: [Reflux.connect(UserStore, 'userStore')],
 
-  componentDidMount() {
-    
-  },
-
   handleLoginClick() {
     UserActions.login();
   },

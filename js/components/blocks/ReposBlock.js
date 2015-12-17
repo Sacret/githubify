@@ -45,27 +45,33 @@ const ReposBlock = React.createClass({
   },
 
   addTag(index, repoID) {
-    let _this = this;
-    let tagNames = document.getElementById('repo-tag-input-' + index).value.trim();
-    let tagNamesArray = tagNames.split(',');
-    //
-    _.forEach(tagNamesArray, (tagName) => {
-      let correctTagName = tagName.trim();
-      if (correctTagName.length) {
-        let existingTag = _.findWhere(this.state.tags, {'title': correctTagName});
-        if (!existingTag) {
-          _this.firebaseRefs.tags.push({
-            title: correctTagName
+    let tagsStore = this.state.tags;
+    if (tagsStore.length < 30) {
+      let _this = this;
+      let tagNames = document.getElementById('repo-tag-input-' + index).value.trim();
+      let tagNamesArray = tagNames.split(',');
+      //
+      _.forEach(tagNamesArray, (tagName) => {
+        let correctTagName = tagName.trim();
+        if (correctTagName.length) {
+          let existingTag = _.findWhere(this.state.tags, {'title': correctTagName});
+          if (!existingTag) {
+            _this.firebaseRefs.tags.push({
+              title: correctTagName
+            });
+          }
+          existingTag = _.findWhere(this.state.tags, {'title': correctTagName});
+          _this.firebaseRefs.tags.child(existingTag['.key']).child('repos').push({
+            id: repoID
           });
         }
-        existingTag = _.findWhere(this.state.tags, {'title': correctTagName});
-        _this.firebaseRefs.tags.child(existingTag['.key']).child('repos').push({
-          id: repoID
-        });
-      }
-    });
-    //
-    document.getElementById('repo-tag-input-' + index).value = '';
+      });
+      //
+      document.getElementById('repo-tag-input-' + index).value = '';
+    }
+    else {
+
+    }
   },
 
   getSuggestions(input, callback) {
