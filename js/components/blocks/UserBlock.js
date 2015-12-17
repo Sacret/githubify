@@ -33,59 +33,10 @@ const UserBlock = React.createClass({
                   <img src={info.avatar_url} className="user-block-avatar-img" />
                 </a>
               </Col>
-              <Col md={2} xs={4} className="user-block-main-info">
+              <Col md={8} xs={4} className="user-block-main-info">
                 <p className="user-block-main-info-name">{info.name}</p>
                 <p className="user-block-main-info-login">{info.login}</p>
                 <Button onClick={this.handleLogoutClick}>Logout</Button>
-              </Col>
-              <Col md={2} col xs={4} className="user-block-add-info">
-                {
-                  info.location ?
-                    <p className="user-block-add-info-location">
-                      <FontAwesome name="map-marker" />
-                      {info.location}
-                    </p> :
-                    null
-                }
-                {
-                  info.email ?
-                    <p className="user-block-add-info-email">
-                      <FontAwesome name="envelope-o" />
-                      <a href={'mailto:' + info.email}>{info.email}</a>
-                    </p> :
-                    null
-                }
-                {
-                  info.blog ?
-                    <p className="user-block-add-info-link">
-                      <FontAwesome name="link" />
-                      <a href={info.blog}>{info.blog}</a>
-                    </p> :
-                    null
-                }
-                <p className="user-block-add-info-created">
-                  <FontAwesome name="clock-o" />
-                  Joined on {moment(info.created_at).format('MMM D, YYYY')}
-                </p>
-              </Col>
-              <Col md={2} xs={4} className="user-block-follow-info">
-                <p>
-                  <span className="user-block-follow-info-num">
-                    <a href={info.html_url + '/followers'}>
-                      {info.followers}
-                    </a>
-                  </span> Followers
-                </p>
-                <p>
-                  <span className="user-block-follow-info-num">
-                    <a href={info.html_url + '/following'}>
-                      {info.following}
-                    </a>
-                  </span> Following
-                </p>
-              </Col>
-              <Col md={2} xs={4}>
-                <ShareBlock />
               </Col>
               <Col md={2} xs={4} className="user-block-github text-center">
                 <FontAwesome name="github" />
@@ -94,6 +45,7 @@ const UserBlock = React.createClass({
                     Fork me on Github
                   </a>
                 </p>
+                <ShareBlock />
               </Col>
             </Row> :
             null

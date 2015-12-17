@@ -147,13 +147,6 @@ const ReposBlock = React.createClass({
               </small>
             </Col>
             <Col xs={3} className="text-right">
-              <span className="repo-language">{repo.language}</span>
-              <span className="repo-stars">
-                <FontAwesome name="star" /> {repo.stargazers_count}
-              </span>
-              <span className="repo-forks">
-                <FontAwesome name="code-fork" /> {repo.forks_count}
-              </span>
             </Col>
           </Thumbnail>
         );
