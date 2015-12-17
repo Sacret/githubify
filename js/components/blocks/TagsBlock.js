@@ -7,6 +7,8 @@ import _ from 'lodash';
 import { Input, Button, Alert } from 'react-bootstrap';
 import ReactFireMixin from 'reactfire';
 //
+import FontAwesome from 'react-fontawesome';
+//
 import FilterActions from '../../actions/FilterActions';
 //
 import Config from '../../config/Config';
@@ -24,17 +26,27 @@ const TagsBlock = React.createClass({
     this.bindAsArray(ref, 'tags');
   },
 
-  filterReposByTags(index, tag) {
-    let tagSpan = document.getElementById('tag' + index);
-    let isTagsAdding = false;
-    if (!~tagSpan.className.indexOf('active')) {
-      tagSpan.className = tagSpan.className + ' active';
-      isTagsAdding = true;
+  filterReposByTags(event, index, tag) {
+    let isRemoving = ~event.target.className.indexOf('tag-remove-icon');
+    if (isRemoving) {
+      let userID = this.props.userID;
+      let itemUrl = Config.FirebaseUrl + 'user' + userID + '/tags/' + tag['.key'];
+      let itemRef = new Firebase(itemUrl);
+      itemRef.remove();
+      FilterActions.setFilterTags(this.props.accessToken, tag, false);
     }
     else {
-      tagSpan.className = tagSpan.className.replace('active', '');
+      let tagSpan = document.getElementById('tag' + index);
+      let isTagsAdding = false;
+      if (!~tagSpan.className.indexOf('active')) {
+        tagSpan.className = tagSpan.className + ' active';
+        isTagsAdding = true;
+      }
+      else {
+        tagSpan.className = tagSpan.className.replace('active', '');
+      }
+      FilterActions.setFilterTags(this.props.accessToken, tag, isTagsAdding);
     }
-    FilterActions.setFilterTags(this.props.accessToken, tag, isTagsAdding);
   },
 
   render() {
@@ -49,9 +61,13 @@ const TagsBlock = React.createClass({
             className="tag"
             key={'tag' + index}
             id={'tag' + index}
-            onClick={() => this.filterReposByTags(index, tag)}
+            onClick={(e) => this.filterReposByTags(e, index, tag)}
           >
             {tag.title}
+            <FontAwesome
+              className="tag-remove-icon"
+              name="times"
+            />
           </span>
         );
       });

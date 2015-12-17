@@ -85,9 +85,25 @@
   color: darken(@brand-primary, 10%);
   padding: 4px 10px 5px;
   cursor: pointer;
+  position: relative;
   &:hover, &.active {
     color: #fff;
     background: @brand-primary;
+  }
+}
+
+.tag {
+  .tag-remove-icon {
+    visibility: hidden;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    font-size: 10px;
+  }
+  &:hover {
+    .tag-remove-icon {
+      visibility: initial;
+    }
   }
 }
 

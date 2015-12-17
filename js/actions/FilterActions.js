@@ -9,7 +9,8 @@ const FilterActions = Reflux.createActions([
   'getFilters',
   'setFilter',
   'setFilterTags',
-  'loadMoreWithFilters'
+  'loadMoreWithFilters',
+  'removeTag'
 ]);
 
 module.exports = FilterActions;

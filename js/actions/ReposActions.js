@@ -9,7 +9,7 @@ const ReposActions = Reflux.createActions([
   'getRepos',
   'getStars',
   'setTag',
-  'removeTag'
+  'removeRepoTag'
 ]);
 
 module.exports = ReposActions;
