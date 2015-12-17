@@ -89,7 +89,11 @@ const UserBlock = React.createClass({
               </Col>
               <Col md={2} xs={4} className="user-block-github text-center">
                 <FontAwesome name="github" />
-                <p>Fork me on Github</p>
+                <p>
+                  <a href="https://github.com/Sacret/githubify" target="_blank">
+                    Fork me on Github
+                  </a>
+                </p>
               </Col>
             </Row> :
             null

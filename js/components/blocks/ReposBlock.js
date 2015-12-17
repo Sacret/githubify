@@ -100,7 +100,6 @@ const ReposBlock = React.createClass({
         let inputAttributes = {
           id: 'repo-tag-input-' + index,
           key: 'repo-tag-input-key-' + index,
-          placeholder: 'Type tags...',
           value: '',
           type: 'search'
         };

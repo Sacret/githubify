@@ -4,7 +4,7 @@ import React from 'react';
 //
 import { Button } from 'react-bootstrap';
 //
-import ReposActions from '../../actions/ReposActions';
+import FilterActions from '../../actions/FilterActions';
 
 /**
  *  MoreButton contains button for pagination
@@ -12,7 +12,7 @@ import ReposActions from '../../actions/ReposActions';
 const MoreButton = React.createClass({
 
   loadMore() {
-    ReposActions.getRepos(this.props.accessToken, this.props.nextPage);
+    FilterActions.loadMoreWithFilters(this.props.accessToken, this.props.nextPage);
   },
 
   render() {

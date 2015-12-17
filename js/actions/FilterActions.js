@@ -7,7 +7,9 @@ import Reflux from 'reflux';
  */
 const FilterActions = Reflux.createActions([
   'getFilters',
-  'setFilter'
+  'setFilter',
+  'setFilterTags',
+  'loadMoreWithFilters'
 ]);
 
 module.exports = FilterActions;

@@ -31,7 +31,7 @@ const FilterBlock = React.createClass({
     //
     let filters = 'There are no filters for now!';
     if (filterStore) {
-      filters = _.map(filterStore, (filter, index) => {
+      filters = _.map(filterStore.filters, (filter, index) => {
         return (
           <span
             className={'filter' + (filter.active ? ' active' : '')}

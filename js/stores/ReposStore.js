@@ -22,7 +22,7 @@ const ReposStore = Reflux.createStore({
     nextPage: null
   },
 
-  getRepos(accessToken, page, filter) {
+  getRepos(accessToken, page, filter, filterReposIds) {
     let _this = this;
     let reposUrl = 'repos';
     if (page == 1) {
@@ -55,8 +55,18 @@ const ReposStore = Reflux.createStore({
           return;
         }
         console.log('success GET-request: ' + requestUrl, res);
-        _this.reposInfo.repos = _.union(_this.reposInfo.repos, res.body);
-        if (res.body.length < Config.PerPage) {
+        //
+        let newRepos = [];
+        if (filterReposIds && filterReposIds.length) {
+          newRepos = _.filter(res.body, (repo) => {
+            return _.includes(filterReposIds, repo.id);
+          });
+        }
+        else {
+          newRepos = res.body;
+        }
+        _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
+        if (!newRepos.length) {
           _this.reposInfo.isScroll = false;
         }
         else {

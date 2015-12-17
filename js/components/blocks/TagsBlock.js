@@ -7,6 +7,8 @@ import _ from 'lodash';
 import { Input, Button, Alert } from 'react-bootstrap';
 import ReactFireMixin from 'reactfire';
 //
+import FilterActions from '../../actions/FilterActions';
+//
 import Config from '../../config/Config';
 
 /**
@@ -22,6 +24,19 @@ const TagsBlock = React.createClass({
     this.bindAsArray(ref, 'tags');
   },
 
+  filterReposByTags(index, tag) {
+    let tagSpan = document.getElementById('tag' + index);
+    let isTagsAdding = false;
+    if (!~tagSpan.className.indexOf('active')) {
+      tagSpan.className = tagSpan.className + ' active';
+      isTagsAdding = true;
+    }
+    else {
+      tagSpan.className = tagSpan.className.replace('active', '');
+    }
+    FilterActions.setFilterTags(this.props.accessToken, tag, isTagsAdding);
+  },
+
   render() {
     let tagsStore = this.state.tags;
     console.log('tagsStore', tagsStore);
@@ -30,7 +45,14 @@ const TagsBlock = React.createClass({
     if (tagsStore) {
       tags = _.map(tagsStore, (tag, index) => {
         return (
-          <span className="tag" key={'tag' + index}>{tag.title}</span>
+          <span
+            className="tag"
+            key={'tag' + index}
+            id={'tag' + index}
+            onClick={() => this.filterReposByTags(index, tag)}
+          >
+            {tag.title}
+          </span>
         );
       });
     }
