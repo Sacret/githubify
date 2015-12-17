@@ -11,7 +11,7 @@ const LoadingBlock = React.createClass({
     return (
       <div className="content-block">
         <img
-          src="img/animated_loading_icon.gif"
+          src="build/img/animated_loading_icon.gif"
           className="center-block loading-icon"
         />
       </div>

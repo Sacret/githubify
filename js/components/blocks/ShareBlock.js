@@ -29,7 +29,7 @@ const ShareBlock = React.createClass({
 
   render() {
     let shareUrl = 'http://githubify.me/';
-    let title = 'Githubify.me';
+    let title = 'Githubify.me (place to manage and organize tags for your repos)';
     //
     return (
       <div className="share-block center-block">
