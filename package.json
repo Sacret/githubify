@@ -34,6 +34,7 @@
     "react-bootstrap": "0.27.3",
     "react-dom": "0.14.2",
     "react-fontawesome": "0.3.3",
+    "react-masonry-mixin": "2.1.0",
     "react-router": "1.0.0",
     "react-share": "1.4.0",
     "react-timer-mixin": "0.13.3",
