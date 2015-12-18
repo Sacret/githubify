@@ -123,10 +123,6 @@ const ReposBlock = React.createClass({
               <a href={repo.html_url}>
                 <p className="repo-name">{repo.name}</p>
               </a>
-              { repo.description.length ?
-                  <p>{repo.description}</p> :
-                  null
-              }
               <small className="repo-updated">
                 Updated on {moment(repo.updated_at).format('MMM D, YYYY')}
               </small>
