@@ -33,7 +33,7 @@ const LoginForm = React.createClass({
           GITHUBIFY.<span className="header-title">me</span>
         </p>
         <h4 className="login-page-paragraph">
-          Welcome to the place where you can easily manage and organize tags for your Github repositories. You will have ability to set tags for your own repos, repositories that you have been added to as a collaborator and even starred repos!
+          Welcome to the place where you can easily manage and organize tags for your Github repositories. You will have ability to set tags for your own repos, repositories that you have been added to as a memner and even starred repos!
         </h4>
         <h4 className="login-page-paragraph">
           <strong>Note:</strong> maximum count of tags per user is 30
