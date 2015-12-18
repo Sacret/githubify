@@ -8,8 +8,9 @@ import moment from 'moment';
 import createFragment from 'react-addons-create-fragment';
 import Autosuggest from 'react-autosuggest'
 //
-import { Col, Thumbnail, Button } from 'react-bootstrap';
+import { Row, Col, Thumbnail, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
+import MasonryMixin from 'react-masonry-mixin';
 //
 import MoreButton from './MoreButton';
 import InfiniteScrollMixin from '../mixins/InfiniteScrollMixin';
@@ -20,13 +21,17 @@ import ReposActions from '../../actions/ReposActions';
 //
 import ReposStore from '../../stores/ReposStore';
 
+const masonryOptions = {
+  transitionDuration: 0
+};
+
 /**
  *  ReposBlock contains authorization form
  */
 const ReposBlock = React.createClass({
 
-  mixins: [Reflux.connect(ReposStore, 'reposStore'),
-    ReactFireMixin, InfiniteScrollMixin],
+  mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin,
+    InfiniteScrollMixin, MasonryMixin(React)('masonryContainer', masonryOptions)],
 
   getInitialState() {
     return({
@@ -114,37 +119,37 @@ const ReposBlock = React.createClass({
         className="repo-add-tag-btn"
           onClick={() => this.addTag(index, repo.id)}
         >
-          Add tag
+          Add
         </Button>;
         //
         return (
-          <Thumbnail key={'repo' + index} className="repo">
-            <Col xs={9}>
-              <a href={repo.html_url}>
-                <p className="repo-name">{repo.name}</p>
-              </a>
-              <small className="repo-updated">
-                Updated on {moment(repo.updated_at).format('MMM D, YYYY')}
-              </small>
-              <div className="clearfix">
-                {tagsBlock}
-              </div>
-              <div className="repo-form">
-                <Autosuggest
-                  id={'repo-autosuggest-' + index}
-                  value={this.state.defaultValue}
-                  suggestions={this.getSuggestions}
-                  inputAttributes={inputAttributes}
-                />
-                {button}
-              </div>
-              <small className="repo-tags-tip">
-                Type one or several tags (divided by comma)
-              </small>
-            </Col>
-            <Col xs={3} className="text-right">
-            </Col>
-          </Thumbnail>
+          <Col xs={6} md={4}>
+            <Thumbnail key={'repo' + index} className="repo">
+              <Col xs={12}>
+                <a href={repo.html_url}>
+                  <p className="repo-name">{repo.name}</p>
+                </a>
+                <small className="repo-updated">
+                  Updated on {moment(repo.updated_at).format('MMM D, YYYY')}
+                </small>
+                <div className="clearfix">
+                  {tagsBlock}
+                </div>
+                <div className="repo-form">
+                  <Autosuggest
+                    id={'repo-autosuggest-' + index}
+                    value={this.state.defaultValue}
+                    suggestions={this.getSuggestions}
+                    inputAttributes={inputAttributes}
+                  />
+                  {button}
+                </div>
+                <small className="repo-tags-tip">
+                  Type one or several tags (divided by comma)
+                </small>
+              </Col>
+            </Thumbnail>
+          </Col>
         );
       });
       //
@@ -154,7 +159,9 @@ const ReposBlock = React.createClass({
     //
     return (
       <div>
-        {repos}
+        <Row ref="masonryContainer">
+          {repos}
+        </Row>
         <MoreButton
           nextPage={nextPage}
           isScroll={isScroll}
