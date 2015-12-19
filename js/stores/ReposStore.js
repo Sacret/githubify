@@ -65,9 +65,18 @@ const ReposStore = Reflux.createStore({
         else {
           newRepos = res.body;
         }
-        _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
+        let allRepos = _.union(_this.reposInfo.repos, newRepos);
+        _this.reposInfo.repos = _.uniq(allRepos, (repo) => {
+          return repo.id;
+        });
         if (!newRepos.length) {
-          _this.reposInfo.isScroll = false;
+          if (res.body.length) {
+            _this.reposInfo.nextPage = page + 1;
+            _this.getRepos(accessToken, page + 1, filter, filterReposIds)
+          }
+          else {
+            _this.reposInfo.isScroll = false;
+          }
         }
         else {
           _this.reposInfo.nextPage = page + 1;
