@@ -1,4 +1,5 @@
 # alphabetized
+node_modules/
 
 # ctags-generated tags
 tags
