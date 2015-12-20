@@ -57,7 +57,10 @@ const ReposBlock = React.createClass({
       let tagNamesArray = tagNames.split(',');
       //
       _.forEach(tagNamesArray, (tagName) => {
-        let correctTagName = tagName.trim();
+        let correctTagName = _.trunc(tagName.trim(), {
+          length: 50,
+          omission: ''
+        });
         if (correctTagName.length) {
           let existingTag = _.findWhere(this.state.tags, {'title': correctTagName});
           if (!existingTag) {

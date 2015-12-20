@@ -36,7 +36,7 @@ const LoginForm = React.createClass({
           Welcome to the place where you can easily manage and organize tags for your Github repositories. You will have ability to set tags for your own repos, repositories that you have been added to as a member and even starred repos!
         </h4>
         <h4 className="login-page-paragraph">
-          <strong>Note:</strong> maximum count of tags per user is 30
+          <strong>Note:</strong> maximum count of tags per user is 30, max length of tag title is 50
         </h4>
         <img
           src="build/img/example.png"
