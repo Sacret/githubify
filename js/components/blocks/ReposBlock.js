@@ -44,8 +44,8 @@ const ReposBlock = React.createClass({
   },
 
   componentWillMount() {
-    let userID = this.props.userStore.info.id;
-    const ref = new Firebase(Config.FirebaseUrl + 'user' + userID + '/tags');
+    let userID = this.props.userStore.uid;
+    const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
     this.bindAsArray(ref, 'tags');
   },
 

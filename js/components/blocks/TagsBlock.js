@@ -21,16 +21,16 @@ const TagsBlock = React.createClass({
   mixins: [ReactFireMixin],
 
   componentWillMount() {
-    let userID = this.props.userID;
-    const ref = new Firebase(Config.FirebaseUrl + 'user' + userID + '/tags');
+    let userID = this.props.uid;
+    const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
     this.bindAsArray(ref, 'tags');
   },
 
   filterReposByTags(event, index, tag) {
     let isRemoving = ~event.target.className.indexOf('tag-remove-icon');
     if (isRemoving) {
-      let userID = this.props.userID;
-      let itemUrl = Config.FirebaseUrl + 'user' + userID + '/tags/' + tag['.key'];
+      let userID = this.props.uid;
+      let itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tag['.key'];
       let itemRef = new Firebase(itemUrl);
       itemRef.remove();
       FilterActions.setFilterTags(this.props.accessToken, tag, false);
