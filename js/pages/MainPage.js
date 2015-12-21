@@ -49,7 +49,7 @@ const MainPage = React.createClass({
                 <Row className="tags-info">
                   <div className="container">
                     <TagsBlock
-                      userID={userStore.info.id}
+                      uid={userStore.uid}
                       accessToken={userStore.accessToken}
                     />
                   </div>

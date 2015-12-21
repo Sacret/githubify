@@ -16,7 +16,8 @@ const UserStore = Reflux.createStore({
   user: {
     isLoggedIn: false,
     accessToken: '',
-    info: {}
+    info: {},
+    uid: null
   },
 
   login() {
@@ -35,7 +36,8 @@ const UserStore = Reflux.createStore({
         _this.user = {
           isLoggedIn: true,
           accessToken: authData.github.accessToken,
-          info: authData.github.cachedUserProfile
+          info: authData.github.cachedUserProfile,
+          uid: authData.uid
         };
         _this.trigger(_this.user);
       }
@@ -51,7 +53,8 @@ const UserStore = Reflux.createStore({
       this.user = {
         isLoggedIn: true,
         accessToken: authData.github.accessToken,
-        info: authData.github.cachedUserProfile
+        info: authData.github.cachedUserProfile,
+        uid: authData.uid
       };
     } else {
       console.log('User is logged out');
