@@ -110,7 +110,7 @@
 .repo-tag {
   .text-overflow();
   font-size: @font-size-h5;
-  margin: 5px 5px 0 0;
+  margin: 0 5px 0 0;
   background: lighten(@brand-primary, 37%);
   border: 1px solid @brand-primary;
   border-radius: 7px;
@@ -156,42 +156,13 @@
   color: lighten(@text-color, 40%);
 }
 
+.repo-updated {
+  display: block;
+  margin-bottom: 5px;
+}
+
 .repo-language, .repo-stars, .repo-forks {
   color: lighten(@text-color, 40%);
-  margin-left: 5px;
-}
-
-.repo .form-group {
-  margin-bottom: 0;
-  margin-top: 10px;
-}
-
-.react-autosuggest input {
-  .form-control();
-  margin-top: 10px;
-}
-
-.react-autosuggest__suggestions {
-  border: 1px solid @gray-lighter;
-  list-style: none;
-  padding: 5px 10px;
-}
-
-.react-autosuggest__suggestions div {
-  cursor: pointer;
-}
-
-.repo-form {
-  display: table;
-  width: 100%;
-}
-
-.react-autosuggest {
-  display: table-cell;
-}
-
-.repo-add-tag-btn {
-  display: table;
   margin-left: 5px;
 }
 
@@ -215,4 +186,30 @@
   &:hover {
     .box-shadow(0 0 20px -5px rgba(0,0,0,.2));
   }
+}
+
+.typeahead {
+  position: relative;;
+}
+
+.typeahead input {
+  .form-control();
+}
+
+.typeahead-selector {
+  border: 1px solid @gray-lighter;
+  list-style: none;
+  padding: 5px 10px;
+  position: absolute;
+  background-color: #fff;
+  width: 100%;
+  z-index: 20;
+}
+
+.typeahead-selector li a {
+  color: @text-color;
+}
+
+.typeahead-selector li.hover a {
+  color: @brand-primary;
 }
