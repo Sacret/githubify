@@ -6,7 +6,7 @@ import Reflux from 'reflux';
 import _ from 'lodash';
 import moment from 'moment';
 import createFragment from 'react-addons-create-fragment';
-import Autosuggest from 'react-autosuggest'
+import { Typeahead } from 'react-typeahead';
 //
 import { Row, Col, Thumbnail, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
@@ -33,12 +33,6 @@ const ReposBlock = React.createClass({
   mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin,
     InfiniteScrollMixin, MasonryMixin(React)('masonryContainer', masonryOptions)],
 
-  getInitialState() {
-    return({
-      defaultValue: ' '
-    });
-  },
-
   componentDidMount() {
     ReposActions.getRepos(this.props.userStore.accessToken, 1, 'all');
   },
@@ -53,7 +47,7 @@ const ReposBlock = React.createClass({
     let tagsStore = this.state.tags;
     if (tagsStore.length < 30) {
       let _this = this;
-      let tagNames = document.getElementById('repo-tag-input-' + index).value.trim();
+      let tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
       let tagNamesArray = tagNames.split(',');
       //
       _.forEach(tagNamesArray, (tagName) => {
@@ -75,21 +69,39 @@ const ReposBlock = React.createClass({
         }
       });
       //
-      document.getElementById('repo-tag-input-' + index).value = '';
+      _this.typeaheadBlur(null, index, true);
     }
     else {
 
     }
   },
 
-  getSuggestions(input, callback) {
+  getSuggestions() {
     let tagsStore = this.state.tags;
     let suburbs = _.map(tagsStore, (tag) => {
       return tag.title;
     });
-    let regex = new RegExp('^' + input.trim(), 'i');
-    let suggestions = suburbs.filter(suburb => regex.test(suburb));
-    callback(null, suggestions)
+    return suburbs;
+  },
+
+  typeaheadKeyUp(e, index, repoID) {
+    if (e.keyCode == 13) {
+      this.addTag(index, repoID);
+    }
+  },
+
+  typeaheadBlur(e, index, isSetEmpty) {
+    if (!(e && e.relatedTarget && e.relatedTarget.className == 'typeahead-option')) {
+      let newState = {
+        selection: null,
+        selectionIndex: null,
+        visible: []
+      };
+      if (isSetEmpty) {
+        newState.entryValue = '';
+      }
+      this.refs['typeahead' + index].setState(newState);
+    }
   },
 
   render() {
@@ -111,19 +123,11 @@ const ReposBlock = React.createClass({
         });
         let tagsBlock = createFragment(fragmentTags);
         //
-        let inputAttributes = {
-          id: 'repo-tag-input-' + index,
-          key: 'repo-tag-input-key-' + index,
-          value: '',
-          type: 'search'
+        let options = this.getSuggestions();
+        let inputProps = {
+          ref: 'repoTagInput'
         };
-        //
-        let button = <Button
-        className="repo-add-tag-btn"
-          onClick={() => this.addTag(index, repo.id)}
-        >
-          Add
-        </Button>;
+        let typeaheadRef = 'typeahead' + index;
         //
         return (
           <Col xs={6} md={4}>
@@ -139,13 +143,14 @@ const ReposBlock = React.createClass({
                   {tagsBlock}
                 </div>
                 <div className="repo-form">
-                  <Autosuggest
-                    id={'repo-autosuggest-' + index}
-                    value={this.state.defaultValue}
-                    suggestions={this.getSuggestions}
-                    inputAttributes={inputAttributes}
+                  <Typeahead
+                    options={options}
+                    ref={typeaheadRef}
+                    maxVisible={5}
+                    onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo.id)}
+                    onOptionSelected={() => this.addTag(index, repo.id)}
+                    onBlur={(e) => this.typeaheadBlur(e, index)}
                   />
-                  {button}
                 </div>
                 <small className="repo-tags-tip">
                   Type one or several tags (divided by comma)
