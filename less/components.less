@@ -85,20 +85,21 @@
   padding: 4px 10px 5px;
   cursor: pointer;
   position: relative;
-      display: inline-table;
+  display: inline-table;
   &:hover, &.active {
     color: #fff;
     background: @brand-primary;
   }
 }
 
-.tag {
+.tag, .repo-tag {
   .tag-remove-icon {
     visibility: hidden;
     position: absolute;
     right: 3px;
     top: 3px;
     font-size: 10px;
+    cursor: pointer;
   }
   &:hover {
     .tag-remove-icon {
@@ -115,9 +116,10 @@
   border: 1px solid @brand-primary;
   border-radius: 7px;
   color: darken(@brand-primary, 10%);
-  padding: 2px 5px 3px;
+  padding: 2px 10px 3px;
   display: inline-block;
   max-width: 100%;
+  position: relative;
 }
 
 .filter {

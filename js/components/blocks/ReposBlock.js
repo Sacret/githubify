@@ -76,6 +76,18 @@ const ReposBlock = React.createClass({
     }
   },
 
+  removeRepoTag(tagKey, tagRepos, repoID) {
+    let repoKey = _.findKey(tagRepos, (tagRepo) => {
+      return tagRepo.id == repoID;
+    });
+    if (tagKey && repoKey) {
+      let userID = this.props.userStore.uid;
+      let itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tagKey + '/repos/' + repoKey;
+      let itemRef = new Firebase(itemUrl);
+      itemRef.remove();
+    }
+  },
+
   getSuggestions() {
     let tagsStore = this.state.tags;
     let suburbs = _.map(tagsStore, (tag) => {
@@ -119,7 +131,16 @@ const ReposBlock = React.createClass({
         let fragmentTags = {};
         _.forEach(tags, (tag, index) => {
           fragmentTags['repo-tags-' + index] =
-            <span className="repo-tag">{tag.title}</span>;
+            <span
+              className="repo-tag"
+            >
+              {tag.title}
+              <FontAwesome
+                className="tag-remove-icon"
+                name="times"
+                onClick={() => this.removeRepoTag(tag['.key'], tag.repos, repo.id)}
+              />
+            </span>;
         });
         let tagsBlock = createFragment(fragmentTags);
         //
