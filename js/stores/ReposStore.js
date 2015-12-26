@@ -30,6 +30,8 @@ const ReposStore = Reflux.createStore({
     if (this.reposInfo.filter == 'starred') {
       reposUrl = 'starred';
     }
+    let includeForks = filter == 'forks';
+    //
     let requestUrl = Config.GithubApiUrl + 'user/' + reposUrl;
     let qs = {
       access_token: accessToken,
@@ -62,12 +64,13 @@ const ReposStore = Reflux.createStore({
           newRepos = res.body;
         }
         //
-        let allRepos = _.union(_this.reposInfo.repos, newRepos);
-        _this.reposInfo.repos = _.uniq(allRepos, (repo) => {
-          return repo.id;
+        newRepos = _.filter(newRepos, (repo) => {
+          return includeForks ? repo.fork : !repo.fork;
         });
         //
-        if (res.body.length) {
+        _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
+        //
+        if (res.body.length == Config.PerPage) {
           _this.getRepos(accessToken, page + 1, filter, filterReposIds)
         }
         _this.trigger(_this.reposInfo);

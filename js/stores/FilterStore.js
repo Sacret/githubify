@@ -26,6 +26,9 @@ const FilterStore = Reflux.createStore({
       title: 'owner',
       active: false
     }, {
+      title: 'forks',
+      active: false
+    }, {
       title: 'member',
       active: false
     }, {
@@ -71,10 +74,6 @@ const FilterStore = Reflux.createStore({
     });
     this.filterInfo.reposIds = _(reposIds).flatten().uniq().value();
     ReposActions.getRepos(accessToken, 1, this.filterInfo.currentFilter, this.filterInfo.reposIds);
-  },
-
-  loadMoreWithFilters(accessToken, nextPage) {
-    ReposActions.getRepos(accessToken, nextPage, this.filterInfo.currentFilter, this.filterInfo.reposIds);
   }
 
 });
