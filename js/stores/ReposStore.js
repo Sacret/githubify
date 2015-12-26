@@ -17,9 +17,7 @@ const ReposStore = Reflux.createStore({
     repos: [],
     alertType: '',
     alertMessage: '',
-    filter: 'all',
-    isScroll: true,
-    nextPage: null
+    filter: 'all'
   },
 
   getRepos(accessToken, page, filter, filterReposIds) {
@@ -27,8 +25,6 @@ const ReposStore = Reflux.createStore({
     let reposUrl = 'repos';
     if (page == 1) {
       this.reposInfo.repos = [];
-      this.reposInfo.isScroll = true;
-      this.reposInfo.nextPage = null;
       this.reposInfo.filter = filter;
     }
     if (this.reposInfo.filter == 'starred') {
@@ -65,21 +61,14 @@ const ReposStore = Reflux.createStore({
         else {
           newRepos = res.body;
         }
+        //
         let allRepos = _.union(_this.reposInfo.repos, newRepos);
         _this.reposInfo.repos = _.uniq(allRepos, (repo) => {
           return repo.id;
         });
-        if (!newRepos.length) {
-          if (res.body.length) {
-            _this.reposInfo.nextPage = page + 1;
-            _this.getRepos(accessToken, page + 1, filter, filterReposIds)
-          }
-          else {
-            _this.reposInfo.isScroll = false;
-          }
-        }
-        else {
-          _this.reposInfo.nextPage = page + 1;
+        //
+        if (res.body.length) {
+          _this.getRepos(accessToken, page + 1, filter, filterReposIds)
         }
         _this.trigger(_this.reposInfo);
       });
