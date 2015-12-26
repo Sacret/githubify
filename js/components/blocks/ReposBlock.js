@@ -12,9 +12,6 @@ import { Row, Col, Thumbnail, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import MasonryMixin from 'react-masonry-mixin';
 //
-import MoreButton from './MoreButton';
-import InfiniteScrollMixin from '../mixins/InfiniteScrollMixin';
-//
 import Config from '../../config/Config';
 //
 import ReposActions from '../../actions/ReposActions';
@@ -31,7 +28,7 @@ const masonryOptions = {
 const ReposBlock = React.createClass({
 
   mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin,
-    InfiniteScrollMixin, MasonryMixin(React)('masonryContainer', masonryOptions)],
+    MasonryMixin(React)('masonryContainer', masonryOptions)],
 
   componentDidMount() {
     ReposActions.getRepos(this.props.userStore.accessToken, 1, 'all');
@@ -122,7 +119,6 @@ const ReposBlock = React.createClass({
     let tagsStore = this.state.tags;
     //
     let repos = null;
-    let nextPage = null, isScroll = false;
     if (reposStore) {
       repos = _.map(reposStore.repos, (repo, index) => {
         let tags = _.filter(tagsStore, (tag) => {
@@ -133,6 +129,7 @@ const ReposBlock = React.createClass({
           fragmentTags['repo-tags-' + index] =
             <span
               className="repo-tag"
+              key={'repo-tags-' + index}
             >
               {tag.title}
               <FontAwesome
@@ -151,8 +148,8 @@ const ReposBlock = React.createClass({
         let typeaheadRef = 'typeahead' + index;
         //
         return (
-          <Col xs={6} md={4}>
-            <Thumbnail key={'repo' + index} className="repo">
+          <Col xs={6} md={4} key={'repo' + index}>
+            <Thumbnail className="repo">
               <Col xs={12}>
                 <a href={repo.html_url}>
                   <p className="repo-name">{repo.name}</p>
@@ -181,22 +178,12 @@ const ReposBlock = React.createClass({
           </Col>
         );
       });
-      //
-      nextPage = reposStore.nextPage;
-      isScroll = reposStore.isScroll;
     }
     //
     return (
-      <div>
-        <Row ref="masonryContainer">
-          {repos}
-        </Row>
-        <MoreButton
-          nextPage={nextPage}
-          isScroll={isScroll}
-          accessToken={this.props.userStore.accessToken}
-        />
-      </div>
+      <Row ref="masonryContainer">
+        {repos}
+      </Row>
     );
   }
 });

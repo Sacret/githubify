@@ -40,13 +40,13 @@ const MainPage = React.createClass({
               userStore ?
               userStore.isLoggedIn ?
               [
-                <Row className="user-info">
+                <Row className="user-info" key="block1">
                   <div className="container">
                     <h2>GITHUBIFY.<span className="header-title">me</span></h2>
                     <UserBlock info={userStore.info} />
                   </div>
                 </Row>,
-                <Row className="tags-info">
+                <Row className="tags-info" key="block2">
                   <div className="container">
                     <TagsBlock
                       uid={userStore.uid}
@@ -54,12 +54,12 @@ const MainPage = React.createClass({
                     />
                   </div>
                 </Row>,
-                <Row className="filters-info">
+                <Row className="filters-info" key="block3">
                   <div className="container">
                     <FilterBlock accessToken={userStore.accessToken} />
                   </div>
                 </Row>,
-                <Row className="repos-info">
+                <Row className="repos-info" key="block4">
                   <div className="container">
                     <ReposBlock userStore={userStore} />
                   </div>
