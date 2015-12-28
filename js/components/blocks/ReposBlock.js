@@ -154,6 +154,12 @@ const ReposBlock = React.createClass({
                 <a href={repo.html_url}>
                   <p className="repo-name">{repo.name}</p>
                 </a>
+                { reposStore.isShowingOwner ?
+                    <p className="repo-owner">
+                      by <a href={repo.owner.html_url}>{repo.owner.login}</a>
+                    </p> :
+                    null
+                }
                 <small className="repo-updated">
                   Updated on {moment(repo.updated_at).format('MMM D, YYYY')}
                 </small>
