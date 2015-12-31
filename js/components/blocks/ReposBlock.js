@@ -40,7 +40,38 @@ const ReposBlock = React.createClass({
     this.bindAsArray(ref, 'tags');
   },
 
-  addTag(index, repoID) {
+  componentWillUpdate(nextProps, nextState) {
+    let _this = this;
+    if (nextState.reposStore && !localStorage.getItem('isSetLanguages')) {
+      _.forEach(nextState.reposStore.repos, (repo) => {
+        if (repo.language) {
+          _this.addTag(repo.language, repo.id);
+        }
+      });
+      localStorage.setItem('isSetLanguages', true);
+    }
+  },
+
+  addTag(tagName, repoID) {
+    if (tagName.length) {
+      let existingTag = _.findWhere(this.state.tags, { 'title': tagName });
+      if (!existingTag) {
+        this.firebaseRefs.tags.push({
+          title: tagName
+        });
+        existingTag = _.findWhere(this.state.tags, { 'title': tagName });
+      }
+      //
+      let existingRepo = _.findWhere(existingTag.repos, { 'id': repoID });
+      if (!existingRepo) {
+        this.firebaseRefs.tags.child(existingTag['.key']).child('repos').push({
+          id: repoID
+        });
+      }
+    }
+  },
+
+  addRepoTag(index, repoID) {
     let tagsStore = this.state.tags;
     if (tagsStore.length < 30) {
       let _this = this;
@@ -52,18 +83,7 @@ const ReposBlock = React.createClass({
           length: 50,
           omission: ''
         });
-        if (correctTagName.length) {
-          let existingTag = _.findWhere(this.state.tags, {'title': correctTagName});
-          if (!existingTag) {
-            _this.firebaseRefs.tags.push({
-              title: correctTagName
-            });
-          }
-          existingTag = _.findWhere(this.state.tags, {'title': correctTagName});
-          _this.firebaseRefs.tags.child(existingTag['.key']).child('repos').push({
-            id: repoID
-          });
-        }
+        _this.addTag(correctTagName, repoID);
       });
       //
       _this.typeaheadBlur(null, index, true);
@@ -95,7 +115,7 @@ const ReposBlock = React.createClass({
 
   typeaheadKeyUp(e, index, repoID) {
     if (e.keyCode == 13) {
-      this.addTag(index, repoID);
+      this.addRepoTag(index, repoID);
     }
   },
 
