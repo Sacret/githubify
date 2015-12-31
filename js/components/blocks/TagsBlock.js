@@ -36,7 +36,8 @@ const TagsBlock = React.createClass({
       FilterActions.setFilterTags(this.props.accessToken, tag, false);
     }
     else {
-      let tagSpan = document.getElementById('tag' + index);
+      let tagID = 'tag-' + tag.title.toLowerCase() + index;
+      let tagSpan = document.getElementById(tagID);
       let isTagsAdding = false;
       if (!~tagSpan.className.indexOf('active')) {
         tagSpan.className = tagSpan.className + ' active';
@@ -54,13 +55,13 @@ const TagsBlock = React.createClass({
     console.log('tagsStore', tagsStore);
     //
     let tags = 'There are no tags for now!';
-    if (tagsStore) {
+    if (tagsStore && tagsStore.length) {
       tags = _.map(tagsStore, (tag, index) => {
         return (
           <span
             className="tag"
-            key={'tag' + index}
-            id={'tag' + index}
+            key={'tag-' + tag.title.toLowerCase() + index}
+            id={'tag-' + tag.title.toLowerCase() + index}
             onClick={(e) => this.filterReposByTags(e, index, tag)}
           >
             {tag.title}
