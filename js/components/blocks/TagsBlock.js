@@ -26,7 +26,7 @@ const TagsBlock = React.createClass({
     this.bindAsArray(ref, 'tags');
   },
 
-  filterReposByTags(event, index, tag) {
+  filterReposByTags(event, tag) {
     let isRemoving = ~event.target.className.indexOf('tag-remove-icon');
     if (isRemoving) {
       let userID = this.props.uid;
@@ -36,7 +36,7 @@ const TagsBlock = React.createClass({
       FilterActions.setFilterTags(this.props.accessToken, tag, false);
     }
     else {
-      let tagID = 'tag-' + tag.title.toLowerCase() + index;
+      let tagID = 'tag-' + tag.title.toLowerCase();
       let tagSpan = document.getElementById(tagID);
       let isTagsAdding = false;
       if (!~tagSpan.className.indexOf('active')) {
@@ -56,19 +56,22 @@ const TagsBlock = React.createClass({
     //
     let tags = 'There are no tags for now!';
     if (tagsStore && tagsStore.length) {
-      tags = _.map(tagsStore, (tag, index) => {
+      tags = _.map(tagsStore, (tag) => {
         return (
           <span
-            className="tag"
-            key={'tag-' + tag.title.toLowerCase() + index}
-            id={'tag-' + tag.title.toLowerCase() + index}
-            onClick={(e) => this.filterReposByTags(e, index, tag)}
+            className={'tag' + (tag.isLanguage ? ' language-tag' : '')}
+            key={'tag-' + tag.title.toLowerCase()}
+            id={'tag-' + tag.title.toLowerCase()}
+            onClick={(e) => this.filterReposByTags(e, tag)}
           >
             {tag.title}
-            <FontAwesome
-              className="tag-remove-icon"
-              name="times"
-            />
+            { !tag.isLanguage ?
+                <FontAwesome
+                  className="tag-remove-icon"
+                  name="times"
+                /> :
+                null
+            }
           </span>
         );
       });

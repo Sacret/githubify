@@ -42,22 +42,29 @@ const ReposBlock = React.createClass({
 
   componentWillUpdate(nextProps, nextState) {
     let _this = this;
-    if (nextState.reposStore && !localStorage.getItem('isSetLanguages')) {
+    if (nextState.reposStore) {
+      let repoIds = [];
       _.forEach(nextState.reposStore.repos, (repo) => {
-        if (repo.language) {
-          _this.addTag(repo.language, repo.id);
+        let isInclude = _.includes(JSON.parse(localStorage.getItem('languagesRepoIDs')), repo.id);
+        if (repo.language && !isInclude) {
+          _this.addTag(repo.language, repo.id, true);
+          repoIds.push(repo.id);
         }
       });
-      localStorage.setItem('isSetLanguages', true);
+      if (repoIds.length) {
+        let allRepoIds = _.union(JSON.parse(localStorage.getItem('languagesRepoIDs')), repoIds);
+        localStorage.setItem('languagesRepoIDs', JSON.stringify(allRepoIds));
+      }
     }
   },
 
-  addTag(tagName, repoID) {
+  addTag(tagName, repoID, isLanguage) {
     if (tagName.length) {
       let existingTag = _.findWhere(this.state.tags, { 'title': tagName });
       if (!existingTag) {
         this.firebaseRefs.tags.push({
-          title: tagName
+          title: tagName,
+          isLanguage: !!isLanguage
         });
         existingTag = _.findWhere(this.state.tags, { 'title': tagName });
       }
@@ -148,15 +155,18 @@ const ReposBlock = React.createClass({
         _.forEach(tags, (tag, index) => {
           fragmentTags['repo-tags-' + index] =
             <span
-              className="repo-tag"
+              className={'repo-tag' + (tag.isLanguage ? ' repo-language-tag' : '')}
               key={'repo-tags-' + index}
             >
               {tag.title}
-              <FontAwesome
-                className="tag-remove-icon"
-                name="times"
-                onClick={() => this.removeRepoTag(tag['.key'], tag.repos, repo.id)}
-              />
+              { !tag.isLanguage ?
+                  <FontAwesome
+                    className="tag-remove-icon"
+                    name="times"
+                    onClick={() => this.removeRepoTag(tag['.key'], tag.repos, repo.id)}
+                  /> :
+                  null
+              }
             </span>;
         });
         let tagsBlock = createFragment(fragmentTags);
