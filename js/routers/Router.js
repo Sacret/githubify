@@ -8,6 +8,6 @@ import MainPage from '../pages/MainPage';
 
 render((
   <Router>
-    <Route path="/"         component={MainPage} />
+    <Route path="/" component={MainPage} />
   </Router>
 ), document.getElementById('content'));

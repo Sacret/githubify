@@ -26,7 +26,7 @@ const FilterBlock = React.createClass({
   },
 
   render() {
-    let filterStore = this.state.filterStore;
+    const filterStore = this.state.filterStore;
     console.log('filterStore', filterStore);
     //
     let filters = 'There are no filters for now!';

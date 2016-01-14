@@ -39,7 +39,7 @@ const FilterStore = Reflux.createStore({
   },
 
   setFilter(accessToken, filterTitle) {
-    let _this = this;
+    const _this = this;
     let actualFilterTitle = 'all';
     _.forEach(_this.filterInfo.filters, (filter, index) => {
       if (filter.title == filterTitle) {
@@ -69,7 +69,7 @@ const FilterStore = Reflux.createStore({
     else {
       this.filterInfo.tags = _.reject(this.filterInfo.tags, newTag);
     }
-    let reposIds = _.map(this.filterInfo.tags, (tag) => {
+    const reposIds = _.map(this.filterInfo.tags, (tag) => {
       return _(tag.repos).values().pluck('id').value();
     });
     this.filterInfo.reposIds = _(reposIds).flatten().uniq().value();

@@ -24,7 +24,7 @@ const LoginForm = React.createClass({
   },
 
   render() {
-    let userStore = this.state.userStore;
+    const userStore = this.state.userStore;
     console.log('userStore', userStore);
     //
     return (

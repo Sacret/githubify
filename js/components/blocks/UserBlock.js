@@ -21,7 +21,7 @@ const UserBlock = React.createClass({
   },
 
   render() {
-    let info = this.props.info;
+    const info = this.props.info;
     //
     return (
       <div className="user-block">

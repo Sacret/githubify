@@ -35,13 +35,13 @@ const ReposBlock = React.createClass({
   },
 
   componentWillMount() {
-    let userID = this.props.userStore.uid;
+    const userID = this.props.userStore.uid;
     const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
     this.bindAsArray(ref, 'tags');
   },
 
   componentWillUpdate(nextProps, nextState) {
-    let _this = this;
+    const _this = this;
     if (nextState.reposStore) {
       let repoIds = [];
       _.forEach(nextState.reposStore.repos, (repo) => {
@@ -69,7 +69,7 @@ const ReposBlock = React.createClass({
         existingTag = _.findWhere(this.state.tags, { 'title': tagName });
       }
       //
-      let existingRepo = _.findWhere(existingTag.repos, { 'id': repoID });
+      const existingRepo = _.findWhere(existingTag.repos, { 'id': repoID });
       if (!existingRepo) {
         this.firebaseRefs.tags.child(existingTag['.key']).child('repos').push({
           id: repoID
@@ -79,11 +79,11 @@ const ReposBlock = React.createClass({
   },
 
   addRepoTag(index, repoID) {
-    let tagsStore = this.state.tags;
+    const tagsStore = this.state.tags;
     if (tagsStore.length < 30) {
-      let _this = this;
-      let tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
-      let tagNamesArray = tagNames.split(',');
+      const _this = this;
+      const tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
+      const tagNamesArray = tagNames.split(',');
       //
       _.forEach(tagNamesArray, (tagName) => {
         let correctTagName = _.trunc(tagName.trim(), {
@@ -101,20 +101,20 @@ const ReposBlock = React.createClass({
   },
 
   removeRepoTag(tagKey, tagRepos, repoID) {
-    let repoKey = _.findKey(tagRepos, (tagRepo) => {
+    const repoKey = _.findKey(tagRepos, (tagRepo) => {
       return tagRepo.id == repoID;
     });
     if (tagKey && repoKey) {
-      let userID = this.props.userStore.uid;
-      let itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tagKey + '/repos/' + repoKey;
-      let itemRef = new Firebase(itemUrl);
+      const userID = this.props.userStore.uid;
+      const itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tagKey + '/repos/' + repoKey;
+      const itemRef = new Firebase(itemUrl);
       itemRef.remove();
     }
   },
 
   getSuggestions() {
-    let tagsStore = this.state.tags;
-    let suburbs = _.map(tagsStore, (tag) => {
+    const tagsStore = this.state.tags;
+    const suburbs = _.map(tagsStore, (tag) => {
       return tag.title;
     });
     return suburbs;
@@ -128,7 +128,7 @@ const ReposBlock = React.createClass({
 
   typeaheadBlur(e, index, isSetEmpty) {
     if (!(e && e.relatedTarget && e.relatedTarget.className == 'typeahead-option')) {
-      let newState = {
+      const newState = {
         selection: null,
         selectionIndex: null,
         visible: []
@@ -141,9 +141,9 @@ const ReposBlock = React.createClass({
   },
 
   render() {
-    let reposStore = this.state.reposStore;
+    const reposStore = this.state.reposStore;
     console.log('reposStore', reposStore);
-    let tagsStore = this.state.tags;
+    const tagsStore = this.state.tags;
     //
     let repos = null;
     if (reposStore) {
