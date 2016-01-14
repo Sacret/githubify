@@ -21,7 +21,7 @@ const UserStore = Reflux.createStore({
   },
 
   login() {
-    let _this = this;
+    const _this = this;
     const ref = new Firebase(Config.FirebaseUrl);
     //
     ref.authWithOAuthPopup('github', (error, authData) => {
@@ -46,7 +46,7 @@ const UserStore = Reflux.createStore({
 
   isLoggedIn() {
     const ref = new Firebase(Config.FirebaseUrl);
-    let authData = ref.getAuth();
+    const authData = ref.getAuth();
     //
     if (authData) {
       console.log('User ' + authData.uid + ' is logged in with ' + authData.provider);

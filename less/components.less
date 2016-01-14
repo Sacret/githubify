@@ -75,21 +75,19 @@
 }
 
 .tag {
+  .tag-decorations(@brand-primary);
   font-size: @font-size-h4;
   margin-right: 5px;
   margin-bottom: 5px;
-  background: lighten(@brand-primary, 37%);
-  border: 1px solid @brand-primary;
   border-radius: 7px;
-  color: darken(@brand-primary, 10%);
   padding: 4px 10px 5px;
   cursor: pointer;
   position: relative;
   display: inline-table;
-  &:hover, &.active {
-    color: #fff;
-    background: @brand-primary;
-  }
+}
+
+.language-tag {
+  .tag-decorations(@language);
 }
 
 .tag, .repo-tag {
@@ -110,16 +108,18 @@
 
 .repo-tag {
   .text-overflow();
+  .tag-decorations(@brand-primary);
   font-size: @font-size-h5;
   margin: 0 5px 2px 0;
-  background: lighten(@brand-primary, 37%);
-  border: 1px solid @brand-primary;
   border-radius: 7px;
-  color: darken(@brand-primary, 10%);
   padding: 2px 10px 3px;
   display: inline-block;
   max-width: 100%;
   position: relative;
+}
+
+.repo-language-tag {
+  .tag-decorations(@language);
 }
 
 .filter {

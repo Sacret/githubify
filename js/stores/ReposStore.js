@@ -21,7 +21,7 @@ const ReposStore = Reflux.createStore({
   },
 
   getRepos(accessToken, page, filter, filterReposIds) {
-    let _this = this;
+    const _this = this;
     let reposUrl = 'repos';
     if (page == 1) {
       this.reposInfo.repos = [];
@@ -30,10 +30,10 @@ const ReposStore = Reflux.createStore({
       reposUrl = 'starred';
     }
     this.reposInfo.isShowingOwner = filter == 'starred' || filter == 'member';
-    let includeForks = filter == 'forks';
+    const includeForks = filter == 'forks';
     //
-    let requestUrl = Config.GithubApiUrl + 'user/' + reposUrl;
-    let qs = {
+    const requestUrl = Config.GithubApiUrl + 'user/' + reposUrl;
+    const qs = {
       access_token: accessToken,
       per_page: Config.PerPage,
       page: page,

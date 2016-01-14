@@ -5,3 +5,13 @@
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
 }
+
+.tag-decorations(@color: @brand-primary) {
+  background: lighten(@color, 37%);
+  border: 1px solid @color;
+  color: darken(@color, 10%);
+  &:hover, &.active {
+    color: #fff;
+    background: @color;
+  }
+}

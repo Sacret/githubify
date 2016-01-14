@@ -7,7 +7,7 @@ import { RouteHandler } from 'react-router';
 /**
  *  Layout component adds route handler to the application
  */
-var Layout = React.createClass({
+const Layout = React.createClass({
 
   render() {
     return (
