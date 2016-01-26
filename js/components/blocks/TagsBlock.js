@@ -36,7 +36,7 @@ const TagsBlock = React.createClass({
       FilterActions.setFilterTags(this.props.accessToken, tag, false);
     }
     else {
-      const tagID = 'tag-' + tag.title.toLowerCase();
+      const tagID = 'tag-' + tag.title;
       const tagSpan = document.getElementById(tagID);
       let isTagsAdding = false;
       if (!~tagSpan.className.indexOf('active')) {
@@ -60,8 +60,8 @@ const TagsBlock = React.createClass({
         return (
           <span
             className={'tag' + (tag.isLanguage ? ' language-tag' : '')}
-            key={'tag-' + tag.title.toLowerCase()}
-            id={'tag-' + tag.title.toLowerCase()}
+            key={'tag-' + tag.title}
+            id={'tag-' + tag.title}
             onClick={(e) => this.filterReposByTags(e, tag)}
           >
             {tag.title}
