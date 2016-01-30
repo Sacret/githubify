@@ -44,7 +44,7 @@ const LoginForm = React.createClass({
         />
         <div className="login-form">
           {
-            !userStore ?
+            !userStore || userStore && !userStore.isLoggedIn ?
               <form className="form-horizontal">
                 {
                   userStore && userStore.alertType ?
