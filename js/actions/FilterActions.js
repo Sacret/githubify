@@ -11,4 +11,4 @@ const FilterActions = Reflux.createActions([
   'setFilterTags'
 ]);
 
-module.exports = FilterActions;
+export default FilterActions;

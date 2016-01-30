@@ -9,4 +9,4 @@ const ReposActions = Reflux.createActions([
   'getRepos'
 ]);
 
-module.exports = ReposActions;
+export default ReposActions;
