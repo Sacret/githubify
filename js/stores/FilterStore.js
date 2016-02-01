@@ -23,6 +23,9 @@ const FilterStore = Reflux.createStore({
 
   getFilters() {
     this.filterInfo.filters = [{
+      title: 'all',
+      active: true
+    }, {
       title: 'owner',
       active: false
     }, {
