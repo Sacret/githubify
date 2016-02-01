@@ -11,4 +11,4 @@ const UserActions = Reflux.createActions([
   'logout'
 ]);
 
-module.exports = UserActions;
+export default UserActions;

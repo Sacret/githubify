@@ -80,7 +80,8 @@ const ReposBlock = React.createClass({
 
   addRepoTag(index, repoID) {
     const tagsStore = this.state.tags;
-    if (tagsStore.length < 30) {
+    const languageTags = _.filter(this.state.tags, {isLanguage: true});
+    if (tagsStore.length - languageTags.length < 30) {
       const _this = this;
       const tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
       const tagNamesArray = tagNames.split(',');
