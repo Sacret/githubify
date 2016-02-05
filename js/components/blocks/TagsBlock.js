@@ -61,13 +61,13 @@ const TagsBlock = React.createClass({
       tags = _.map(tagsStore, (tag) => {
         return (
           <span
-            className={'tag' + (tag.isLanguage ? ' language-tag' : '')}
+            className="tag"
             key={'tag-' + tag.title}
             id={'tag-' + tag.title}
             onClick={(e) => this.filterReposByTags(e, tag)}
           >
             {tag.title}
-            { !tag.isLanguage && this.props.info.uid == this.props.uid ?
+            { 'github:' + this.props.openUser.id == this.props.uid ?
                 <FontAwesome
                   className="tag-remove-icon"
                   name="times"

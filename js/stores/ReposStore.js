@@ -7,6 +7,7 @@ import _ from 'lodash';
 import Config from '../config/Config';
 //
 import ReposActions from '../actions/ReposActions';
+import LanguagesActions from '../actions/LanguagesActions';
 
 /**
  *  ReposStore processes repos info
@@ -21,7 +22,7 @@ const ReposStore = Reflux.createStore({
     username: null
   },
 
-  getRepos(accessToken, username, page, filter, filterReposIds) {
+  getRepos(username, page, filter, filterReposIds, isSetNewLanguages) {
     const _this = this;
     let reposUrl = 'repos';
     if (page == 1) {
@@ -78,6 +79,15 @@ const ReposStore = Reflux.createStore({
           _this.getRepos(accessToken, username, page + 1, filter, filterReposIds)
         }
         _this.trigger(_this.reposInfo);
+        //
+        if (isSetNewLanguages) {
+          const languages = _.chain(_this.reposInfo.repos)
+            .pluck('language')
+            .uniq()
+            .compact()
+            .value();
+          LanguagesActions.setLanguages(languages);
+        }
       });
   }
 

@@ -18,7 +18,8 @@ const FilterStore = Reflux.createStore({
     filters: [],
     currentFilter: 'all',
     tags: [],
-    reposIds: []
+    tagReposIds: [],
+    languageReposIds: []
   },
 
   getFilters() {
@@ -41,7 +42,7 @@ const FilterStore = Reflux.createStore({
     this.trigger(this.filterInfo);
   },
 
-  setFilter(accessToken, filterTitle) {
+  setFilter(username, filterTitle) {
     const _this = this;
     let actualFilterTitle = 'all';
     _.forEach(_this.filterInfo.filters, (filter, index) => {
@@ -61,22 +62,50 @@ const FilterStore = Reflux.createStore({
       }
     });
     //
-    ReposActions.getRepos(accessToken, null, 1, actualFilterTitle, this.filterInfo.reposIds);
+    if (!(_.filter(_this.filterInfo.filters, { 'active': true })).length) {
+      _this.filterInfo.filters[0].active = true;
+    }
+    //
+    const isSetNewLanguages = true;
+    ReposActions.getRepos(username, 1, actualFilterTitle, this.filterInfo.reposIds, isSetNewLanguages);
     _this.trigger(_this.filterInfo);
   },
 
-  setFilterTags(accessToken, newTag, isTagsAdding) {
+  setFilterTags(username, newTag, isTagsAdding) {
     if (isTagsAdding) {
       this.filterInfo.tags = _.union(this.filterInfo.tags, [newTag]);
     }
     else {
       this.filterInfo.tags = _.reject(this.filterInfo.tags, newTag);
     }
-    const reposIds = _.map(this.filterInfo.tags, (tag) => {
+    const tagReposIds = _.map(this.filterInfo.tags, (tag) => {
       return _(tag.repos).values().pluck('id').value();
     });
-    this.filterInfo.reposIds = _(reposIds).flatten().uniq().value();
-    ReposActions.getRepos(accessToken, null, 1, this.filterInfo.currentFilter, this.filterInfo.reposIds);
+    this.filterInfo.tagReposIds = _(tagReposIds)
+      .flatten()
+      .uniq()
+      .value();
+    const reposIds = this.getCombineReposIds();
+    ReposActions.getRepos(username, 1, this.filterInfo.currentFilter, reposIds);
+  },
+
+  setFilterLanguages(username, languageReposIds) {
+    const newReposIds = languageReposIds.length ?
+      _.union(this.filterInfo.languageReposIds, languageReposIds) :
+      [];
+    this.filterInfo.languageReposIds = newReposIds;
+    const reposIds = this.getCombineReposIds();
+    ReposActions.getRepos(username, 1, this.filterInfo.currentFilter, reposIds);
+  },
+
+  getCombineReposIds() {
+    if (!this.filterInfo.tagReposIds.length) {
+      return this.filterInfo.languageReposIds;
+    }
+    if (!this.filterInfo.languageReposIds.length) {
+      return this.filterInfo.tagReposIds;
+    }
+    return _.intersection(this.filterInfo.tagReposIds, this.filterInfo.languageReposIds);
   }
 
 });

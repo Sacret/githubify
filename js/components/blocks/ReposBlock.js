@@ -37,21 +37,6 @@ const ReposBlock = React.createClass({
       const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID + '/tags');
       this.bindAsArray(ref, 'tags');
     }
-    if (nextState.reposStore) {
-      let repoIds = [];
-      _.forEach(nextState.reposStore.repos, (repo) => {
-        let isInclude = _.includes(JSON.parse(localStorage.getItem('languagesRepoIDs')), repo.id);
-        if (repo.language && !isInclude && this.props.userStore.openUser &&
-            this.props.userStore.openUser.id == this.props.userStore.uid) {
-          _this.addTag(repo.language, repo.id, true);
-          repoIds.push(repo.id);
-        }
-      });
-      if (repoIds.length) {
-        let allRepoIds = _.union(JSON.parse(localStorage.getItem('languagesRepoIDs')), repoIds);
-        localStorage.setItem('languagesRepoIDs', JSON.stringify(allRepoIds));
-      }
-    }
   },
 
   addTag(tagName, repoID, isLanguage) {
@@ -76,8 +61,7 @@ const ReposBlock = React.createClass({
 
   addRepoTag(index, repoID) {
     const tagsStore = this.state.tags;
-    const languageTags = _.filter(this.state.tags, {isLanguage: true});
-    if (tagsStore.length - languageTags.length < 30) {
+    if (tagsStore.length < 30) {
       const _this = this;
       const tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
       const tagNamesArray = tagNames.split(',');
@@ -102,7 +86,7 @@ const ReposBlock = React.createClass({
       return tagRepo.id == repoID;
     });
     if (tagKey && repoKey) {
-      const userID = this.props.userStore.openUser.uid;
+      const userID = this.props.openUser.uid;
       const itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tagKey + '/repos/' + repoKey;
       const itemRef = new Firebase(itemUrl);
       itemRef.remove();
@@ -149,14 +133,14 @@ const ReposBlock = React.createClass({
           return _.find(tag.repos, {id: repo.id});
         });
         let fragmentTags = {};
-        _.forEach(tags, (tag, index) => {
-          fragmentTags['repo-tags-' + index] =
+        _.forEach(tags, (tag, tagIndex) => {
+          fragmentTags['repo-tags-' + tagIndex] =
             <span
-              className={'repo-tag' + (tag.isLanguage ? ' repo-language-tag' : '')}
-              key={'repo-tags-' + index}
+              className="repo-tag"
+              key={'repo-tags-' + tagIndex}
             >
               {tag.title}
-              { !tag.isLanguage ?
+              { 'github:' + this.props.openUser.id == this.props.uid ?
                   <FontAwesome
                     className="tag-remove-icon"
                     name="times"
@@ -166,6 +150,15 @@ const ReposBlock = React.createClass({
               }
             </span>;
         });
+        if (repo.language && repo.language.length) {
+          fragmentTags['repo-tags-language'] =
+            <span
+              className="repo-tag repo-language-tag"
+              key={'repo-tags-language-' + index}
+            >
+              {repo.language}
+            </span>;
+        }
         let tagsBlock = createFragment(fragmentTags);
         //
         let options = this.getSuggestions();

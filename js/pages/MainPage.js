@@ -12,6 +12,7 @@ import LoadingBlock from '../components/blocks/LoadingBlock';
 import UserBlock from '../components/blocks/UserBlock';
 import ReposBlock from '../components/blocks/ReposBlock';
 import TagsBlock from '../components/blocks/TagsBlock';
+import LanguagesBlock from '../components/blocks/LanguagesBlock';
 import FilterBlock from '../components/blocks/FilterBlock';
 //
 import UserActions from '../actions/UserActions';
@@ -102,15 +103,16 @@ const MainPage = React.createClass({
                       />
                     </div>
                   </Row>,
-                  <Row className="filters-info" key="block3">
+                  <Row className="languages-info" key="block3">
                     <div className="container">
-                      <FilterBlock
-                        accessToken={userStore.accessToken}
-                        uname={this.props.params.uname}
-                        />
+                      <LanguagesBlock uname={this.props.params.uname} />
                     </div>
                   </Row>,
-                  <Row className="repos-info" key="block4">
+                  <Row className="filters-info" key="block4">
+                    <div className="container">
+                      <FilterBlock uname={this.props.params.uname} />
+                    </div>
+                  </Row>,
                     <div className="container">
                       <ReposBlock
                         uname={this.props.params.uname}
