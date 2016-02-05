@@ -21,21 +21,21 @@ const UserBlock = React.createClass({
   },
 
   render() {
-    const info = this.props.info;
+    const openUser = this.props.openUser;
     //
     return (
       <div className="user-block">
         {
-          info ?
+          openUser ?
             <Row>
               <Col md={2} xs={4} className="user-block-avatar">
-                <a href={info.html_url}>
-                  <img src={info.avatar_url} className="user-block-avatar-img" />
+                <a href={openUser.html_url}>
+                  <img src={openUser.avatar_url} className="user-block-avatar-img" />
                 </a>
               </Col>
               <Col md={8} xs={4} className="user-block-main-info">
-                <p className="user-block-main-info-name">{info.name}</p>
-                <p className="user-block-main-info-login">{info.login}</p>
+                <p className="user-block-main-info-name">{openUser.name}</p>
+                <p className="user-block-main-info-login">{openUser.login}</p>
               </Col>
               <Col md={2} xs={4} className="user-block-github text-center">
                 <FontAwesome name="github" />

@@ -20,19 +20,20 @@ const TagsBlock = React.createClass({
 
   mixins: [ReactFireMixin],
 
-  componentWillMount() {
-    if (this.props.info) {
-      const userID = this.props.info.uid;
-      const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.openUser && (!nextState || nextState && !nextState.tags)) {
+      const userID = nextProps.openUser.id;
+      const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID + '/tags');
       this.bindAsArray(ref, 'tags');
     }
   },
 
   filterReposByTags(event, tag) {
+    const openUserName = this.props.openUser.login;
     const isRemoving = ~event.target.className.indexOf('tag-remove-icon');
     if (isRemoving) {
-      const userID = this.props.info.uid;
-      const itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tag['.key'];
+      const userID = this.props.openUser.id;
+      const itemUrl = Config.FirebaseUrl + 'users/github:' + userID + '/tags/' + tag['.key'];
       const itemRef = new Firebase(itemUrl);
       itemRef.remove();
       FilterActions.setFilterTags(openUserName, tag, false);
@@ -57,7 +58,7 @@ const TagsBlock = React.createClass({
     console.log('tagsStore', tagsStore);
     //
     let tags = 'There are no tags for now!';
-    if (tagsStore && tagsStore.length && this.props.info) {
+    if (tagsStore && tagsStore.length && this.props.openUser) {
       tags = _.map(tagsStore, (tag) => {
         return (
           <span

@@ -57,7 +57,7 @@ const MainPage = React.createClass({
                   <Row className="user-info" key="block1">
                     <div className="container">
                       <UserBlock
-                        info={userStore.openUser}
+                        openUser={userStore.openUser}
                         uname={this.props.params.uname}
                       />
                     </div>
@@ -66,7 +66,7 @@ const MainPage = React.createClass({
                     <div className="container">
                       <TagsBlock
                         uid={userStore.uid}
-                        info={userStore.openUser}
+                        openUser={userStore.openUser}
                       />
                     </div>
                   </Row>,
@@ -80,10 +80,11 @@ const MainPage = React.createClass({
                       <FilterBlock uname={this.props.params.uname} />
                     </div>
                   </Row>,
+                  <Row className="repos-info" key="block5">
                     <div className="container">
                       <ReposBlock
-                        uname={this.props.params.uname}
-                        userStore={userStore}
+                        uid={userStore.uid}
+                        openUser={userStore.openUser}
                       />
                     </div>
                   </Row>

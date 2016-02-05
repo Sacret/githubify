@@ -32,8 +32,8 @@ const ReposBlock = React.createClass({
 
   componentWillUpdate(nextProps, nextState) {
     const _this = this;
-    if (this.props.userStore.openUser && !nextState.tags) {
-      const userID = this.props.userStore.openUser.id;
+    if (this.props.openUser && !nextState.tags) {
+      const userID = this.props.openUser.id;
       const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID + '/tags');
       this.bindAsArray(ref, 'tags');
     }
