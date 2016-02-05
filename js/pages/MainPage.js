@@ -14,6 +14,7 @@ import ReposBlock from '../components/blocks/ReposBlock';
 import TagsBlock from '../components/blocks/TagsBlock';
 import LanguagesBlock from '../components/blocks/LanguagesBlock';
 import FilterBlock from '../components/blocks/FilterBlock';
+import UserMenu from '../components/menus/UserMenu';
 //
 import UserActions from '../actions/UserActions';
 //
@@ -28,15 +29,6 @@ const MainPage = React.createClass({
 
   componentDidMount() {
     UserActions.isLoggedIn();
-  },
-
-  handleUsernameClick() {
-    const userStore = this.state.userStore;
-    hashHistory.push(userStore.info.login);
-  },
-
-  handleLogoutClick() {
-    UserActions.logout();
   },
 
   render() {
@@ -57,30 +49,7 @@ const MainPage = React.createClass({
                       </Col>
                       <Col xs={6}>
                         <div className="pull-right logged-in-user">
-                        { userStore.info ?
-                            [
-                              <a
-                                key="user-menu-username"
-                                href="#"
-                                onClick={this.handleUsernameClick}
-                              >
-                                {userStore.info.login}
-                              </a>,
-                              <span
-                                key="user-menu-divider"
-                                className="logged-in-user-divider"
-                              >
-                              </span>,
-                              <a
-                                key="user-menu-logout"
-                                href="#"
-                                onClick={this.handleLogoutClick}
-                              >
-                                Logout
-                              </a>
-                            ] :
-                            null
-                        }
+                         <UserMenu info={userStore.info} />
                         </div>
                       </Col>
                     </div>
