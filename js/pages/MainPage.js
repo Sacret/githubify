@@ -29,13 +29,6 @@ const MainPage = React.createClass({
     UserActions.isLoggedIn();
   },
 
-  componentWillUpdate(nextProps, nextState) {
-    const isLoggedIn = nextState.userStore && nextState.userStore.isLoggedIn;
-    if (!nextState.userStore || !isLoggedIn) {
-      hashHistory.push('/');
-    }
-  },
-
   handleUsernameClick() {
     const userStore = this.state.userStore;
     hashHistory.push(userStore.info.login);
@@ -54,7 +47,7 @@ const MainPage = React.createClass({
         <Row>
           <Col xs={12} md={12} className="content-block">
             {
-              userStore && userStore.isLoggedIn ?
+              userStore ?
                 [
                   <Row className="site-header" key="block0">
                     <div className="container">
@@ -63,18 +56,30 @@ const MainPage = React.createClass({
                       </Col>
                       <Col xs={6}>
                         <div className="pull-right logged-in-user">
-                          <a
-                            href="#"
-                            onClick={this.handleUsernameClick}
-                          >
-                            {userStore.info.login}
-                          </a>
-                          <span className="logged-in-user-divider"></span>
-                          <a href="#"
-                            onClick={this.handleLogoutClick}
-                          >
-                            Logout
-                          </a>
+                        { userStore.info ?
+                            [
+                              <a
+                                key="user-menu-username"
+                                href="#"
+                                onClick={this.handleUsernameClick}
+                              >
+                                {userStore.info.login}
+                              </a>,
+                              <span
+                                key="user-menu-divider"
+                                className="logged-in-user-divider"
+                              >
+                              </span>,
+                              <a
+                                key="user-menu-logout"
+                                href="#"
+                                onClick={this.handleLogoutClick}
+                              >
+                                Logout
+                              </a>
+                            ] :
+                            null
+                        }
                         </div>
                       </Col>
                     </div>

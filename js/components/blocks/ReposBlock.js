@@ -30,21 +30,19 @@ const ReposBlock = React.createClass({
   mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin,
     MasonryMixin(React)('masonryContainer', masonryOptions)],
 
-  componentWillMount() {
-    if (this.props.userStore.openUser) {
-      const userID = this.props.userStore.openUser.uid;
-      const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
-      this.bindAsArray(ref, 'tags');
-    }
-  },
-
   componentWillUpdate(nextProps, nextState) {
     const _this = this;
+    if (this.props.userStore.openUser && !nextState.tags) {
+      const userID = this.props.userStore.openUser.id;
+      const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID + '/tags');
+      this.bindAsArray(ref, 'tags');
+    }
     if (nextState.reposStore) {
       let repoIds = [];
       _.forEach(nextState.reposStore.repos, (repo) => {
         let isInclude = _.includes(JSON.parse(localStorage.getItem('languagesRepoIDs')), repo.id);
-        if (repo.language && !isInclude) {
+        if (repo.language && !isInclude && this.props.userStore.openUser &&
+            this.props.userStore.openUser.id == this.props.userStore.uid) {
           _this.addTag(repo.language, repo.id, true);
           repoIds.push(repo.id);
         }
