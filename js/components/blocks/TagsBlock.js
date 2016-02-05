@@ -21,15 +21,17 @@ const TagsBlock = React.createClass({
   mixins: [ReactFireMixin],
 
   componentWillMount() {
-    const userID = this.props.uid;
-    const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
-    this.bindAsArray(ref, 'tags');
+    if (this.props.info) {
+      const userID = this.props.info.uid;
+      const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
+      this.bindAsArray(ref, 'tags');
+    }
   },
 
   filterReposByTags(event, tag) {
     const isRemoving = ~event.target.className.indexOf('tag-remove-icon');
     if (isRemoving) {
-      const userID = this.props.uid;
+      const userID = this.props.info.uid;
       const itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tag['.key'];
       const itemRef = new Firebase(itemUrl);
       itemRef.remove();
@@ -51,11 +53,11 @@ const TagsBlock = React.createClass({
   },
 
   render() {
-    const tagsStore = this.state.tags;
+    const tagsStore = this.state ? this.state.tags : null;
     console.log('tagsStore', tagsStore);
     //
     let tags = 'There are no tags for now!';
-    if (tagsStore && tagsStore.length) {
+    if (tagsStore && tagsStore.length && this.props.info) {
       tags = _.map(tagsStore, (tag) => {
         return (
           <span
@@ -65,7 +67,7 @@ const TagsBlock = React.createClass({
             onClick={(e) => this.filterReposByTags(e, tag)}
           >
             {tag.title}
-            { !tag.isLanguage ?
+            { !tag.isLanguage && this.props.info.uid == this.props.uid ?
                 <FontAwesome
                   className="tag-remove-icon"
                   name="times"

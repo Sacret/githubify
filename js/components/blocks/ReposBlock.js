@@ -30,14 +30,12 @@ const ReposBlock = React.createClass({
   mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin,
     MasonryMixin(React)('masonryContainer', masonryOptions)],
 
-  componentDidMount() {
-    ReposActions.getRepos(this.props.userStore.accessToken, 1, 'all');
-  },
-
   componentWillMount() {
-    const userID = this.props.userStore.uid;
-    const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
-    this.bindAsArray(ref, 'tags');
+    if (this.props.userStore.openUser) {
+      const userID = this.props.userStore.openUser.uid;
+      const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
+      this.bindAsArray(ref, 'tags');
+    }
   },
 
   componentWillUpdate(nextProps, nextState) {
@@ -106,7 +104,7 @@ const ReposBlock = React.createClass({
       return tagRepo.id == repoID;
     });
     if (tagKey && repoKey) {
-      const userID = this.props.userStore.uid;
+      const userID = this.props.userStore.openUser.uid;
       const itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tagKey + '/repos/' + repoKey;
       const itemRef = new Firebase(itemUrl);
       itemRef.remove();

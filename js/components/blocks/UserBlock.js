@@ -4,7 +4,7 @@ import React from 'react';
 import Reflux from 'reflux';
 import moment from 'moment';
 //
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 //
 import ShareBlock from './ShareBlock';
@@ -16,8 +16,8 @@ import UserActions from '../../actions/UserActions';
  */
 const UserBlock = React.createClass({
 
-  handleLogoutClick() {
-    UserActions.logout();
+  componentDidMount() {
+    UserActions.getUser(this.props.accessToken, this.props.uname);
   },
 
   render() {
@@ -36,7 +36,6 @@ const UserBlock = React.createClass({
               <Col md={8} xs={4} className="user-block-main-info">
                 <p className="user-block-main-info-name">{info.name}</p>
                 <p className="user-block-main-info-login">{info.login}</p>
-                <Button onClick={this.handleLogoutClick}>Logout</Button>
               </Col>
               <Col md={2} xs={4} className="user-block-github text-center">
                 <FontAwesome name="github" />

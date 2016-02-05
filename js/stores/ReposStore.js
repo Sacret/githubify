@@ -17,10 +17,11 @@ const ReposStore = Reflux.createStore({
     repos: [],
     alertType: '',
     alertMessage: '',
-    isShowingOwner: false
+    isShowingOwner: false,
+    username: null
   },
 
-  getRepos(accessToken, page, filter, filterReposIds) {
+  getRepos(accessToken, username, page, filter, filterReposIds) {
     const _this = this;
     let reposUrl = 'repos';
     if (page == 1) {
@@ -29,10 +30,13 @@ const ReposStore = Reflux.createStore({
     if (filter == 'starred') {
       reposUrl = 'starred';
     }
+    if (!username) {
+      username = this.reposInfo.username;
+    }
     this.reposInfo.isShowingOwner = filter == 'starred' || filter == 'member';
     const includeForks = filter == 'forks';
     //
-    const requestUrl = Config.GithubApiUrl + 'user/' + reposUrl;
+    const requestUrl = Config.GithubApiUrl + 'users/' + username + '/' + reposUrl;
     const qs = {
       access_token: accessToken,
       per_page: Config.PerPage,
@@ -71,7 +75,7 @@ const ReposStore = Reflux.createStore({
         _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
         //
         if (res.body.length == Config.PerPage) {
-          _this.getRepos(accessToken, page + 1, filter, filterReposIds)
+          _this.getRepos(accessToken, username, page + 1, filter, filterReposIds)
         }
         _this.trigger(_this.reposInfo);
       });

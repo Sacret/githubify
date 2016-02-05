@@ -61,7 +61,7 @@ const FilterStore = Reflux.createStore({
       }
     });
     //
-    ReposActions.getRepos(accessToken, 1, actualFilterTitle, this.filterInfo.reposIds);
+    ReposActions.getRepos(accessToken, null, 1, actualFilterTitle, this.filterInfo.reposIds);
     _this.trigger(_this.filterInfo);
   },
 
@@ -76,7 +76,7 @@ const FilterStore = Reflux.createStore({
       return _(tag.repos).values().pluck('id').value();
     });
     this.filterInfo.reposIds = _(reposIds).flatten().uniq().value();
-    ReposActions.getRepos(accessToken, 1, this.filterInfo.currentFilter, this.filterInfo.reposIds);
+    ReposActions.getRepos(accessToken, null, 1, this.filterInfo.currentFilter, this.filterInfo.reposIds);
   }
 
 });

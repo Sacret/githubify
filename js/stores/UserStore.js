@@ -7,6 +7,7 @@ import _ from 'lodash';
 import Config from '../config/Config';
 //
 import UserActions from '../actions/UserActions';
+import ReposActions from '../actions/ReposActions';
 
 /**
  *  UserStore processes user info
@@ -17,7 +18,8 @@ const UserStore = Reflux.createStore({
     isLoggedIn: false,
     accessToken: '',
     info: {},
-    uid: null
+    uid: null,
+    openUser: null
   },
 
   login() {
@@ -73,6 +75,28 @@ const UserStore = Reflux.createStore({
       isLoggedIn: false
     };
     this.trigger(this.user);
+  },
+
+  getUser(accessToken, username) {
+    const _this = this;
+    const requestUrl = Config.GithubApiUrl + 'users/' + username;
+    const qs = {
+      access_token: accessToken
+    };
+    //
+    request
+      .get(requestUrl, qs)
+      .end(function(err, res) {
+        if (err != null) {
+          console.error(requestUrl, res.status, err.toString());
+          return;
+        }
+        console.log('success GET-request: ' + requestUrl, res);
+        //
+        _this.user.openUser = res.body;
+        _this.trigger(_this.user);
+        ReposActions.getRepos(accessToken, username, 1, 'all');
+      });
   }
 
 });
