@@ -39,7 +39,6 @@ const ReposStore = Reflux.createStore({
     //
     const requestUrl = Config.GithubApiUrl + 'users/' + username + '/' + reposUrl;
     const qs = {
-      access_token: accessToken,
       per_page: Config.PerPage,
       page: page,
       type: filter
@@ -76,7 +75,7 @@ const ReposStore = Reflux.createStore({
         _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
         //
         if (res.body.length == Config.PerPage) {
-          _this.getRepos(accessToken, username, page + 1, filter, filterReposIds)
+          _this.getRepos(username, page + 1, filter, filterReposIds)
         }
         _this.trigger(_this.reposInfo);
         //

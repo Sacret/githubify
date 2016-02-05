@@ -35,7 +35,7 @@ const TagsBlock = React.createClass({
       const itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tag['.key'];
       const itemRef = new Firebase(itemUrl);
       itemRef.remove();
-      FilterActions.setFilterTags(this.props.accessToken, tag, false);
+      FilterActions.setFilterTags(openUserName, tag, false);
     }
     else {
       const tagID = 'tag-' + tag.title;
@@ -48,7 +48,7 @@ const TagsBlock = React.createClass({
       else {
         tagSpan.className = tagSpan.className.replace('active', '');
       }
-      FilterActions.setFilterTags(this.props.accessToken, tag, isTagsAdding);
+      FilterActions.setFilterTags(openUserName, tag, isTagsAdding);
     }
   },
 

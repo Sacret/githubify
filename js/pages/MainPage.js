@@ -90,7 +90,6 @@ const MainPage = React.createClass({
                       <UserBlock
                         info={userStore.openUser}
                         uname={this.props.params.uname}
-                        accessToken={userStore.accessToken}
                       />
                     </div>
                   </Row>,
@@ -99,7 +98,6 @@ const MainPage = React.createClass({
                       <TagsBlock
                         uid={userStore.uid}
                         info={userStore.openUser}
-                        accessToken={userStore.accessToken}
                       />
                     </div>
                   </Row>,

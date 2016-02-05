@@ -16,7 +16,6 @@ const UserStore = Reflux.createStore({
   listenables: [UserActions],
   user: {
     isLoggedIn: false,
-    accessToken: '',
     info: {},
     uid: null,
     openUser: null
@@ -37,7 +36,6 @@ const UserStore = Reflux.createStore({
         console.log('Authenticated successfully with payload:', authData);
         _this.user = {
           isLoggedIn: true,
-          accessToken: authData.github.accessToken,
           info: authData.github.cachedUserProfile,
           uid: authData.uid
         };
@@ -54,7 +52,6 @@ const UserStore = Reflux.createStore({
       console.log('User ' + authData.uid + ' is logged in with ' + authData.provider);
       this.user = {
         isLoggedIn: true,
-        accessToken: authData.github.accessToken,
         info: authData.github.cachedUserProfile,
         uid: authData.uid
       };
@@ -77,15 +74,12 @@ const UserStore = Reflux.createStore({
     this.trigger(this.user);
   },
 
-  getUser(accessToken, username) {
+  getUser(username) {
     const _this = this;
     const requestUrl = Config.GithubApiUrl + 'users/' + username;
-    const qs = {
-      access_token: accessToken
-    };
     //
     request
-      .get(requestUrl, qs)
+      .get(requestUrl)
       .end(function(err, res) {
         if (err != null) {
           console.error(requestUrl, res.status, err.toString());

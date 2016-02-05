@@ -17,7 +17,7 @@ import UserActions from '../../actions/UserActions';
 const UserBlock = React.createClass({
 
   componentDidMount() {
-    UserActions.getUser(this.props.accessToken, this.props.uname);
+    UserActions.getUser(this.props.uname);
   },
 
   render() {
