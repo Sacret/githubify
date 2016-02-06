@@ -44,14 +44,16 @@ const MainPage = React.createClass({
                 [
                   <Row className="site-header" key="block0">
                     <div className="container">
-                      <Col xs={6}>
-                        <h2>GITHUBIFY.<span className="header-title">me</span></h2>
-                      </Col>
-                      <Col xs={6}>
-                        <div className="pull-right logged-in-user">
-                         <UserMenu info={userStore.info} />
-                        </div>
-                      </Col>
+                      <Row>
+                        <Col xs={6}>
+                          <h2>GITHUBIFY.<span className="header-title">me</span></h2>
+                        </Col>
+                        <Col xs={6}>
+                          <div className="pull-right logged-in-user">
+                           <UserMenu info={userStore.info} />
+                          </div>
+                        </Col>
+                      </Row>
                     </div>
                   </Row>,
                   <Row className="user-info" key="block1">
