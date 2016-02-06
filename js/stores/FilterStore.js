@@ -66,8 +66,7 @@ const FilterStore = Reflux.createStore({
       _this.filterInfo.filters[0].active = true;
     }
     //
-    const isSetNewLanguages = true;
-    ReposActions.getRepos(username, 1, actualFilterTitle, this.filterInfo.reposIds, isSetNewLanguages);
+    ReposActions.getRepos(username, 1, actualFilterTitle);
     _this.trigger(_this.filterInfo);
   },
 
@@ -86,19 +85,20 @@ const FilterStore = Reflux.createStore({
       .uniq()
       .value();
     const reposIds = this.getCombineReposIds();
-    ReposActions.getRepos(username, 1, this.filterInfo.currentFilter, reposIds);
+    ReposActions.filterRepos(reposIds);
   },
 
-  setFilterLanguages(username, languageReposIds) {
-    const newReposIds = languageReposIds.length ?
-      _.union(this.filterInfo.languageReposIds, languageReposIds) :
-      [];
+  setFilterLanguages(username, languageReposIds, activeLanguages) {
+    const newReposIds = _.union(this.filterInfo.languageReposIds, languageReposIds);
     this.filterInfo.languageReposIds = newReposIds;
     const reposIds = this.getCombineReposIds();
-    ReposActions.getRepos(username, 1, this.filterInfo.currentFilter, reposIds);
+    ReposActions.filterRepos(reposIds, activeLanguages);
   },
 
   getCombineReposIds() {
+    if (!this.filterInfo.tagReposIds.length && !this.filterInfo.languageReposIds.length) {
+      return null;
+    }
     if (!this.filterInfo.tagReposIds.length) {
       return this.filterInfo.languageReposIds;
     }

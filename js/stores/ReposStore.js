@@ -16,13 +16,14 @@ const ReposStore = Reflux.createStore({
   listenables: [ReposActions],
   reposInfo: {
     repos: [],
+    filteredRepos: [],
     alertType: '',
     alertMessage: '',
     isShowingOwner: false,
     username: null
   },
 
-  getRepos(username, page, filter, filterReposIds, isSetNewLanguages) {
+  getRepos(username, page, filter) {
     const _this = this;
     let reposUrl = 'repos';
     if (page == 1) {
@@ -58,36 +59,44 @@ const ReposStore = Reflux.createStore({
         }
         console.log('success GET-request: ' + requestUrl, res);
         //
-        let newRepos = [];
-        if (filterReposIds && filterReposIds.length) {
-          newRepos = _.filter(res.body, (repo) => {
-            return _.includes(filterReposIds, repo.id);
-          });
-        }
-        else {
-          newRepos = res.body;
-        }
-        //
+        let newRepos = res.body;
         newRepos = _.filter(newRepos, (repo) => {
           return includeForks ? repo.fork : !repo.fork;
         });
         //
         _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
+        _this.reposInfo.filteredRepos =_this.reposInfo.repos;
         //
         if (res.body.length == Config.PerPage) {
-          _this.getRepos(username, page + 1, filter, filterReposIds)
+          _this.getRepos(username, page + 1, filter)
         }
         _this.trigger(_this.reposInfo);
         //
-        if (isSetNewLanguages) {
-          const languages = _.chain(_this.reposInfo.repos)
-            .pluck('language')
-            .uniq()
-            .compact()
-            .value();
-          LanguagesActions.setLanguages(languages);
-        }
+        const languages = _.chain(_this.reposInfo.repos)
+          .pluck('language')
+          .uniq()
+          .compact()
+          .value();
+        LanguagesActions.setLanguages(languages);
+        LanguagesActions.setActiveLanguages([]);
       });
+  },
+
+  filterRepos(filterReposIds, activeLanguages) {
+    let newRepos = [];
+    if (filterReposIds) {
+      newRepos = _.filter(this.reposInfo.repos, (repo) => {
+        return _.includes(filterReposIds, repo.id);
+      });
+    }
+    else {
+      newRepos = this.reposInfo.repos;
+    }
+    this.reposInfo.filteredRepos = newRepos;
+    this.trigger(this.reposInfo);
+    if (activeLanguages) {
+      LanguagesActions.setActiveLanguages(activeLanguages);
+    }
   }
 
 });

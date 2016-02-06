@@ -9,6 +9,7 @@ import { Input, Button, Alert } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 //
 import FilterActions from '../../actions/FilterActions';
+import LanguagesActions from '../../actions/LanguagesActions';
 //
 import ReposStore from '../../stores/ReposStore';
 import LanguagesStore from '../../stores/LanguagesStore';
@@ -23,24 +24,14 @@ const LanguagesBlock = React.createClass({
   mixins: [Reflux.connect(ReposStore, 'reposStore'),
     Reflux.connect(LanguagesStore, 'languagesStore')],
 
-  getInitialState() {
-    return ({
-      activeLanguages: []
-    });
-  },
-
   filterReposByLanguages(language) {
-    const languageID = 'language-' + language;
-    const languageSpan = document.getElementById(languageID);
-    const activeLanguages = this.state.activeLanguages;
+    const languagesStore = this.state.languagesStore;
+    const activeLanguages = languagesStore.activeLanguages;
     let newActiveLanguages = [];
-    //
-    if (!~languageSpan.className.indexOf('active')) {
-      languageSpan.className = languageSpan.className + ' active';
+    if (!_.includes(languagesStore.activeLanguages, language)) {
       newActiveLanguages = _.union(activeLanguages, [language]);
     }
     else {
-      languageSpan.className = languageSpan.className.replace('active', '');
       newActiveLanguages = _.difference(activeLanguages, [language]);
     }
     //
@@ -54,11 +45,7 @@ const LanguagesBlock = React.createClass({
         .value() :
       [];
     //
-    FilterActions.setFilterLanguages(this.props.uname, filteredReposIds);
-    //
-    this.setState({
-      activeLanguages: newActiveLanguages
-    });
+    FilterActions.setFilterLanguages(this.props.uname, filteredReposIds, newActiveLanguages);
   },
 
   render() {
@@ -66,9 +53,9 @@ const LanguagesBlock = React.createClass({
     console.log('languagesStore', languagesStore);
     //
     let languages = 'There are no languages for now!';
-    if (languagesStore && languagesStore.length) {
-      languages = _.map(languagesStore, (language) => {
-        let activeClass = _.includes(this.state.activeLanguages, language) ?
+    if (languagesStore && languagesStore.languages.length) {
+      languages = _.map(languagesStore.languages, (language) => {
+        let activeClass = _.includes(languagesStore.activeLanguages, language) ?
           ' active' :
           '';
         //
@@ -76,7 +63,6 @@ const LanguagesBlock = React.createClass({
           <span
             className={'tag language' + activeClass}
             key={'language-' + language}
-            id={'language-' + language}
             onClick={() => this.filterReposByLanguages(language)}
           >
             {language}

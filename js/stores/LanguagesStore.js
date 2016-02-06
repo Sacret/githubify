@@ -13,11 +13,19 @@ import LanguagesActions from '../actions/LanguagesActions';
  */
 const LanguagesStore = Reflux.createStore({
   listenables: [LanguagesActions],
-  languages: [],
+  languagesInfo: {
+    languages: [],
+    activeLanguages: []
+  },
 
   setLanguages(languages) {
-    this.languages = languages;
-    this.trigger(this.languages);
+    this.languagesInfo.languages = languages;
+    this.trigger(this.languagesInfo);
+  },
+
+  setActiveLanguages(activeLanguages) {
+    this.languagesInfo.activeLanguages = activeLanguages;
+    this.trigger(this.languagesInfo);
   }
 
 });

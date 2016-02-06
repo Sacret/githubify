@@ -89,7 +89,7 @@ const UserStore = Reflux.createStore({
         //
         _this.user.openUser = res.body;
         _this.trigger(_this.user);
-        ReposActions.getRepos(username, 1, 'all', [], true);
+        ReposActions.getRepos(username, 1, 'all');
       });
   }
 

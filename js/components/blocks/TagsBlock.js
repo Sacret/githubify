@@ -11,6 +11,8 @@ import FontAwesome from 'react-fontawesome';
 //
 import FilterActions from '../../actions/FilterActions';
 //
+import ReposStore from '../../stores/ReposStore';
+//
 import Config from '../../config/Config';
 
 /**
@@ -18,7 +20,7 @@ import Config from '../../config/Config';
  */
 const TagsBlock = React.createClass({
 
-  mixins: [ReactFireMixin],
+  mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin],
 
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.openUser && (!nextState || nextState && !nextState.tags)) {
@@ -59,7 +61,7 @@ const TagsBlock = React.createClass({
     //
     let tags = 'There are no tags for now!';
     if (tagsStore && tagsStore.length && this.props.openUser) {
-      tags = _.map(tagsStore, (tag) => {
+      tags = _.map(tagsStore, (tag, index) => {
         return (
           <span
             className="tag"
