@@ -32,7 +32,7 @@ const ShareBlock = React.createClass({
     const title = 'Githubify.me (place to manage and organize tags for your repos)';
     //
     return (
-      <div className="share-block center-block">
+      <div className="share-block pull-right clearfix">
         <div className="share-block-info">
           <FacebookShareButton
             url={shareUrl}

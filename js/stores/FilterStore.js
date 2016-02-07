@@ -18,7 +18,8 @@ const FilterStore = Reflux.createStore({
     filters: [],
     currentFilter: 'all',
     tags: [],
-    reposIds: []
+    tagReposIds: [],
+    languageReposIds: []
   },
 
   getFilters() {
@@ -41,7 +42,7 @@ const FilterStore = Reflux.createStore({
     this.trigger(this.filterInfo);
   },
 
-  setFilter(accessToken, filterTitle) {
+  setFilter(username, filterTitle) {
     const _this = this;
     let actualFilterTitle = 'all';
     _.forEach(_this.filterInfo.filters, (filter, index) => {
@@ -61,22 +62,37 @@ const FilterStore = Reflux.createStore({
       }
     });
     //
-    ReposActions.getRepos(accessToken, 1, actualFilterTitle, this.filterInfo.reposIds);
+    if (!(_.filter(_this.filterInfo.filters, { 'active': true })).length) {
+      _this.filterInfo.filters[0].active = true;
+    }
+    //
+    ReposActions.getRepos(username, 1, actualFilterTitle);
     _this.trigger(_this.filterInfo);
   },
 
-  setFilterTags(accessToken, newTag, isTagsAdding) {
-    if (isTagsAdding) {
-      this.filterInfo.tags = _.union(this.filterInfo.tags, [newTag]);
+  setFilterTags(username, tagReposIds) {
+    this.filterInfo.tagReposIds = tagReposIds;
+    const reposIds = this.getCombineReposIds();
+    ReposActions.filterRepos(reposIds);
+  },
+
+  setFilterLanguages(username, languageReposIds) {
+    this.filterInfo.languageReposIds = languageReposIds;
+    const reposIds = this.getCombineReposIds();
+    ReposActions.filterRepos(reposIds);
+  },
+
+  getCombineReposIds() {
+    if (!this.filterInfo.tagReposIds.length && !this.filterInfo.languageReposIds.length) {
+      return null;
     }
-    else {
-      this.filterInfo.tags = _.reject(this.filterInfo.tags, newTag);
+    if (!this.filterInfo.tagReposIds.length) {
+      return this.filterInfo.languageReposIds;
     }
-    const reposIds = _.map(this.filterInfo.tags, (tag) => {
-      return _(tag.repos).values().pluck('id').value();
-    });
-    this.filterInfo.reposIds = _(reposIds).flatten().uniq().value();
-    ReposActions.getRepos(accessToken, 1, this.filterInfo.currentFilter, this.filterInfo.reposIds);
+    if (!this.filterInfo.languageReposIds.length) {
+      return this.filterInfo.tagReposIds;
+    }
+    return _.intersection(this.filterInfo.tagReposIds, this.filterInfo.languageReposIds);
   }
 
 });

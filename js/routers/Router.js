@@ -2,12 +2,14 @@
 
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route } from 'react-router';
+import { Router, Route, hashHistory } from 'react-router';
 //
+import LoginPage from '../pages/LoginPage';
 import MainPage from '../pages/MainPage';
 
 render((
-  <Router>
-    <Route path="/" component={MainPage} />
+  <Router history={hashHistory}>
+    <Route path="/"      component={LoginPage} />
+    <Route path=":uname" component={MainPage} />
   </Router>
 ), document.getElementById('content'));

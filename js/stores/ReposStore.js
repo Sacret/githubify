@@ -7,6 +7,8 @@ import _ from 'lodash';
 import Config from '../config/Config';
 //
 import ReposActions from '../actions/ReposActions';
+import LanguagesActions from '../actions/LanguagesActions';
+import TagsActions from '../actions/TagsActions';
 
 /**
  *  ReposStore processes repos info
@@ -15,12 +17,14 @@ const ReposStore = Reflux.createStore({
   listenables: [ReposActions],
   reposInfo: {
     repos: [],
+    filteredRepos: [],
     alertType: '',
     alertMessage: '',
-    isShowingOwner: false
+    isShowingOwner: false,
+    username: null
   },
 
-  getRepos(accessToken, page, filter, filterReposIds) {
+  getRepos(username, page, filter) {
     const _this = this;
     let reposUrl = 'repos';
     if (page == 1) {
@@ -29,12 +33,14 @@ const ReposStore = Reflux.createStore({
     if (filter == 'starred') {
       reposUrl = 'starred';
     }
+    if (!username) {
+      username = this.reposInfo.username;
+    }
     this.reposInfo.isShowingOwner = filter == 'starred' || filter == 'member';
     const includeForks = filter == 'forks';
     //
-    const requestUrl = Config.GithubApiUrl + 'user/' + reposUrl;
+    const requestUrl = Config.GithubApiUrl + 'users/' + username + '/' + reposUrl;
     const qs = {
-      access_token: accessToken,
       per_page: Config.PerPage,
       page: page,
       type: filter
@@ -54,27 +60,42 @@ const ReposStore = Reflux.createStore({
         }
         console.log('success GET-request: ' + requestUrl, res);
         //
-        let newRepos = [];
-        if (filterReposIds && filterReposIds.length) {
-          newRepos = _.filter(res.body, (repo) => {
-            return _.includes(filterReposIds, repo.id);
-          });
-        }
-        else {
-          newRepos = res.body;
-        }
-        //
+        let newRepos = res.body;
         newRepos = _.filter(newRepos, (repo) => {
           return includeForks ? repo.fork : !repo.fork;
         });
         //
         _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
+        _this.reposInfo.filteredRepos =_this.reposInfo.repos;
         //
         if (res.body.length == Config.PerPage) {
-          _this.getRepos(accessToken, page + 1, filter, filterReposIds)
+          _this.getRepos(username, page + 1, filter)
         }
         _this.trigger(_this.reposInfo);
+        //
+        const languages = _.chain(_this.reposInfo.repos)
+          .pluck('language')
+          .uniq()
+          .compact()
+          .value();
+        LanguagesActions.setLanguages(languages);
+        LanguagesActions.setActiveLanguages([]);
+        TagsActions.setActiveTags([]);
       });
+  },
+
+  filterRepos(filterReposIds) {
+    let newRepos = [];
+    if (filterReposIds) {
+      newRepos = _.filter(this.reposInfo.repos, (repo) => {
+        return _.includes(filterReposIds, repo.id);
+      });
+    }
+    else {
+      newRepos = this.reposInfo.repos;
+    }
+    this.reposInfo.filteredRepos = newRepos;
+    this.trigger(this.reposInfo);
   }
 
 });

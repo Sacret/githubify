@@ -8,7 +8,8 @@ import Reflux from 'reflux';
 const UserActions = Reflux.createActions([
   'login',
   'isLoggedIn',
-  'logout'
+  'logout',
+  'getUser'
 ]);
 
 export default UserActions;

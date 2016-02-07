@@ -30,31 +30,12 @@ const ReposBlock = React.createClass({
   mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin,
     MasonryMixin(React)('masonryContainer', masonryOptions)],
 
-  componentDidMount() {
-    ReposActions.getRepos(this.props.userStore.accessToken, 1, 'all');
-  },
-
-  componentWillMount() {
-    const userID = this.props.userStore.uid;
-    const ref = new Firebase(Config.FirebaseUrl + 'users/' + userID + '/tags');
-    this.bindAsArray(ref, 'tags');
-  },
-
   componentWillUpdate(nextProps, nextState) {
     const _this = this;
-    if (nextState.reposStore) {
-      let repoIds = [];
-      _.forEach(nextState.reposStore.repos, (repo) => {
-        let isInclude = _.includes(JSON.parse(localStorage.getItem('languagesRepoIDs')), repo.id);
-        if (repo.language && !isInclude) {
-          _this.addTag(repo.language, repo.id, true);
-          repoIds.push(repo.id);
-        }
-      });
-      if (repoIds.length) {
-        let allRepoIds = _.union(JSON.parse(localStorage.getItem('languagesRepoIDs')), repoIds);
-        localStorage.setItem('languagesRepoIDs', JSON.stringify(allRepoIds));
-      }
+    if (this.props.openUser && !nextState.tags) {
+      const userID = this.props.openUser.id;
+      const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID + '/tags');
+      this.bindAsArray(ref, 'tags');
     }
   },
 
@@ -80,8 +61,7 @@ const ReposBlock = React.createClass({
 
   addRepoTag(index, repoID) {
     const tagsStore = this.state.tags;
-    const languageTags = _.filter(this.state.tags, {isLanguage: true});
-    if (tagsStore.length - languageTags.length < 30) {
+    if (tagsStore.length < 30) {
       const _this = this;
       const tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
       const tagNamesArray = tagNames.split(',');
@@ -106,7 +86,7 @@ const ReposBlock = React.createClass({
       return tagRepo.id == repoID;
     });
     if (tagKey && repoKey) {
-      const userID = this.props.userStore.uid;
+      const userID = this.props.openUser.uid;
       const itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tagKey + '/repos/' + repoKey;
       const itemRef = new Firebase(itemUrl);
       itemRef.remove();
@@ -148,19 +128,19 @@ const ReposBlock = React.createClass({
     //
     let repos = null;
     if (reposStore) {
-      repos = _.map(reposStore.repos, (repo, index) => {
+      repos = _.map(reposStore.filteredRepos, (repo, index) => {
         let tags = _.filter(tagsStore, (tag) => {
           return _.find(tag.repos, {id: repo.id});
         });
         let fragmentTags = {};
-        _.forEach(tags, (tag, index) => {
-          fragmentTags['repo-tags-' + index] =
+        _.forEach(tags, (tag, tagIndex) => {
+          fragmentTags['repo-tags-' + tagIndex] =
             <span
-              className={'repo-tag' + (tag.isLanguage ? ' repo-language-tag' : '')}
-              key={'repo-tags-' + index}
+              className="repo-tag"
+              key={'repo-tags-' + tagIndex}
             >
               {tag.title}
-              { !tag.isLanguage ?
+              { 'github:' + this.props.openUser.id == this.props.uid ?
                   <FontAwesome
                     className="tag-remove-icon"
                     name="times"
@@ -170,6 +150,15 @@ const ReposBlock = React.createClass({
               }
             </span>;
         });
+        if (repo.language && repo.language.length) {
+          fragmentTags['repo-tags-language'] =
+            <span
+              className="repo-tag repo-language-tag"
+              key={'repo-tags-language-' + index}
+            >
+              {repo.language}
+            </span>;
+        }
         let tagsBlock = createFragment(fragmentTags);
         //
         let options = this.getSuggestions();
@@ -197,19 +186,24 @@ const ReposBlock = React.createClass({
                 <div className="clearfix">
                   {tagsBlock}
                 </div>
-                <div className="repo-form">
-                  <Typeahead
-                    options={options}
-                    ref={typeaheadRef}
-                    maxVisible={5}
-                    onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo.id)}
-                    onOptionSelected={() => this.addTag(index, repo.id)}
-                    onBlur={(e) => this.typeaheadBlur(e, index)}
-                  />
-                </div>
-                <small className="repo-tags-tip">
-                  Type one or several tags (divided by comma)
-                </small>
+                { 'github:' + this.props.openUser.id == this.props.uid ?
+                    [
+                      <div className="repo-form">
+                        <Typeahead
+                          options={options}
+                          ref={typeaheadRef}
+                          maxVisible={5}
+                          onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo.id)}
+                          onOptionSelected={() => this.addTag(index, repo.id)}
+                          onBlur={(e) => this.typeaheadBlur(e, index)}
+                        />
+                      </div>,
+                      <small className="repo-tags-tip">
+                        Type one or several tags (divided by comma)
+                      </small>
+                    ] :
+                    null
+                }
               </Col>
             </Thumbnail>
           </Col>

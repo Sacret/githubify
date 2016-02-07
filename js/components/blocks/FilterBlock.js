@@ -22,7 +22,7 @@ const FilterBlock = React.createClass({
   },
 
   filterRepos(filterTitle) {
-    FilterActions.setFilter(this.props.accessToken, filterTitle);
+    FilterActions.setFilter(this.props.uname, filterTitle);
   },
 
   render() {
