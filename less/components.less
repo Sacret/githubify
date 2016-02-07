@@ -9,12 +9,13 @@
 }
 
 .user-block-avatar-img {
-  height: 150px;
+  max-height: 150px;
 }
 
 .user-block-main-info-name {
   .text-overflow();
   font-size: @font-size-h3;
+  margin-bottom: 0;
 }
 
 .user-block-main-info-login {
@@ -42,10 +43,6 @@
   font-size: @font-size-h4;
 }
 
-.share-block {
-  padding-top: 11px;
-}
-
 .share-block-info {
   float: left;
   &:not(:last-child) {
@@ -58,6 +55,7 @@
 }
 
 .user-block-github .fa {
+  color: @text-color;
   margin-right: 0;
   width: auto;
   font-size: 60px;
@@ -225,7 +223,7 @@
 }
 
 .logged-in-user {
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .logged-in-user-divider {

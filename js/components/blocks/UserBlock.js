@@ -30,21 +30,26 @@ const UserBlock = React.createClass({
             <Row>
               <Col md={2} xs={4} className="user-block-avatar">
                 <a href={openUser.html_url}>
-                  <img src={openUser.avatar_url} className="user-block-avatar-img" />
+                  <img
+                    src={openUser.avatar_url}
+                    className="user-block-avatar-img img-responsive"
+                  />
                 </a>
               </Col>
               <Col md={8} xs={4} className="user-block-main-info">
                 <p className="user-block-main-info-name">{openUser.name}</p>
                 <p className="user-block-main-info-login">{openUser.login}</p>
               </Col>
-              <Col md={2} xs={4} className="user-block-github text-center">
-                <FontAwesome name="github" />
-                <p>
+              <Col md={2} xs={4} className="user-block-github text-right">
+                <ShareBlock />
+                <p className="clearfix">
                   <a href="https://github.com/Sacret/githubify" target="_blank">
-                    Fork me on Github
+                    <FontAwesome
+                      name="github"
+                      title="Fork githubify.me on Github"
+                    />
                   </a>
                 </p>
-                <ShareBlock />
               </Col>
             </Row> :
             null
