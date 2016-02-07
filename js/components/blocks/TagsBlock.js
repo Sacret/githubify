@@ -108,6 +108,13 @@ const TagsBlock = React.createClass({
         );
       });
     }
+    else if (tagsList && !tagsList.length) {
+      tags = <p>
+        Unfortunately this user doesn't have any tags on githubify.
+        Let him/her know about it on email:&nbsp;
+        <a href={'mailto:' + this.props.openUser.email + '?subject=githubify.me'}>{this.props.openUser.email}</a>
+      </p>;
+    }
     //
     return (
       <div className="tags-block">
