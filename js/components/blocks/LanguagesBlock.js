@@ -21,31 +21,26 @@ import Config from '../../config/Config';
  */
 const LanguagesBlock = React.createClass({
 
-  mixins: [Reflux.connect(ReposStore, 'reposStore'),
-    Reflux.connect(LanguagesStore, 'languagesStore')],
+  mixins: [
+    Reflux.connect(ReposStore, 'reposStore'),
+    Reflux.connect(LanguagesStore, 'languagesStore')
+  ],
 
   filterReposByLanguages(language) {
     const languagesStore = this.state.languagesStore;
     const activeLanguages = languagesStore.activeLanguages;
-    let newActiveLanguages = [];
-    if (!_.includes(languagesStore.activeLanguages, language)) {
-      newActiveLanguages = _.union(activeLanguages, [language]);
-    }
-    else {
-      newActiveLanguages = _.difference(activeLanguages, [language]);
-    }
+    const newActiveLanguages = _.xor(activeLanguages, [language]);
     //
     const reposStore = this.state.reposStore;
-    const filteredReposIds = newActiveLanguages.length ?
-      _.chain(reposStore.repos)
-        .filter((repo) => {
-          return _.includes(newActiveLanguages, repo.language);
-        })
-        .pluck('id')
-        .value() :
-      [];
+    const filteredReposIds = _(reposStore.repos)
+      .filter((repo) => {
+        return newActiveLanguages.length ? _.includes(newActiveLanguages, repo.language) : true;
+      })
+      .pluck('id')
+      .value();
     //
-    FilterActions.setFilterLanguages(this.props.uname, filteredReposIds, newActiveLanguages);
+    FilterActions.setFilterLanguages(this.props.uname, filteredReposIds);
+    LanguagesActions.setActiveLanguages(newActiveLanguages);
   },
 
   render() {

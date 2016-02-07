@@ -42,7 +42,7 @@ const MainPage = React.createClass({
             {
               userStore ?
                 [
-                  <Row className="site-header" key="block0">
+                  <Row className="user-info" key="block1">
                     <div className="container">
                       <Row>
                         <Col xs={6}>
@@ -54,10 +54,6 @@ const MainPage = React.createClass({
                           </div>
                         </Col>
                       </Row>
-                    </div>
-                  </Row>,
-                  <Row className="user-info" key="block1">
-                    <div className="container">
                       <UserBlock
                         openUser={userStore.openUser}
                         uname={this.props.params.uname}

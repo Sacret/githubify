@@ -186,19 +186,24 @@ const ReposBlock = React.createClass({
                 <div className="clearfix">
                   {tagsBlock}
                 </div>
-                <div className="repo-form">
-                  <Typeahead
-                    options={options}
-                    ref={typeaheadRef}
-                    maxVisible={5}
-                    onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo.id)}
-                    onOptionSelected={() => this.addTag(index, repo.id)}
-                    onBlur={(e) => this.typeaheadBlur(e, index)}
-                  />
-                </div>
-                <small className="repo-tags-tip">
-                  Type one or several tags (divided by comma)
-                </small>
+                { 'github:' + this.props.openUser.id == this.props.uid ?
+                    [
+                      <div className="repo-form">
+                        <Typeahead
+                          options={options}
+                          ref={typeaheadRef}
+                          maxVisible={5}
+                          onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo.id)}
+                          onOptionSelected={() => this.addTag(index, repo.id)}
+                          onBlur={(e) => this.typeaheadBlur(e, index)}
+                        />
+                      </div>,
+                      <small className="repo-tags-tip">
+                        Type one or several tags (divided by comma)
+                      </small>
+                    ] :
+                    null
+                }
               </Col>
             </Thumbnail>
           </Col>

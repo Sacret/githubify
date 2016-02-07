@@ -8,6 +8,7 @@ import Config from '../config/Config';
 //
 import ReposActions from '../actions/ReposActions';
 import LanguagesActions from '../actions/LanguagesActions';
+import TagsActions from '../actions/TagsActions';
 
 /**
  *  ReposStore processes repos info
@@ -79,10 +80,11 @@ const ReposStore = Reflux.createStore({
           .value();
         LanguagesActions.setLanguages(languages);
         LanguagesActions.setActiveLanguages([]);
+        TagsActions.setActiveTags([]);
       });
   },
 
-  filterRepos(filterReposIds, activeLanguages) {
+  filterRepos(filterReposIds) {
     let newRepos = [];
     if (filterReposIds) {
       newRepos = _.filter(this.reposInfo.repos, (repo) => {
@@ -94,9 +96,6 @@ const ReposStore = Reflux.createStore({
     }
     this.reposInfo.filteredRepos = newRepos;
     this.trigger(this.reposInfo);
-    if (activeLanguages) {
-      LanguagesActions.setActiveLanguages(activeLanguages);
-    }
   }
 
 });

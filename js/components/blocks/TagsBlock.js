@@ -10,8 +10,10 @@ import ReactFireMixin from 'reactfire';
 import FontAwesome from 'react-fontawesome';
 //
 import FilterActions from '../../actions/FilterActions';
+import TagsActions from '../../actions/TagsActions';
 //
 import ReposStore from '../../stores/ReposStore';
+import TagsStore from '../../stores/TagsStore';
 //
 import Config from '../../config/Config';
 
@@ -20,10 +22,18 @@ import Config from '../../config/Config';
  */
 const TagsBlock = React.createClass({
 
-  mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin],
+  mixins: [
+    Reflux.connect(ReposStore, 'reposStore'),
+    Reflux.connect(TagsStore, 'tagsStore'),
+    ReactFireMixin
+  ],
+
+  componentDidMount() {
+    TagsActions.setActiveTags([]);
+  },
 
   componentWillUpdate(nextProps, nextState) {
-    if (nextProps.openUser && (!nextState || nextState && !nextState.tags)) {
+    if (nextProps.openUser && (!nextState || !nextState.tags)) {
       const userID = nextProps.openUser.id;
       const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID + '/tags');
       this.bindAsArray(ref, 'tags');
@@ -31,6 +41,10 @@ const TagsBlock = React.createClass({
   },
 
   filterReposByTags(event, tag) {
+    const tagsStore = this.state.tagsStore;
+    const activeTags = tagsStore;
+    let newActiveTags = [];
+    //
     const openUserName = this.props.openUser.login;
     const isRemoving = ~event.target.className.indexOf('tag-remove-icon');
     if (isRemoving) {
@@ -38,35 +52,48 @@ const TagsBlock = React.createClass({
       const itemUrl = Config.FirebaseUrl + 'users/github:' + userID + '/tags/' + tag['.key'];
       const itemRef = new Firebase(itemUrl);
       itemRef.remove();
-      FilterActions.setFilterTags(openUserName, tag, false);
+      newActiveTags = _.difference(activeTags, [tag.title]);
     }
     else {
-      const tagID = 'tag-' + tag.title;
-      const tagSpan = document.getElementById(tagID);
-      let isTagsAdding = false;
-      if (!~tagSpan.className.indexOf('active')) {
-        tagSpan.className = tagSpan.className + ' active';
-        isTagsAdding = true;
-      }
-      else {
-        tagSpan.className = tagSpan.className.replace('active', '');
-      }
-      FilterActions.setFilterTags(openUserName, tag, isTagsAdding);
+      newActiveTags = _.xor(activeTags, [tag.title]);
     }
+    //
+    const tags = this.state ? this.state.tags : null;
+    const reposStore = this.state.reposStore;
+    const filteredReposIds = newActiveTags.length ?
+      _(tags)
+        .filter((tag) => {
+          return _.includes(newActiveTags, tag.title);
+        })
+        .map((tag) => {
+          return _(tag.repos).values().pluck('id').value();
+        })
+        .flatten()
+        .uniq()
+        .value() :
+      _(reposStore.repos)
+        .pluck('id')
+        .value();
+    FilterActions.setFilterTags(openUserName, filteredReposIds);
+    TagsActions.setActiveTags(newActiveTags);
   },
 
   render() {
-    const tagsStore = this.state ? this.state.tags : null;
-    console.log('tagsStore', tagsStore);
+    const tagsList = this.state ? this.state.tags : null;
+    const tagsStore = this.state.tagsStore;
+    console.log('tagsList', tagsList);
     //
     let tags = 'There are no tags for now!';
-    if (tagsStore && tagsStore.length && this.props.openUser) {
-      tags = _.map(tagsStore, (tag, index) => {
+    if (tagsList && tagsList.length && this.props.openUser) {
+      tags = _.map(tagsList, (tag) => {
+        let activeClass = _.includes(tagsStore, tag.title) ?
+          ' active' :
+          '';
+        //
         return (
           <span
-            className="tag"
+            className={'tag' + activeClass}
             key={'tag-' + tag.title}
-            id={'tag-' + tag.title}
             onClick={(e) => this.filterReposByTags(e, tag)}
           >
             {tag.title}

@@ -18,6 +18,10 @@ const UserMenu = React.createClass({
     UserActions.logout();
   },
 
+  handleLoginClick() {
+    UserActions.login();
+  },
+
   render() {
     return (
       <div>
@@ -31,7 +35,9 @@ const UserMenu = React.createClass({
                 Logout
               </a>
             ] :
-            null
+            <a key="user-menu-login" href="#" onClick={this.handleLoginClick}>
+              Login
+            </a>
         }
       </div>
     );

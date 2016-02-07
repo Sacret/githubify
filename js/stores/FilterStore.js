@@ -70,29 +70,16 @@ const FilterStore = Reflux.createStore({
     _this.trigger(_this.filterInfo);
   },
 
-  setFilterTags(username, newTag, isTagsAdding) {
-    if (isTagsAdding) {
-      this.filterInfo.tags = _.union(this.filterInfo.tags, [newTag]);
-    }
-    else {
-      this.filterInfo.tags = _.reject(this.filterInfo.tags, newTag);
-    }
-    const tagReposIds = _.map(this.filterInfo.tags, (tag) => {
-      return _(tag.repos).values().pluck('id').value();
-    });
-    this.filterInfo.tagReposIds = _(tagReposIds)
-      .flatten()
-      .uniq()
-      .value();
+  setFilterTags(username, tagReposIds) {
+    this.filterInfo.tagReposIds = tagReposIds;
     const reposIds = this.getCombineReposIds();
     ReposActions.filterRepos(reposIds);
   },
 
-  setFilterLanguages(username, languageReposIds, activeLanguages) {
-    const newReposIds = _.union(this.filterInfo.languageReposIds, languageReposIds);
-    this.filterInfo.languageReposIds = newReposIds;
+  setFilterLanguages(username, languageReposIds) {
+    this.filterInfo.languageReposIds = languageReposIds;
     const reposIds = this.getCombineReposIds();
-    ReposActions.filterRepos(reposIds, activeLanguages);
+    ReposActions.filterRepos(reposIds);
   },
 
   getCombineReposIds() {
