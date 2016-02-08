@@ -85,8 +85,8 @@ const ReposBlock = React.createClass({
       return tagRepo.id == repoID;
     });
     if (tagKey && repoKey) {
-      const userID = this.props.openUser.uid;
-      const itemUrl = Config.FirebaseUrl + 'users/' + userID + '/tags/' + tagKey + '/repos/' + repoKey;
+      const userID = this.props.openUser.id;
+      const itemUrl = Config.FirebaseUrl + 'users/github:' + userID + '/tags/' + tagKey + '/repos/' + repoKey;
       const itemRef = new Firebase(itemUrl);
       itemRef.remove();
     }
