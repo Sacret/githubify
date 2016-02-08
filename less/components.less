@@ -4,8 +4,10 @@
 
 .user-info {
   background: transparent url('../img/bg_all.png') scroll 0 0 repeat;
-  padding-bottom: 20px;
   border-bottom: 1px solid @gray-lighter;
+  @media (min-width: @screen-md) {
+    padding-bottom: 20px;
+  }
 }
 
 .user-block-avatar-img {
@@ -51,7 +53,18 @@
 }
 
 .user-block-github {
-  height: 150px;
+  text-align: center;
+  .share-block {
+    .center-block();
+    display: table;
+    margin-top: 20px;
+  }
+  @media (min-width: @screen-md) {
+    text-align: right;
+    .share-block {
+      .pull-right();
+    }
+  }
 }
 
 .user-block-github .fa {
@@ -224,6 +237,12 @@
 
 .logged-in-user {
   margin-top: 25px;
+  @media (max-width: @screen-md) {
+    margin-top: 18px;
+    a {
+      display: block;
+    }
+  }
 }
 
 .logged-in-user-divider {
@@ -232,4 +251,7 @@
   display: inline-block;
   margin: 0 10px;
   background-color: @gray-lighter;
+  @media (max-width: @screen-md) {
+    display: none;
+  }
 }
