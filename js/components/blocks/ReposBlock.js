@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ReactFireMixin from 'reactfire';
+import { hashHistory } from 'react-router';
 import Reflux from 'reflux';
 import _ from 'lodash';
 import moment from 'moment';
@@ -15,6 +16,7 @@ import MasonryMixin from 'react-masonry-mixin';
 import Config from '../../config/Config';
 //
 import ReposActions from '../../actions/ReposActions';
+import UserActions from '../../actions/UserActions';
 //
 import ReposStore from '../../stores/ReposStore';
 
@@ -120,6 +122,11 @@ const ReposBlock = React.createClass({
     }
   },
 
+  handleUsernameClick(username) {
+    hashHistory.push(username);
+    UserActions.getUser(username);
+  },
+
   render() {
     const reposStore = this.state.reposStore;
     console.log('reposStore', reposStore);
@@ -175,7 +182,12 @@ const ReposBlock = React.createClass({
                 </a>
                 { reposStore.isShowingOwner ?
                     <p className="repo-owner">
-                      by <a href={repo.owner.html_url}>{repo.owner.login}</a>
+                      by <a
+                        className="repo-owner-name"
+                        onClick={() => this.handleUsernameClick(repo.owner.login)}
+                      >
+                        {repo.owner.login}
+                      </a>
                     </p> :
                     null
                 }
