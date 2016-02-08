@@ -28,7 +28,7 @@ const UserBlock = React.createClass({
         {
           openUser ?
             <Row>
-              <Col md={2} xs={4} className="user-block-avatar">
+              <Col md={2} xs={6} className="user-block-avatar">
                 <a href={openUser.html_url}>
                   <img
                     src={openUser.avatar_url}
@@ -36,11 +36,11 @@ const UserBlock = React.createClass({
                   />
                 </a>
               </Col>
-              <Col md={8} xs={4} className="user-block-main-info">
+              <Col md={8} xs={6} className="user-block-main-info">
                 <p className="user-block-main-info-name">{openUser.name}</p>
                 <p className="user-block-main-info-login">{openUser.login}</p>
               </Col>
-              <Col md={2} xs={4} className="user-block-github text-right">
+              <Col md={2} xs={12} className="user-block-github">
                 <ShareBlock />
                 <p className="clearfix">
                   <a href="https://github.com/Sacret/githubify" target="_blank">
