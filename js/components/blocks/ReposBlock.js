@@ -187,7 +187,7 @@ const ReposBlock = React.createClass({
                 </div>
                 { 'github:' + this.props.openUser.id == this.props.uid ?
                     [
-                      <div className="repo-form">
+                      <div className="repo-form" key={'repo-form-' + index}>
                         <Typeahead
                           options={options}
                           ref={typeaheadRef}
@@ -197,7 +197,7 @@ const ReposBlock = React.createClass({
                           onBlur={(e) => this.typeaheadBlur(e, index)}
                         />
                       </div>,
-                      <small className="repo-tags-tip">
+                      <small className="repo-tags-tip" key={'repo-tags-tip-' + index}>
                         Type one or several tags (divided by comma)
                       </small>
                     ] :
