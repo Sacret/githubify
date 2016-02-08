@@ -39,13 +39,12 @@ const ReposBlock = React.createClass({
     }
   },
 
-  addTag(tagName, repoID, isLanguage) {
+  addTag(tagName, repoID) {
     if (tagName.length) {
       let existingTag = _.findWhere(this.state.tags, { 'title': tagName });
       if (!existingTag) {
         this.firebaseRefs.tags.push({
-          title: tagName,
-          isLanguage: !!isLanguage
+          title: tagName
         });
         existingTag = _.findWhere(this.state.tags, { 'title': tagName });
       }
@@ -194,7 +193,7 @@ const ReposBlock = React.createClass({
                           ref={typeaheadRef}
                           maxVisible={5}
                           onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo.id)}
-                          onOptionSelected={() => this.addTag(index, repo.id)}
+                          onOptionSelected={() => this.addRepoTag(index, repo.id)}
                           onBlur={(e) => this.typeaheadBlur(e, index)}
                         />
                       </div>,
