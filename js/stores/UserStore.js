@@ -7,6 +7,7 @@ import _ from 'lodash';
 import Config from '../config/Config';
 //
 import UserActions from '../actions/UserActions';
+import FilterActions from '../actions/FilterActions';
 import ReposActions from '../actions/ReposActions';
 
 /**
@@ -83,6 +84,8 @@ const UserStore = Reflux.createStore({
       .end(function(err, res) {
         if (err != null) {
           console.error(requestUrl, res.status, err.toString());
+          _this.user.openUser = false;
+          _this.trigger(_this.user);
           return;
         }
         console.log('success GET-request: ' + requestUrl, res);
@@ -90,6 +93,7 @@ const UserStore = Reflux.createStore({
         _this.user.openUser = res.body;
         _this.trigger(_this.user);
         ReposActions.getRepos(username, 1, 'all');
+        FilterActions.getFilters();
       });
   }
 

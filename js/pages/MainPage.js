@@ -70,12 +70,18 @@ const MainPage = React.createClass({
                   </Row>,
                   <Row className="languages-info" key="block3">
                     <div className="container">
-                      <LanguagesBlock uname={this.props.params.uname} />
+                      <LanguagesBlock
+                        openUser={userStore.openUser}
+                        uname={this.props.params.uname}
+                      />
                     </div>
                   </Row>,
                   <Row className="filters-info" key="block4">
                     <div className="container">
-                      <FilterBlock uname={this.props.params.uname} />
+                      <FilterBlock
+                        openUser={userStore.openUser}
+                        uname={this.props.params.uname}
+                      />
                     </div>
                   </Row>,
                   <Row className="repos-info" key="block5">
