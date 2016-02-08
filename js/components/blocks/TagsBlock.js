@@ -83,7 +83,24 @@ const TagsBlock = React.createClass({
     const tagsStore = this.state.tagsStore;
     console.log('tagsList', tagsList);
     //
-    let tags = 'There are no tags for now!';
+    let tags = '';
+    const isCurrentUser = this.props.openUser &&
+      ('github:' + this.props.openUser.id == this.props.uid);
+    const isTagsListEmpty = tagsList && !tagsList.length;
+    if (isCurrentUser && isTagsListEmpty) {
+      tags = <p>You don't have any tags yet. Fell free to add them</p>;
+    }
+    else if (!isCurrentUser && isTagsListEmpty) {
+      tags = <p>
+        Unfortunately this user doesn't have any tags on githubify.
+        Let him/her know about it on email:&nbsp;
+        <a
+          href={'mailto:' + this.props.openUser.email + '?subject=githubify.me'}
+        >
+          {this.props.openUser.email}
+        </a>
+      </p>;
+    }
     if (tagsList && tagsList.length && this.props.openUser) {
       tags = _.map(tagsList, (tag) => {
         let activeClass = _.includes(tagsStore, tag.title) ?
@@ -107,13 +124,6 @@ const TagsBlock = React.createClass({
           </span>
         );
       });
-    }
-    else if (tagsList && !tagsList.length) {
-      tags = <p>
-        Unfortunately this user doesn't have any tags on githubify.
-        Let him/her know about it on email:&nbsp;
-        <a href={'mailto:' + this.props.openUser.email + '?subject=githubify.me'}>{this.props.openUser.email}</a>
-      </p>;
     }
     //
     return (
