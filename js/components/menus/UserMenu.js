@@ -2,13 +2,36 @@
 
 import React from 'react';
 import { hashHistory } from 'react-router';
+import ReactFireMixin from 'reactfire';
+import _ from 'lodash';
 //
 import UserActions from '../../actions/UserActions';
+//
+import Config from '../../config/Config';
 
 /**
  *  User menu displays user links
  */
 const UserMenu = React.createClass({
+
+  mixins: [ReactFireMixin],
+
+  componentWillMount() {
+    if (this.props.info && this.props.info.id) {
+      const userID = this.props.info.id;
+      const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID +
+          '/active');
+      this.bindAsObject(ref, 'userState');
+    }
+  },
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState && nextState.userState) {
+      if (!nextState.userState['.value']) {
+        this.firebaseRefs.userState.set({'.value': true});
+      }
+    }
+  },
 
   handleUsernameClick() {
     hashHistory.push(this.props.info.login);
