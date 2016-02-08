@@ -30,7 +30,7 @@ const FilterBlock = React.createClass({
     console.log('filterStore', filterStore);
     //
     let filters = 'There are no filters for now!';
-    if (filterStore) {
+    if (filterStore && this.props.openUser) {
       filters = _.map(filterStore.filters, (filter, index) => {
         return (
           <span
@@ -42,6 +42,9 @@ const FilterBlock = React.createClass({
           </span>
         );
       });
+    }
+    else {
+      filters = '';
     }
     //
     return (

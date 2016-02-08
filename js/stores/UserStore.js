@@ -83,6 +83,8 @@ const UserStore = Reflux.createStore({
       .end(function(err, res) {
         if (err != null) {
           console.error(requestUrl, res.status, err.toString());
+          _this.user.openUser = false;
+          _this.trigger(_this.user);
           return;
         }
         console.log('success GET-request: ' + requestUrl, res);
