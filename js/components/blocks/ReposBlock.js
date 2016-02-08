@@ -127,7 +127,7 @@ const ReposBlock = React.createClass({
     const tagsStore = this.state.tags;
     //
     let repos = null;
-    if (reposStore) {
+    if (reposStore && this.props.openUser) {
       repos = _.map(reposStore.filteredRepos, (repo, index) => {
         let tags = _.filter(tagsStore, (tag) => {
           return _.find(tag.repos, {id: repo.id});
