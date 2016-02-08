@@ -3,7 +3,6 @@
 }
 
 .user-info {
-  background: transparent url('../img/bg_all.png') scroll 0 0 repeat;
   border-bottom: 1px solid @gray-lighter;
   @media (min-width: @screen-md) {
     padding-bottom: 20px;
@@ -81,7 +80,16 @@
 }
 
 .tags-info, .filters-info, .repos-info {
-  margin-top: 20px;
+  padding-top: 20px;
+}
+
+.tags-info, .filters-info, .languages-info {
+  background-color: #fff;
+}
+
+.filters-info {
+  padding-bottom: 20px;
+  padding-top: 5px;
 }
 
 .tag {
@@ -148,7 +156,6 @@
 }
 
 .repos-info {
-  background: transparent url('../img/bg_all.png') scroll 0 0 repeat;
   padding: 20px 0;
   border-top: 1px solid @gray-lighter;
 }
@@ -253,4 +260,8 @@
   @media (max-width: @screen-md) {
     display: none;
   }
+}
+
+.repo-owner-name {
+  cursor: pointer;
 }
