@@ -41,7 +41,7 @@ const LoginPage = React.createClass({
     console.log('userStore', userStore);
     //
     return (
-      <Grid fluid={true}>
+      <Grid fluid={true} className="login-page">
         <Row>
           <Col xs={12} md={12} className="content-block">
             {
