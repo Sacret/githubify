@@ -29,17 +29,13 @@ const UserStore = Reflux.createStore({
     ref.authWithOAuthPopup('github', (error, authData) => {
       if (error) {
         console.log('Login Failed!', error);
-        _this.user = {
-          isLoggedIn: false
-        };
+        _this.user.isLoggedIn = false;
         _this.trigger(_this.user);
       } else {
         console.log('Authenticated successfully with payload:', authData);
-        _this.user = {
-          isLoggedIn: true,
-          info: authData.github.cachedUserProfile,
-          uid: authData.uid
-        };
+        _this.user.isLoggedIn = true;
+        _this.user.info = authData.github.cachedUserProfile;
+        _this.user.uid = authData.uid;
         _this.trigger(_this.user);
       }
     });
@@ -58,9 +54,7 @@ const UserStore = Reflux.createStore({
       };
     } else {
       console.log('User is logged out');
-      this.user = {
-        isLoggedIn: false
-      };
+      this.user.isLoggedIn = false;
     }
     this.trigger(this.user);
   },
@@ -69,9 +63,7 @@ const UserStore = Reflux.createStore({
     const ref = new Firebase(Config.FirebaseUrl);
     ref.unauth();
     //
-    this.user = {
-      isLoggedIn: false
-    };
+    this.user.isLoggedIn = false;
     this.trigger(this.user);
   },
 

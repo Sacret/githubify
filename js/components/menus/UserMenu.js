@@ -1,13 +1,14 @@
 'use strict';
 
 import React from 'react';
-import { hashHistory } from 'react-router';
 import ReactFireMixin from 'reactfire';
 import _ from 'lodash';
 //
 import UserActions from '../../actions/UserActions';
 //
 import Config from '../../config/Config';
+//
+import History from '../../history/History';
 
 /**
  *  User menu displays user links
@@ -34,7 +35,7 @@ const UserMenu = React.createClass({
   },
 
   handleUsernameClick() {
-    hashHistory.push(this.props.info.login);
+    History.pushState(null, this.props.info.login);
   },
 
   handleLogoutClick() {
@@ -48,7 +49,7 @@ const UserMenu = React.createClass({
   render() {
     return (
       <div>
-        { this.props.info ?
+        { this.props.isLoggedIn ?
             [
               <a key="user-menu-username" href="#" onClick={this.handleUsernameClick}>
                 {this.props.info.login}

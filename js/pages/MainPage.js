@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Reflux from 'reflux';
-import { Link, hashHistory } from 'react-router';
 import moment from 'moment';
 //
 import { Grid, Row, Col } from 'react-bootstrap';
@@ -50,7 +49,10 @@ const MainPage = React.createClass({
                         </Col>
                         <Col xs={6}>
                           <div className="pull-right logged-in-user">
-                           <UserMenu info={userStore.info} />
+                            <UserMenu
+                              isLoggedIn={userStore.isLoggedIn}
+                              info={userStore.info}
+                            />
                           </div>
                         </Col>
                       </Row>

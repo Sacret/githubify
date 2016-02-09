@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Reflux from 'reflux';
-import { hashHistory } from 'react-router';
 import moment from 'moment';
 //
 import { Grid, Row, Col } from 'react-bootstrap';
@@ -17,6 +16,8 @@ import FilterBlock from '../components/blocks/FilterBlock';
 import UserActions from '../actions/UserActions';
 //
 import UserStore from '../stores/UserStore';
+//
+import History from '../history/History';
 
 /**
  *  Login page contains login form
@@ -31,7 +32,7 @@ const LoginPage = React.createClass({
 
   componentWillUpdate(nextProps, nextState) {
     if (nextState.userStore && nextState.userStore.isLoggedIn) {
-      hashHistory.push(nextState.userStore.info.login);
+      History.pushState(null, nextState.userStore.info.login);
     }
   },
 
