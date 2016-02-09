@@ -1,0 +1,15 @@
+# Setting up apache options
+AddDefaultCharset utf-8
+Options +FollowSymlinks -MultiViews -Indexes
+RewriteEngine on
+
+# Setting up apache options (Godaddy specific)
+#DirectoryIndex index.php
+#RewriteBase /
+
+
+# Defining the rewrite rules
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^.*$ ./index.html
