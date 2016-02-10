@@ -1,6 +1,7 @@
 # alphabetized
 build/
 node_modules/
+js/config/Config.js
 
 # ctags-generated tags
 tags
