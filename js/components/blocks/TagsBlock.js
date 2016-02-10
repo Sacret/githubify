@@ -93,12 +93,16 @@ const TagsBlock = React.createClass({
     else if (!isCurrentUser && isTagsListEmpty) {
       tags = <p>
         Unfortunately this user doesn't have any tags on githubify.
-        Let him/her know about it on email:&nbsp;
-        <a
-          href={'mailto:' + this.props.openUser.email + '?subject=githubify.me'}
-        >
-          {this.props.openUser.email}
-        </a>
+        { this.props.openUser.email ?
+            <span>Let him/her know about it on email:&nbsp;
+              <a
+                href={'mailto:' + this.props.openUser.email + '?subject=githubify.me'}
+              >
+                {this.props.openUser.email}
+              </a>
+            </span> :
+            null
+        }
       </p>;
     }
     if (tagsList && tagsList.length && this.props.openUser) {

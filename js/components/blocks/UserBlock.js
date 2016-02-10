@@ -8,17 +8,11 @@ import { Row, Col } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 //
 import ShareBlock from './ShareBlock';
-//
-import UserActions from '../../actions/UserActions';
 
 /**
  *  UserBlock contains user info
  */
 const UserBlock = React.createClass({
-
-  componentDidMount() {
-    UserActions.getUser(this.props.uname);
-  },
 
   render() {
     const openUser = this.props.openUser;
@@ -48,6 +42,12 @@ const UserBlock = React.createClass({
                       name="github"
                       title="Fork githubify.me on Github"
                     />
+                  </a>
+                  <a
+                    href="https://twitter.com/Githubifyme"
+                    className="clearfix"
+                  >
+                    Follow @Githubifyme
                   </a>
                 </p>
               </Col>

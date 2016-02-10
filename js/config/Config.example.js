@@ -1,5 +1,5 @@
 export default {
-  FirebaseUrl: 'https://glaring-inferno-8099.firebaseio.com/',
+  FirebaseUrl: 'https://<YOUR-FIREBASE-APP>.firebaseio.com/',
   GithubApiUrl: 'https://api.github.com/',
   PerPage: 60
 };

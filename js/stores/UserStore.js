@@ -76,13 +76,16 @@ const UserStore = Reflux.createStore({
       .end(function(err, res) {
         if (err != null) {
           console.error(requestUrl, res.status, err.toString());
-          _this.user.openUser = false;
+          _this.user.openUser = {
+            isActive: false
+          };
           _this.trigger(_this.user);
           return;
         }
         console.log('success GET-request: ' + requestUrl, res);
         //
         _this.user.openUser = res.body;
+        _this.user.openUser.isActive = true;
         _this.trigger(_this.user);
         ReposActions.getRepos(username, 1, 'all');
         FilterActions.getFilters();

@@ -47,7 +47,7 @@ const LanguagesBlock = React.createClass({
     const languagesStore = this.state.languagesStore;
     console.log('languagesStore', languagesStore);
     //
-    let languages = 'There are no languages for now!';
+    let languages = '';
     if (this.props.openUser && languagesStore && languagesStore.languages.length) {
       languages = _.map(languagesStore.languages, (language) => {
         let activeClass = _.includes(languagesStore.activeLanguages, language) ?
@@ -65,8 +65,9 @@ const LanguagesBlock = React.createClass({
         );
       });
     }
-    else if (!this.props.openUser) {
-      languages = <h3 className="text-center">This github user doesn't exist</h3>;
+    else if (this.props.openUser && languagesStore &&
+      !languagesStore.languages.length) {
+      languages = 'There are no languages for now!';
     }
     //
     return (

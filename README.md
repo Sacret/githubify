@@ -23,6 +23,14 @@ To install the application you need npm and gulp
     npm install
     ```
 
+-   Setup `Config`:
+
+    ```bash
+    cp js/config/Config.example.js js/config/Config.js
+    ```
+
+-   Put actual firebase path to `Config.js`
+
 -   Run `gulp`:
 
     ```bash

@@ -8,6 +8,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 //
 import LoginForm from '../components/blocks/LoginForm';
 import LoadingBlock from '../components/blocks/LoadingBlock';
+import EmptyUserBlock from '../components/blocks/EmptyUserBlock';
 import UserBlock from '../components/blocks/UserBlock';
 import ReposBlock from '../components/blocks/ReposBlock';
 import TagsBlock from '../components/blocks/TagsBlock';
@@ -28,6 +29,7 @@ const MainPage = React.createClass({
 
   componentDidMount() {
     UserActions.isLoggedIn();
+    UserActions.getUser(this.props.params.uname);
   },
 
   render() {
@@ -39,7 +41,8 @@ const MainPage = React.createClass({
         <Row>
           <Col xs={12} md={12} className="content-block">
             {
-              userStore ?
+              userStore && userStore.openUser ?
+              userStore.openUser.isActive ?
                 [
                   <Row className="user-info" key="block1">
                     <div className="container">
@@ -95,7 +98,11 @@ const MainPage = React.createClass({
                     </div>
                   </Row>
                 ] :
-                null
+                <EmptyUserBlock
+                  info={userStore.info}
+                  uname={this.props.params.uname}
+                /> :
+                <LoadingBlock />
             }
           </Col>
         </Row>

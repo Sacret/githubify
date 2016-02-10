@@ -9,7 +9,7 @@ const LoadingBlock = React.createClass({
 
   render() {
     return (
-      <div className="content-block">
+      <div className="loading-block">
         <img
           src="build/img/animated_loading_icon.gif"
           className="center-block loading-icon"
