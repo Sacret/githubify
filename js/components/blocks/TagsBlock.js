@@ -83,7 +83,7 @@ const TagsBlock = React.createClass({
     const tagsStore = this.state.tagsStore;
     console.log('tagsList', tagsList);
     //
-    let tags = '';
+    let tags = null;
     const isCurrentUser = this.props.openUser &&
       ('github:' + this.props.openUser.id == this.props.uid);
     const isTagsListEmpty = tagsList && !tagsList.length;
