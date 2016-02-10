@@ -70,13 +70,6 @@
   }
 }
 
-.user-block-github .fa {
-  color: @text-color;
-  margin-right: 0;
-  width: auto;
-  font-size: 60px;
-}
-
 .SocialMediaShareButton {
   cursor: pointer;
   &:hover {
@@ -277,4 +270,21 @@
 
 .loading-icon, .empty-user-block-content {
   .vertical-align();
+}
+
+.social-links-block-twitter, .social-links-block-github {
+  background: @brand-primary;
+  padding: 3px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-bottom: 15px;
+  min-width: 165px;
+  text-align: left;
+  &, &:hover, &:active, &:focus {
+    color: #fff;
+    text-decoration: none;
+  }
+  &:hover {
+    background: lighten(@brand-primary, 10%);
+  }
 }
