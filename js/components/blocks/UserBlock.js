@@ -43,6 +43,12 @@ const UserBlock = React.createClass({
                       title="Fork githubify.me on Github"
                     />
                   </a>
+                  <a
+                    href="https://twitter.com/Githubifyme"
+                    className="clearfix"
+                  >
+                    Follow @Githubifyme
+                  </a>
                 </p>
               </Col>
             </Row> :
