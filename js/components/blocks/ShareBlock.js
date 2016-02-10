@@ -28,7 +28,7 @@ const PinterestIcon = generateShareIcon('pinterest');
 const ShareBlock = React.createClass({
 
   render() {
-    const shareUrl = 'http://githubify.me/';
+    const shareUrl = 'http://githubify.me/' + this.props.name;
     const title = 'Githubify.me (place to manage and organize tags for your repos)';
     //
     return (
