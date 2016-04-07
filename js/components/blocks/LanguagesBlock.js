@@ -49,7 +49,8 @@ const LanguagesBlock = React.createClass({
     //
     let languages = null;
     if (this.props.openUser && languagesStore && languagesStore.languages.length) {
-      languages = _.map(languagesStore.languages, (language) => {
+      const sortedLanguages = _.sortBy(languagesStore.languages);
+      languages = _.map(sortedLanguages, (language) => {
         let activeClass = _.includes(languagesStore.activeLanguages, language) ?
           ' active' :
           '';

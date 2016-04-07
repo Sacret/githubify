@@ -17,6 +17,7 @@ const FilterStore = Reflux.createStore({
   filterInfo: {
     filters: [],
     currentFilter: 'all',
+    searchStr: '',
     tags: [],
     tagReposIds: [],
     languageReposIds: []
@@ -66,33 +67,41 @@ const FilterStore = Reflux.createStore({
       _this.filterInfo.filters[0].active = true;
     }
     //
-    ReposActions.getRepos(username, 1, actualFilterTitle);
+    ReposActions.getRepos(username, 1, actualFilterTitle, _this.filterInfo.searchStr);
     _this.trigger(_this.filterInfo);
   },
 
   setFilterTags(username, tagReposIds) {
     this.filterInfo.tagReposIds = tagReposIds;
     const reposIds = this.getCombineReposIds();
-    ReposActions.filterRepos(reposIds);
+    ReposActions.filterRepos(reposIds, this.filterInfo.searchStr);
   },
 
   setFilterLanguages(username, languageReposIds) {
     this.filterInfo.languageReposIds = languageReposIds;
     const reposIds = this.getCombineReposIds();
-    ReposActions.filterRepos(reposIds);
+    ReposActions.filterRepos(reposIds, this.filterInfo.searchStr);
+  },
+
+  setSearch(username, searchStr) {
+    this.filterInfo.searchStr = searchStr;
+    const reposIds = this.getCombineReposIds();
+    ReposActions.filterRepos(reposIds, this.filterInfo.searchStr);
   },
 
   getCombineReposIds() {
-    if (!this.filterInfo.tagReposIds.length && !this.filterInfo.languageReposIds.length) {
+    const tagReposIds = this.filterInfo.tagReposIds;
+    const languageReposIds = this.filterInfo.languageReposIds;
+    if (!tagReposIds.length && !languageReposIds.length) {
       return null;
     }
-    if (!this.filterInfo.tagReposIds.length) {
-      return this.filterInfo.languageReposIds;
+    if (!tagReposIds.length) {
+      return languageReposIds;
     }
-    if (!this.filterInfo.languageReposIds.length) {
-      return this.filterInfo.tagReposIds;
+    if (!languageReposIds.length) {
+      return tagReposIds;
     }
-    return _.intersection(this.filterInfo.tagReposIds, this.filterInfo.languageReposIds);
+    return _.intersection(tagReposIds, languageReposIds);
   }
 
 });

@@ -138,8 +138,9 @@ const ReposBlock = React.createClass({
         let tags = _.filter(tagsStore, (tag) => {
           return _.find(tag.repos, {id: repo.id});
         });
+        let sortedTags = _.sortBy(tags, 'title');
         let fragmentTags = {};
-        _.forEach(tags, (tag, tagIndex) => {
+        _.forEach(sortedTags, (tag, tagIndex) => {
           fragmentTags['repo-tags-' + tagIndex] =
             <span
               className="repo-tag"
@@ -177,7 +178,7 @@ const ReposBlock = React.createClass({
           <Col xs={6} md={4} key={'repo' + index}>
             <Thumbnail className="repo">
               <Col xs={12}>
-                <a href={repo.html_url}>
+                <a href={repo.html_url} target="_blank">
                   <p className="repo-name">{repo.name}</p>
                 </a>
                 { reposStore.isShowingOwner ?

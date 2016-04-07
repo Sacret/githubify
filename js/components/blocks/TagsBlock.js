@@ -79,7 +79,7 @@ const TagsBlock = React.createClass({
   },
 
   render() {
-    const tagsList = this.state ? this.state.tags : null;
+    const tagsList = this.state ? _.sortBy(this.state.tags, 'title') : null;
     const tagsStore = this.state.tagsStore;
     console.log('tagsList', tagsList);
     //

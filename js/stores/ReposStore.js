@@ -24,7 +24,7 @@ const ReposStore = Reflux.createStore({
     username: null
   },
 
-  getRepos(username, page, filter) {
+  getRepos(username, page, filter, searchStr) {
     const _this = this;
     let reposUrl = 'repos';
     if (page == 1) {
@@ -66,10 +66,14 @@ const ReposStore = Reflux.createStore({
         });
         //
         _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
-        _this.reposInfo.filteredRepos =_this.reposInfo.repos;
+        _this.reposInfo.filteredRepos = searchStr && searchStr.length ?
+          _.filter(_this.reposInfo.repos, repo => {
+            return _.includes(repo.name.toLowerCase(), searchStr.toLowerCase());
+          }) :
+          _this.reposInfo.repos;
         //
         if (res.body.length == Config.PerPage) {
-          _this.getRepos(username, page + 1, filter)
+          _this.getRepos(username, page + 1, filter, searchStr)
         }
         _this.trigger(_this.reposInfo);
         //
@@ -84,7 +88,7 @@ const ReposStore = Reflux.createStore({
       });
   },
 
-  filterRepos(filterReposIds) {
+  filterRepos(filterReposIds, searchStr) {
     let newRepos = [];
     if (filterReposIds) {
       newRepos = _.filter(this.reposInfo.repos, (repo) => {
@@ -94,7 +98,14 @@ const ReposStore = Reflux.createStore({
     else {
       newRepos = this.reposInfo.repos;
     }
-    this.reposInfo.filteredRepos = newRepos;
+    if (!searchStr.length) {
+      this.reposInfo.filteredRepos = newRepos;
+    }
+    else {
+      this.reposInfo.filteredRepos = _.filter(newRepos, repo => {
+        return _.includes(repo.name.toLowerCase(), searchStr.toLowerCase());
+      });
+    }
     this.trigger(this.reposInfo);
   }
 

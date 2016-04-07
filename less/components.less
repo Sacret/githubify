@@ -81,7 +81,7 @@
   padding-top: 18px;
 }
 
-.tags-info, .filters-info, .languages-info {
+.tags-info, .filters-info, .languages-info, .search-info {
   background-color: #fff;
 }
 
@@ -286,5 +286,22 @@
   }
   &:hover {
     background: lighten(@brand-primary, 10%);
+  }
+}
+
+.search-form-clear-icon {
+  color: #bbb;
+  color: rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  //
+  position: absolute;
+  top: 10px;
+  z-index: 10;
+  right: 43px;
+
+  &:hover {
+    color: #777;
+    color: rgba(0, 0, 0, 0.7);
+    cursor: pointer;
   }
 }
