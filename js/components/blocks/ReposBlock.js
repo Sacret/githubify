@@ -131,6 +131,7 @@ const ReposBlock = React.createClass({
     const reposStore = this.state.reposStore;
     console.log('reposStore', reposStore);
     const tagsStore = this.state.tags;
+    const reposLength = reposStore ? reposStore.filteredRepos.length : 0;
     //
     let repos = null;
     if (reposStore && this.props.openUser) {
@@ -225,9 +226,12 @@ const ReposBlock = React.createClass({
     }
     //
     return (
-      <Row ref="masonryContainer">
-        {repos}
-      </Row>
+      <div>
+        <p>{reposLength} repo{reposLength !== 1 ? 's' : ''}</p>
+        <Row ref="masonryContainer">
+          {repos}
+        </Row>
+      </div>
     );
   }
 });
