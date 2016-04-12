@@ -16,11 +16,7 @@ import FilterStore from '../../stores/FilterStore';
  */
 const SearchBlock = React.createClass({
 
-  getInitialState() {
-    return ({
-      searchStr: ''
-    });
-  },
+  mixins: [Reflux.connect(FilterStore, 'filterStore')],
 
   handleKeyPress(e) {
     if (e.key === 'Enter') {
@@ -31,23 +27,19 @@ const SearchBlock = React.createClass({
   handleChange() {
     const searchStr = this.refs.search.getValue().trim();
     FilterActions.setSearch(this.props.uname, searchStr);
-    this.setState({
-      searchStr: searchStr
-    });
   },
 
   clearSearch() {
     FilterActions.setSearch(this.props.uname, '');
-    this.setState({
-      searchStr: ''
-    });
   },
 
   render() {
     const innerButton = <Button>
       <Glyphicon glyph="search" />
     </Button>;
-    const searchStr = this.state.searchStr;
+    const searchStr = this.state.filterStore ?
+      this.state.filterStore.searchStr :
+      '';
     //
     return (
       <Grid>

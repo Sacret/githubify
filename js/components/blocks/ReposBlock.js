@@ -7,6 +7,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import createFragment from 'react-addons-create-fragment';
 import { Typeahead } from 'react-typeahead';
+import Highlight from 'react-highlighter';
 //
 import { Row, Col, Thumbnail, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
@@ -18,6 +19,7 @@ import ReposActions from '../../actions/ReposActions';
 import UserActions from '../../actions/UserActions';
 //
 import ReposStore from '../../stores/ReposStore';
+import FilterStore from '../../stores/FilterStore';
 //
 import History from '../../history/History';
 
@@ -30,8 +32,12 @@ const masonryOptions = {
  */
 const ReposBlock = React.createClass({
 
-  mixins: [Reflux.connect(ReposStore, 'reposStore'), ReactFireMixin,
-    MasonryMixin(React)('masonryContainer', masonryOptions)],
+  mixins: [
+    Reflux.connect(ReposStore, 'reposStore'),
+    Reflux.connect(FilterStore, 'filterStore'),
+    ReactFireMixin,
+    MasonryMixin(React)('masonryContainer', masonryOptions)
+  ],
 
   componentWillUpdate(nextProps, nextState) {
     const _this = this;
@@ -131,6 +137,7 @@ const ReposBlock = React.createClass({
     const reposStore = this.state.reposStore;
     console.log('reposStore', reposStore);
     const tagsStore = this.state.tags;
+    const reposLength = reposStore ? reposStore.filteredRepos.length : 0;
     //
     let repos = null;
     if (reposStore && this.props.openUser) {
@@ -174,12 +181,20 @@ const ReposBlock = React.createClass({
         };
         let typeaheadRef = 'typeahead' + index;
         //
+        const searchStr = this.state.filterStore ?
+          this.state.filterStore.searchStr :
+          '';
+        //
         return (
           <Col xs={6} md={4} key={'repo' + index}>
             <Thumbnail className="repo">
               <Col xs={12}>
                 <a href={repo.html_url} target="_blank">
-                  <p className="repo-name">{repo.name}</p>
+                  <p className="repo-name">
+                    <Highlight search={searchStr}>
+                      {repo.name}
+                    </Highlight>
+                  </p>
                 </a>
                 { reposStore.isShowingOwner ?
                     <p className="repo-owner">
@@ -225,9 +240,12 @@ const ReposBlock = React.createClass({
     }
     //
     return (
-      <Row ref="masonryContainer">
-        {repos}
-      </Row>
+      <div>
+        <p>{reposLength} repo{reposLength !== 1 ? 's' : ''}</p>
+        <Row ref="masonryContainer">
+          {repos}
+        </Row>
+      </div>
     );
   }
 });
