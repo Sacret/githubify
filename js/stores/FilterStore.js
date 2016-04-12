@@ -8,6 +8,7 @@ import Config from '../config/Config';
 //
 import FilterActions from '../actions/FilterActions';
 import ReposActions from '../actions/ReposActions';
+import TagsActions from '../actions/TagsActions';
 
 /**
  *  FilterStore processes filter options info
@@ -18,7 +19,6 @@ const FilterStore = Reflux.createStore({
     filters: [],
     currentFilter: 'all',
     searchStr: '',
-    tags: [],
     tagReposIds: [],
     languageReposIds: []
   },
@@ -75,18 +75,21 @@ const FilterStore = Reflux.createStore({
     this.filterInfo.tagReposIds = tagReposIds;
     const reposIds = this.getCombineReposIds();
     ReposActions.filterRepos(reposIds, this.filterInfo.searchStr);
+    this.trigger(this.filterInfo);
   },
 
   setFilterLanguages(username, languageReposIds) {
     this.filterInfo.languageReposIds = languageReposIds;
     const reposIds = this.getCombineReposIds();
     ReposActions.filterRepos(reposIds, this.filterInfo.searchStr);
+    this.trigger(this.filterInfo);
   },
 
   setSearch(username, searchStr) {
     this.filterInfo.searchStr = searchStr;
     const reposIds = this.getCombineReposIds();
     ReposActions.filterRepos(reposIds, this.filterInfo.searchStr);
+    this.trigger(this.filterInfo);
   },
 
   getCombineReposIds() {
@@ -102,6 +105,17 @@ const FilterStore = Reflux.createStore({
       return tagReposIds;
     }
     return _.intersection(tagReposIds, languageReposIds);
+  },
+
+  clearFilters(username) {
+    this.filterInfo.currentFilter = 'all';
+    this.filterInfo.searchStr = '';
+    this.filterInfo.tagReposIds = [];
+    this.filterInfo.languageReposIds = [];
+    TagsActions.setActiveTags([]);
+    const reposIds = this.getCombineReposIds();
+    ReposActions.getRepos(username, 1, 'all');
+    this.getFilters();
   }
 
 });

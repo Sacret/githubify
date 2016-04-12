@@ -15,6 +15,7 @@ import TagsBlock from '../components/blocks/TagsBlock';
 import LanguagesBlock from '../components/blocks/LanguagesBlock';
 import FilterBlock from '../components/blocks/FilterBlock';
 import SearchBlock from '../components/blocks/SearchBlock';
+import ClearFiltersBlock from '../components/blocks/ClearFiltersBlock';
 import UserMenu from '../components/menus/UserMenu';
 //
 import UserActions from '../actions/UserActions';
@@ -98,7 +99,14 @@ const MainPage = React.createClass({
                       />
                     </div>
                   </Row>,
-                  <Row className="repos-info" key="block6">
+                  <Row className="clear-info" key="block6">
+                    <div className="container">
+                      <ClearFiltersBlock
+                        uname={this.props.params.uname}
+                      />
+                    </div>
+                  </Row>,
+                  <Row className="repos-info" key="block7">
                     <div className="container">
                       <ReposBlock
                         uid={userStore.uid}
