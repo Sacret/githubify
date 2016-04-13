@@ -79,7 +79,7 @@ const ReposBlock = React.createClass({
           length: 50,
           omission: ''
         });
-        _this.addTag(correctTagName, repoID);
+        _this.addTag(correctTagName.replace(/<|>/g, ''), repoID);
       });
       //
       _this.typeaheadBlur(null, index, true);
