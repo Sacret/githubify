@@ -23,7 +23,6 @@ const FilterBlock = React.createClass({
 
   render() {
     const filterStore = this.state.filterStore;
-    console.log('filterStore', filterStore);
     const activeFilter = filterStore ? filterStore.filter : 'all';
     //
     const filters = ['all', 'owner', 'forks', 'member', 'starred'];

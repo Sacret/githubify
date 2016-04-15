@@ -135,7 +135,6 @@ const ReposBlock = React.createClass({
 
   render() {
     const reposStore = this.state.reposStore;
-    console.log('reposStore', reposStore);
     const reposLength = reposStore ? reposStore.filteredRepos.length : 0;
     const tagsStore = this.state.tags;
     //

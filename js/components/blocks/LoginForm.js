@@ -25,7 +25,6 @@ const LoginForm = React.createClass({
 
   render() {
     const userStore = this.state.userStore;
-    console.log('userStore', userStore);
     //
     return (
       <div className="container login-container">

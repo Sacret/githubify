@@ -23,7 +23,6 @@ const ClearFiltersBlock = React.createClass({
 
   render() {
     const filterStore = this.state.filterStore;
-    console.log('filterStore', filterStore);
     //
     const isFiltered = filterStore &&
       (
@@ -32,7 +31,6 @@ const ClearFiltersBlock = React.createClass({
         filterStore.languages.length ||
         filterStore.searchStr.length
       );
-    console.log('isFiltered', isFiltered);
     //
     return (
       <div className="clear-filters-block">
