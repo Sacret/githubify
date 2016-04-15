@@ -10,10 +10,9 @@ import ReactFireMixin from 'reactfire';
 import FontAwesome from 'react-fontawesome';
 //
 import FilterActions from '../../actions/FilterActions';
-import TagsActions from '../../actions/TagsActions';
 //
 import ReposStore from '../../stores/ReposStore';
-import TagsStore from '../../stores/TagsStore';
+import FilterStore from '../../stores/FilterStore';
 //
 import Config from '../../config/Config';
 
@@ -24,13 +23,9 @@ const TagsBlock = React.createClass({
 
   mixins: [
     Reflux.connect(ReposStore, 'reposStore'),
-    Reflux.connect(TagsStore, 'tagsStore'),
+    Reflux.connect(FilterStore, 'filterStore'),
     ReactFireMixin
   ],
-
-  componentDidMount() {
-    TagsActions.setActiveTags([]);
-  },
 
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.openUser && (!nextState || !nextState.tags)) {
@@ -41,9 +36,10 @@ const TagsBlock = React.createClass({
   },
 
   filterReposByTags(event, tag) {
-    const tagsStore = this.state.tagsStore;
-    const activeTags = tagsStore;
-    let newActiveTags = [];
+    const filterStore = this.state.filterStore;
+    let activeTags = filterStore ?
+      filterStore.tags :
+      [];
     //
     const openUserName = this.props.openUser.login;
     const isRemoving = ~event.target.className.indexOf('tag-remove-icon');
@@ -52,18 +48,18 @@ const TagsBlock = React.createClass({
       const itemUrl = Config.FirebaseUrl + 'users/github:' + userID + '/tags/' + tag['.key'];
       const itemRef = new Firebase(itemUrl);
       itemRef.remove();
-      newActiveTags = _.difference(activeTags, [tag.title]);
+      activeTags = _.difference(activeTags, [tag.title]);
     }
     else {
-      newActiveTags = _.xor(activeTags, [tag.title]);
+      activeTags = _.xor(activeTags, [tag.title]);
     }
     //
     const tags = this.state ? this.state.tags : null;
     const reposStore = this.state.reposStore;
-    const filteredReposIds = newActiveTags.length ?
+    const tagReposIds = activeTags.length ?
       _(tags)
         .filter((tag) => {
-          return _.includes(newActiveTags, tag.title);
+          return _.includes(activeTags, tag.title);
         })
         .map((tag) => {
           return _(tag.repos).values().pluck('id').value();
@@ -74,27 +70,27 @@ const TagsBlock = React.createClass({
       _(reposStore.repos)
         .pluck('id')
         .value();
-    FilterActions.setFilterTags(openUserName, filteredReposIds);
-    TagsActions.setActiveTags(newActiveTags);
+    FilterActions.setTags(openUserName, activeTags, tagReposIds);
   },
 
   render() {
-    const tagsList = this.state ? _.sortBy(this.state.tags, 'title') : null;
-    const tagsStore = this.state.tagsStore;
-    console.log('tagsList', tagsList);
+    const tagsList = this.state.tags ?
+      _.sortBy(this.state.tags, 'title') :
+      null;
+    const filterStore = this.state.filterStore;
     //
-    let tags = null;
+    let tagsBlock = null;
     const isCurrentUser = this.props.openUser &&
       ('github:' + this.props.openUser.id == this.props.uid);
     const isTagsListEmpty = tagsList && !tagsList.length;
     if (isCurrentUser && isTagsListEmpty) {
-      tags = <p>You don't have any tags yet. Fell free to add them</p>;
+      tagsBlock = <p>You don't have any tags yet. Fell free to add them</p>;
     }
     else if (!isCurrentUser && isTagsListEmpty) {
-      tags = <p>
+      tagsBlock = <p>
         Unfortunately this user doesn't have any tags on githubify.
         { this.props.openUser.email ?
-            <span>Let him/her know about it on email:&nbsp;
+            <span>&nbsp;Let him/her know about it on email:&nbsp;
               <a
                 href={'mailto:' + this.props.openUser.email + '?subject=githubify.me'}
               >
@@ -106,8 +102,8 @@ const TagsBlock = React.createClass({
       </p>;
     }
     if (tagsList && tagsList.length && this.props.openUser) {
-      tags = _.map(tagsList, (tag) => {
-        let activeClass = _.includes(tagsStore, tag.title) ?
+      tagsBlock = _.map(tagsList, (tag) => {
+        let activeClass = _.includes(filterStore.tags, tag.title) ?
           ' active' :
           '';
         //
@@ -132,7 +128,7 @@ const TagsBlock = React.createClass({
     //
     return (
       <div className="tags-block">
-        {tags}
+        {tagsBlock}
       </div>
     );
   }

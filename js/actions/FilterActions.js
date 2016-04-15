@@ -8,10 +8,9 @@ import Reflux from 'reflux';
 const FilterActions = Reflux.createActions([
   'getFilters',
   'setFilter',
-  'setFilterTags',
-  'setFilterLanguages',
-  'setSearch',
-  'clearFilters'
+  'setTags',
+  'setLanguages',
+  'setSearch'
 ]);
 
 export default FilterActions;

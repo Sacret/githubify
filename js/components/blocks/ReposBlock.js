@@ -136,12 +136,12 @@ const ReposBlock = React.createClass({
   render() {
     const reposStore = this.state.reposStore;
     console.log('reposStore', reposStore);
-    const tagsStore = this.state.tags;
     const reposLength = reposStore ? reposStore.filteredRepos.length : 0;
+    const tagsStore = this.state.tags;
     //
-    let repos = null;
+    let reposBlock = null;
     if (reposStore && this.props.openUser) {
-      repos = _.map(reposStore.filteredRepos, (repo, index) => {
+      reposBlock = _.map(reposStore.filteredRepos, (repo, index) => {
         let tags = _.filter(tagsStore, (tag) => {
           return _.find(tag.repos, {id: repo.id});
         });
@@ -186,7 +186,7 @@ const ReposBlock = React.createClass({
           '';
         //
         return (
-          <Col xs={6} md={4} key={'repo' + index}>
+          <Col xs={12} md={4} key={'repo' + index}>
             <Thumbnail className="repo">
               <Col xs={12}>
                 <a href={repo.html_url} target="_blank">
@@ -215,21 +215,17 @@ const ReposBlock = React.createClass({
                   {tagsBlock}
                 </div>
                 { 'github:' + this.props.openUser.id == this.props.uid ?
-                    [
-                      <div className="repo-form" key={'repo-form-' + index}>
-                        <Typeahead
-                          options={options}
-                          ref={typeaheadRef}
-                          maxVisible={5}
-                          onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo.id)}
-                          onOptionSelected={() => this.addRepoTag(index, repo.id)}
-                          onBlur={(e) => this.typeaheadBlur(e, index)}
-                        />
-                      </div>,
-                      <small className="repo-tags-tip" key={'repo-tags-tip-' + index}>
-                        Type one or several tags (divided by comma)
-                      </small>
-                    ] :
+                    <div className="repo-form" key={'repo-form-' + index}>
+                      <Typeahead
+                        options={options}
+                        ref={typeaheadRef}
+                        maxVisible={5}
+                        placeholder="Type comma-separated tags"
+                        onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo.id)}
+                        onOptionSelected={() => this.addRepoTag(index, repo.id)}
+                        onBlur={(e) => this.typeaheadBlur(e, index)}
+                      />
+                    </div> :
                     null
                 }
               </Col>
@@ -243,7 +239,7 @@ const ReposBlock = React.createClass({
       <div>
         <p>{reposLength} repo{reposLength !== 1 ? 's' : ''}</p>
         <Row ref="masonryContainer">
-          {repos}
+          {reposBlock}
         </Row>
       </div>
     );

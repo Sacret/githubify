@@ -4,6 +4,7 @@ import React from 'react';
 import Reflux from 'reflux';
 //
 import FilterActions from '../../actions/FilterActions';
+import ReposActions from '../../actions/ReposActions';
 //
 import FilterStore from '../../stores/FilterStore';
 
@@ -15,7 +16,9 @@ const ClearFiltersBlock = React.createClass({
   mixins: [Reflux.connect(FilterStore, 'filterStore')],
 
   clearFilters() {
-    FilterActions.clearFilters(this.props.uname);
+    FilterActions.getFilters();
+    ReposActions.initRepos();
+    ReposActions.getRepos(this.props.uname, 1, 'all');
   },
 
   render() {
@@ -24,9 +27,9 @@ const ClearFiltersBlock = React.createClass({
     //
     const isFiltered = filterStore &&
       (
-        filterStore.currentFilter !== 'all' ||
-        filterStore.tagReposIds.length ||
-        filterStore.languageReposIds.length ||
+        filterStore.filter !== 'all' ||
+        filterStore.tags.length ||
+        filterStore.languages.length ||
         filterStore.searchStr.length
       );
     console.log('isFiltered', isFiltered);
