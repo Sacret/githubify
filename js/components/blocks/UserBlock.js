@@ -21,7 +21,7 @@ const UserBlock = React.createClass({
           openUser ?
             <Row>
               <Col md={2} xs={4} className="user-block-avatar">
-                <a href={openUser.html_url}>
+                <a href={openUser.html_url} target="_blank">
                   <img
                     src={openUser.avatar_url}
                     className="user-block-avatar-img img-responsive"
