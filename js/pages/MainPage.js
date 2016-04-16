@@ -2,25 +2,32 @@
 
 import React from 'react';
 import Reflux from 'reflux';
+import Rebase from 're-base';
 import moment from 'moment';
 //
 import { Grid, Row, Col } from 'react-bootstrap';
 //
-import LoginForm from '../components/blocks/LoginForm';
-import LoadingBlock from '../components/blocks/LoadingBlock';
-import EmptyUserBlock from '../components/blocks/EmptyUserBlock';
-import UserBlock from '../components/blocks/UserBlock';
-import ReposBlock from '../components/blocks/ReposBlock';
-import TagsBlock from '../components/blocks/TagsBlock';
-import LanguagesBlock from '../components/blocks/LanguagesBlock';
-import FilterBlock from '../components/blocks/FilterBlock';
-import SearchBlock from '../components/blocks/SearchBlock';
 import ClearFiltersBlock from '../components/blocks/ClearFiltersBlock';
+import EmptyUserBlock from '../components/blocks/EmptyUserBlock';
+import FilterBlock from '../components/blocks/FilterBlock';
+import LanguagesBlock from '../components/blocks/LanguagesBlock';
+import LoadingBlock from '../components/blocks/LoadingBlock';
+import LoginForm from '../components/blocks/LoginForm';
+import ReposBlock from '../components/blocks/ReposBlock';
+import SearchBlock from '../components/blocks/SearchBlock';
+import TagsBlock from '../components/blocks/TagsBlock';
+import UserBlock from '../components/blocks/UserBlock';
 import UserMenu from '../components/menus/UserMenu';
 //
+import FilterActions from '../actions/FilterActions';
+import ReposActions from '../actions/ReposActions';
 import UserActions from '../actions/UserActions';
 //
 import UserStore from '../stores/UserStore';
+//
+import Config from '../config/Config';
+
+const base = Rebase.createClass(Config.FirebaseUrl);
 
 /**
  *  Main page contains tags, filters and repos
@@ -32,6 +39,38 @@ const MainPage = React.createClass({
   componentDidMount() {
     UserActions.isLoggedIn();
     UserActions.getUser(this.props.params.uname);
+  },
+
+  componentDidUpdate(prevProps, prevState) {
+    const userStore = prevState.userStore;
+    if (userStore && userStore.openUser && !this.state.tags) {
+      const userID = userStore.openUser.id;
+      this.ref = base.syncState('users/github:' + userID + '/tags', {
+        context: this,
+        state: 'tags',
+        asArray: true
+      });
+    }
+  },
+
+  componentWillUnmount() {
+    base.removeBinding(this.ref);
+  },
+
+  setFirebaseTagRepos(tagKey, newReposList) {
+    const userStore = this.state.userStore;
+    const userID = userStore.openUser.id;
+    base.post('users/github:' + userID + '/tags/' + tagKey, {
+      data: { repos: newReposList }
+    });
+  },
+
+  setFirebaseTags(tagKey) {
+    const userStore = this.state.userStore;
+    const userID = userStore.openUser.id;
+    base.post('users/github:' + userID + '/tags/' + tagKey, {
+      data: null
+    });
   },
 
   render() {
@@ -71,6 +110,9 @@ const MainPage = React.createClass({
                       <TagsBlock
                         uid={userStore.uid}
                         openUser={userStore.openUser}
+                        isLoggedIn={userStore.isLoggedIn}
+                        tags={this.state.tags}
+                        setFirebaseTags={this.setFirebaseTags}
                       />
                     </div>
                   </Row>,
@@ -85,7 +127,6 @@ const MainPage = React.createClass({
                   <Row className="filters-info" key="block4">
                     <div className="container">
                       <FilterBlock
-                        openUser={userStore.openUser}
                         uname={this.props.params.uname}
                       />
                     </div>
@@ -110,6 +151,9 @@ const MainPage = React.createClass({
                       <ReposBlock
                         uid={userStore.uid}
                         openUser={userStore.openUser}
+                        isLoggedIn={userStore.isLoggedIn}
+                        tags={this.state.tags}
+                        setFirebaseTagRepos={this.setFirebaseTagRepos}
                       />
                     </div>
                   </Row>

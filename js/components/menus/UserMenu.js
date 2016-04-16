@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import ReactFireMixin from 'reactfire';
+import Rebase from 're-base';
 import _ from 'lodash';
 //
 import UserActions from '../../actions/UserActions';
@@ -10,27 +10,31 @@ import Config from '../../config/Config';
 //
 import History from '../../history/History';
 
+const base = Rebase.createClass(Config.FirebaseUrl);
+
 /**
  *  User menu displays user links
  */
 const UserMenu = React.createClass({
 
-  mixins: [ReactFireMixin],
-
-  componentWillMount() {
-    if (this.props.info && this.props.info.id) {
+  componentDidMount() {
+    if (this.props.isLoggedIn) {
       const userID = this.props.info.id;
-      const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID +
-          '/active');
-      this.bindAsObject(ref, 'userState');
-    }
-  },
-
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState && nextState.userState) {
-      if (!nextState.userState['.value']) {
-        this.firebaseRefs.userState.set({'.value': true});
-      }
+      this.ref = base.syncState('users/github:' + userID, {
+        context: this,
+        state: 'user',
+        asObject: true,
+        then() {
+          if (!this.state.user.active) {
+            this.setState({
+              user: {
+                active: true,
+                username: this.props.info.login
+              }
+            });
+          }
+        }
+      });
     }
   },
 

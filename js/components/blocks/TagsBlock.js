@@ -2,10 +2,10 @@
 
 import React from 'react';
 import Reflux from 'reflux';
+import Rebase from 're-base';
 import _ from 'lodash';
 //
 import { Input, Button, Alert } from 'react-bootstrap';
-import ReactFireMixin from 'reactfire';
 //
 import FontAwesome from 'react-fontawesome';
 //
@@ -16,6 +16,8 @@ import FilterStore from '../../stores/FilterStore';
 //
 import Config from '../../config/Config';
 
+const base = Rebase.createClass(Config.FirebaseUrl);
+
 /**
  *  TagsBlock contains list of all tags
  */
@@ -23,17 +25,8 @@ const TagsBlock = React.createClass({
 
   mixins: [
     Reflux.connect(ReposStore, 'reposStore'),
-    Reflux.connect(FilterStore, 'filterStore'),
-    ReactFireMixin
+    Reflux.connect(FilterStore, 'filterStore')
   ],
-
-  componentWillUpdate(nextProps, nextState) {
-    if (nextProps.openUser && (!nextState || !nextState.tags)) {
-      const userID = nextProps.openUser.id;
-      const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID + '/tags');
-      this.bindAsArray(ref, 'tags');
-    }
-  },
 
   filterReposByTags(event, tag) {
     const filterStore = this.state.filterStore;
@@ -42,24 +35,22 @@ const TagsBlock = React.createClass({
       [];
     //
     const openUserName = this.props.openUser.login;
+    const tagKey = tag.key;
     const isRemoving = ~event.target.className.indexOf('tag-remove-icon');
     if (isRemoving) {
-      const userID = this.props.openUser.id;
-      const itemUrl = Config.FirebaseUrl + 'users/github:' + userID + '/tags/' + tag['.key'];
-      const itemRef = new Firebase(itemUrl);
-      itemRef.remove();
-      activeTags = _.difference(activeTags, [tag.title]);
+      this.props.setFirebaseTags(tagKey);
+      activeTags = _.difference(activeTags, [tagKey]);
     }
     else {
-      activeTags = _.xor(activeTags, [tag.title]);
+      activeTags = _.xor(activeTags, [tagKey]);
     }
     //
-    const tags = this.state ? this.state.tags : null;
+    const tags = this.state ? this.props.tags : null;
     const reposStore = this.state.reposStore;
     const tagReposIds = activeTags.length ?
       _(tags)
         .filter((tag) => {
-          return _.includes(activeTags, tag.title);
+          return _.includes(activeTags, tagKey);
         })
         .map((tag) => {
           return _(tag.repos).values().pluck('id').value();
@@ -74,13 +65,13 @@ const TagsBlock = React.createClass({
   },
 
   render() {
-    const tagsList = this.state.tags ?
-      _.sortBy(this.state.tags, 'title') :
+    const tagsList = this.props.tags ?
+      _.sortBy(this.props.tags, 'key') :
       null;
     const filterStore = this.state.filterStore;
     //
     let tagsBlock = null;
-    const isCurrentUser = this.props.openUser &&
+    const isCurrentUser = this.props.isLoggedIn && this.props.openUser &&
       ('github:' + this.props.openUser.id == this.props.uid);
     const isTagsListEmpty = tagsList && !tagsList.length;
     if (isCurrentUser && isTagsListEmpty) {
@@ -103,17 +94,17 @@ const TagsBlock = React.createClass({
     }
     if (tagsList && tagsList.length && this.props.openUser) {
       tagsBlock = _.map(tagsList, (tag) => {
-        let activeClass = _.includes(filterStore.tags, tag.title) ?
+        let activeClass = _.includes(filterStore.tags, tag.key) ?
           ' active' :
           '';
         //
         return (
           <span
             className={'tag' + activeClass}
-            key={'tag-' + tag.title}
+            key={'tag-' + tag.key}
             onClick={(e) => this.filterReposByTags(e, tag)}
           >
-            {tag.title}
+            {tag.key}
             { 'github:' + this.props.openUser.id == this.props.uid ?
                 <FontAwesome
                   className="tag-remove-icon"

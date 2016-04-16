@@ -38,6 +38,7 @@
     "react-masonry-mixin": "2.1.0",
     "react-router": "1.0.3",
     "react-share": "1.4.0",
+    "re-base": "1.5.1",
     "react-timer-mixin": "0.13.3",
     "react-typeahead": "1.1.5",
     "reactfire": "0.5.1",

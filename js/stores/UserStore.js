@@ -1,14 +1,17 @@
 'use strict';
 
 import Reflux from 'reflux';
+import Rebase from 're-base';
 import request from 'superagent';
 import _ from 'lodash';
-//
-import Config from '../config/Config';
 //
 import UserActions from '../actions/UserActions';
 import FilterActions from '../actions/FilterActions';
 import ReposActions from '../actions/ReposActions';
+//
+import Config from '../config/Config';
+
+const base = Rebase.createClass(Config.FirebaseUrl);
 
 /**
  *  UserStore processes user info
@@ -24,9 +27,7 @@ const UserStore = Reflux.createStore({
 
   login() {
     const _this = this;
-    const ref = new Firebase(Config.FirebaseUrl);
-    //
-    ref.authWithOAuthPopup('github', (error, authData) => {
+    base.authWithOAuthPopup('github', (error, authData) => {
       if (error) {
         console.log('Login Failed!', error);
         _this.user.isLoggedIn = false;
@@ -42,8 +43,7 @@ const UserStore = Reflux.createStore({
   },
 
   isLoggedIn() {
-    const ref = new Firebase(Config.FirebaseUrl);
-    const authData = ref.getAuth();
+    const authData = base.getAuth();
     //
     if (authData) {
       console.log('User ' + authData.uid + ' is logged in with ' + authData.provider);
@@ -60,8 +60,7 @@ const UserStore = Reflux.createStore({
   },
 
   logout() {
-    const ref = new Firebase(Config.FirebaseUrl);
-    ref.unauth();
+    base.unauth();
     //
     this.user.isLoggedIn = false;
     this.trigger(this.user);
@@ -87,8 +86,6 @@ const UserStore = Reflux.createStore({
         _this.user.openUser = res.body;
         _this.user.openUser.isActive = true;
         _this.trigger(_this.user);
-        ReposActions.getRepos(username, 1, 'all');
-        FilterActions.getFilters();
       });
   }
 
