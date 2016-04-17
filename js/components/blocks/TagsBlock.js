@@ -37,16 +37,16 @@ const TagsBlock = React.createClass({
       asArray: true,
       then(tags) {
         if (query.tags && query.tags.length) {
-          const tagReposIds = _this.getTagReposIds(tags);
+          const queryTags = !_.isArray(query.tags) ? [query.tags] : query.tags;
+          const tagReposIds = _this.getTagReposIds(tags, queryTags);
           FilterActions.setTagsReposIds(tagReposIds);
         }
         FilterActions.setDefaultFilters(false, true);
       }
-    })
+    });
   },
 
-  getTagReposIds(activeTags) {
-    const tags = this.props.tags;
+  getTagReposIds(tags, activeTags) {
     const reposStore = this.state.reposStore;
     const tagReposIds = reposStore && activeTags.length ?
       _(tags)
@@ -82,7 +82,7 @@ const TagsBlock = React.createClass({
       activeTags = _.xor(activeTags, [tagKey]);
     }
     //
-    const tagReposIds = this.getTagReposIds(activeTags);
+    const tagReposIds = this.getTagReposIds(this.props.tags, activeTags);
     FilterActions.setTagsReposIds(tagReposIds);
     FilterActions.setTags(activeTags);
   },

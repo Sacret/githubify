@@ -80,7 +80,14 @@ const FilterStore = Reflux.createStore({
     }
     this.trigger(this.filterInfo);
     if (this.filterInfo.isAllRepos && this.filterInfo.isAllTags && this.filterInfo.defaultFilters) {
-      const { filter, languages, tags, searchStr } = this.filterInfo.defaultFilters;
+      const { filter, searchStr } = this.filterInfo.defaultFilters;
+      let { languages, tags } = this.filterInfo.defaultFilters;
+      if (tags && !_.isArray(tags)) {
+        tags = [tags];
+      }
+      if (languages && !_.isArray(languages)) {
+        languages = [languages];
+      }
       //
       this.filterInfo.filter = filter || 'all';
       this.filterInfo.languages = languages || [];
