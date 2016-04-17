@@ -1,6 +1,6 @@
 {
   "name": "githubify.me",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "private": true,
   "devDependencies": {
     "babel-preset-es2015": "6.1.18",
