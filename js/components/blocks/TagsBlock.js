@@ -128,7 +128,7 @@ const TagsBlock = React.createClass({
             onClick={(e) => this.filterReposByTags(e, tag)}
           >
             {tag.key}
-            { 'github:' + this.props.openUser.id == this.props.uid ?
+            { isCurrentUser ?
                 <FontAwesome
                   className="tag-remove-icon"
                   name="times"
