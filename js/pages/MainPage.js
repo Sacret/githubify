@@ -106,7 +106,6 @@ const MainPage = React.createClass({
                       </Row>
                       <UserBlock
                         openUser={userStore.openUser}
-                        uname={this.props.params.uname}
                       />
                     </div>
                   </Row>,
@@ -124,10 +123,7 @@ const MainPage = React.createClass({
                   </Row>,
                   <Row className="languages-info" key="block3">
                     <div className="container">
-                      <LanguagesBlock
-                        openUser={userStore.openUser}
-                        uname={this.props.params.uname}
-                      />
+                      <LanguagesBlock />
                     </div>
                   </Row>,
                   <Row className="filters-info" key="block4">
@@ -139,10 +135,7 @@ const MainPage = React.createClass({
                   </Row>,
                   <Row className="search-info" key="block5">
                     <div className="container">
-                      <SearchBlock
-                        openUser={userStore.openUser}
-                        uname={this.props.params.uname}
-                      />
+                      <SearchBlock />
                     </div>
                   </Row>,
                   <Row className="clear-info" key="block6">
