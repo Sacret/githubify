@@ -37,7 +37,7 @@ const TagsBlock = React.createClass({
       asArray: true,
       then(tags) {
         if (query.tags && query.tags.length) {
-          const tagReposIds = _this.getTagReposIds(query.tags);
+          const tagReposIds = _this.getTagReposIds(tags);
           FilterActions.setTagsReposIds(tagReposIds);
         }
         FilterActions.setDefaultFilters(false, true);
