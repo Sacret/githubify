@@ -28,12 +28,12 @@ const UserBlock = React.createClass({
                   />
                 </a>
               </Col>
-              <Col md={6} xs={8} className="user-block-main-info">
+              <Col md={6} xs={6} className="user-block-main-info">
                 <ShareBlock name={openUser.login} />
                 <p className="user-block-main-info-name">{openUser.name}</p>
                 <p className="user-block-main-info-login">{openUser.login}</p>
               </Col>
-              <Col md={4} xs={12} className="user-block-github">
+              <Col md={4} xs={2} className="user-block-github">
                 <SocialLinksBlock />
               </Col>
             </Row> :

@@ -9,9 +9,7 @@
 
 .user-info {
   border-bottom: 1px solid @gray-lighter;
-  @media (min-width: @screen-md) {
-    padding-bottom: 20px;
-  }
+  padding-bottom: 20px;
 }
 
 .user-block-avatar-img {
@@ -240,10 +238,7 @@
 .logged-in-user {
   margin-top: 25px;
   @media (max-width: @screen-md) {
-    margin-top: 18px;
-    a {
-      display: block;
-    }
+    margin-top: 20px;
   }
 }
 
@@ -253,9 +248,6 @@
   display: inline-block;
   margin: 0 10px;
   background-color: @gray-lighter;
-  @media (max-width: @screen-md) {
-    display: none;
-  }
 }
 
 .repo-owner-name {
@@ -284,6 +276,14 @@
   }
   &:hover {
     background: lighten(@brand-primary, 10%);
+  }
+  @media (max-width: @screen-md) {
+    .social-text {
+      display: none;
+    }
+    font-size: 30px;
+    min-width: 50px;
+    padding-left: 12px;
   }
 }
 
