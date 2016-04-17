@@ -119,10 +119,11 @@ const ShareBlock = React.createClass({
             placement="bottom"
             rootClose
             overlay={
-              <Popover title="Copy link and share with friends">
+              <Popover title="Copy link and share with friends" id="share-link">
                 <Input
                   type="text"
                   value={shareUrl}
+                  readOnly
                   autoFocus
                   onFocus={this.handleFocus}
                 />
