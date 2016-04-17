@@ -64,7 +64,7 @@ const ShareBlock = React.createClass({
         });
     }
     //
-    const shareUrl = 'http://githubify.me/' +
+    const shareUrl = 'https://githubify.me/' +
       (this.props.name ? this.props.name : '') + appliedFilter;
     const title = 'Githubify.me (place to manage and organize tags for your repos)';
     //
