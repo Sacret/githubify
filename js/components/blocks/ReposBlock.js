@@ -1,8 +1,8 @@
 'use strict';
 
 import React from 'react';
-import ReactFireMixin from 'reactfire';
 import Reflux from 'reflux';
+import Rebase from 're-base';
 import _ from 'lodash';
 import moment from 'moment';
 import createFragment from 'react-addons-create-fragment';
@@ -13,15 +13,17 @@ import { Row, Col, Thumbnail, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import MasonryMixin from 'react-masonry-mixin';
 //
-import Config from '../../config/Config';
-//
 import ReposActions from '../../actions/ReposActions';
 import UserActions from '../../actions/UserActions';
 //
 import ReposStore from '../../stores/ReposStore';
 import FilterStore from '../../stores/FilterStore';
 //
+import Config from '../../config/Config';
+//
 import History from '../../history/History';
+
+const base = Rebase.createClass(Config.FirebaseUrl);
 
 const masonryOptions = {
   transitionDuration: 0
@@ -35,40 +37,20 @@ const ReposBlock = React.createClass({
   mixins: [
     Reflux.connect(ReposStore, 'reposStore'),
     Reflux.connect(FilterStore, 'filterStore'),
-    ReactFireMixin,
     MasonryMixin(React)('masonryContainer', masonryOptions)
   ],
 
-  componentWillUpdate(nextProps, nextState) {
-    const _this = this;
-    if (this.props.openUser && !nextState.tags) {
-      const userID = this.props.openUser.id;
-      const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID + '/tags');
-      this.bindAsArray(ref, 'tags');
-    }
-  },
-
   addTag(tagName, repoID) {
-    if (tagName.length) {
-      let existingTag = _.findWhere(this.state.tags, { 'title': tagName });
-      if (!existingTag) {
-        this.firebaseRefs.tags.push({
-          title: tagName
-        });
-        existingTag = _.findWhere(this.state.tags, { 'title': tagName });
+    const userID = this.props.openUser.id;
+    const newTag = base.push('users/github:' + userID + '/tags/' + tagName + '/repos', {
+      data: {
+        id: repoID
       }
-      //
-      const existingRepo = _.findWhere(existingTag.repos, { 'id': repoID });
-      if (!existingRepo) {
-        this.firebaseRefs.tags.child(existingTag['.key']).child('repos').push({
-          id: repoID
-        });
-      }
-    }
+    });
   },
 
-  addRepoTag(index, repoID) {
-    const tagsStore = this.state.tags;
+  addRepoTag(index, repo) {
+    const tagsStore = this.props.tags;
     if (tagsStore.length < 30) {
       const _this = this;
       const tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
@@ -79,7 +61,9 @@ const ReposBlock = React.createClass({
           length: 50,
           omission: ''
         });
-        _this.addTag(correctTagName, repoID);
+        if (correctTagName.length && !_.includes(repo.tags, correctTagName)) {
+          _this.addTag(correctTagName.replace(/<|>/g, ''), repo.id);
+        }
       });
       //
       _this.typeaheadBlur(null, index, true);
@@ -90,28 +74,29 @@ const ReposBlock = React.createClass({
   },
 
   removeRepoTag(tagKey, tagRepos, repoID) {
+    const tagIndex = _.findIndex(this.props.tags, (tag) => {
+      return tag.key == tagKey;
+    });
     const repoKey = _.findKey(tagRepos, (tagRepo) => {
       return tagRepo.id == repoID;
     });
     if (tagKey && repoKey) {
-      const userID = this.props.openUser.id;
-      const itemUrl = Config.FirebaseUrl + 'users/github:' + userID + '/tags/' + tagKey + '/repos/' + repoKey;
-      const itemRef = new Firebase(itemUrl);
-      itemRef.remove();
+      const newList = _.reject(this.props.tags[tagIndex].repos, { id: repoID });
+      this.props.setFirebaseTagRepos(tagKey, newList);
     }
   },
 
   getSuggestions() {
-    const tagsStore = this.state.tags;
+    const tagsStore = this.props.tags;
     const suburbs = _.map(tagsStore, (tag) => {
-      return tag.title;
+      return tag.key;
     });
     return suburbs;
   },
 
-  typeaheadKeyUp(e, index, repoID) {
+  typeaheadKeyUp(e, index, repo) {
     if (e.keyCode == 13) {
-      this.addRepoTag(index, repoID);
+      this.addRepoTag(index, repo);
     }
   },
 
@@ -135,35 +120,41 @@ const ReposBlock = React.createClass({
 
   render() {
     const reposStore = this.state.reposStore;
-    console.log('reposStore', reposStore);
-    const tagsStore = this.state.tags;
     const reposLength = reposStore ? reposStore.filteredRepos.length : 0;
+    const tagsStore = this.props.tags;
     //
-    let repos = null;
+    let reposBlock = null;
     if (reposStore && this.props.openUser) {
-      repos = _.map(reposStore.filteredRepos, (repo, index) => {
-        let tags = _.filter(tagsStore, (tag) => {
-          return _.find(tag.repos, {id: repo.id});
-        });
-        let sortedTags = _.sortBy(tags, 'title');
+      const isCurrentUser = this.props.isLoggedIn &&
+        ('github:' + this.props.openUser.id == this.props.uid);
+      reposBlock = _.map(reposStore.filteredRepos, (repo, index) => {
         let fragmentTags = {};
-        _.forEach(sortedTags, (tag, tagIndex) => {
-          fragmentTags['repo-tags-' + tagIndex] =
-            <span
-              className="repo-tag"
-              key={'repo-tags-' + tagIndex}
-            >
-              {tag.title}
-              { 'github:' + this.props.openUser.id == this.props.uid ?
-                  <FontAwesome
-                    className="tag-remove-icon"
-                    name="times"
-                    onClick={() => this.removeRepoTag(tag['.key'], tag.repos, repo.id)}
-                  /> :
-                  null
-              }
-            </span>;
-        });
+        if (tagsStore) {
+          let tags = _.filter(tagsStore, (tag) => {
+            return _.find(tag.repos, {id: repo.id});
+          });
+          let sortedTags = _.sortBy(tags, 'key');
+          let appliedTags = [];
+          _.forEach(sortedTags, (tag, tagIndex) => {
+            appliedTags.push(tag.key);
+            fragmentTags['repo-' + repo.id + '-tags-' + tagIndex] =
+              <span
+                className="repo-tag"
+                key={'repo-' + repo.id + '-tags-' + tagIndex}
+              >
+                {tag.key}
+                { isCurrentUser ?
+                    <FontAwesome
+                      className="tag-remove-icon"
+                      name="times"
+                      onClick={() => this.removeRepoTag(tag.key, tag.repos, repo.id)}
+                    /> :
+                    null
+                }
+              </span>;
+          });
+          repo.tags = appliedTags;
+        }
         if (repo.language && repo.language.length) {
           fragmentTags['repo-tags-language'] =
             <span
@@ -186,7 +177,7 @@ const ReposBlock = React.createClass({
           '';
         //
         return (
-          <Col xs={6} md={4} key={'repo' + index}>
+          <Col xs={12} md={4} key={'repo' + index}>
             <Thumbnail className="repo">
               <Col xs={12}>
                 <a href={repo.html_url} target="_blank">
@@ -214,22 +205,18 @@ const ReposBlock = React.createClass({
                 <div className="clearfix">
                   {tagsBlock}
                 </div>
-                { 'github:' + this.props.openUser.id == this.props.uid ?
-                    [
-                      <div className="repo-form" key={'repo-form-' + index}>
-                        <Typeahead
-                          options={options}
-                          ref={typeaheadRef}
-                          maxVisible={5}
-                          onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo.id)}
-                          onOptionSelected={() => this.addRepoTag(index, repo.id)}
-                          onBlur={(e) => this.typeaheadBlur(e, index)}
-                        />
-                      </div>,
-                      <small className="repo-tags-tip" key={'repo-tags-tip-' + index}>
-                        Type one or several tags (divided by comma)
-                      </small>
-                    ] :
+                { isCurrentUser ?
+                    <div className="repo-form" key={'repo-form-' + index}>
+                      <Typeahead
+                        options={options}
+                        ref={typeaheadRef}
+                        maxVisible={5}
+                        placeholder="Type comma-separated tags"
+                        onKeyUp={(e) => this.typeaheadKeyUp(e, index, repo)}
+                        onOptionSelected={() => this.addRepoTag(index, repo)}
+                        onBlur={(e) => this.typeaheadBlur(e, index)}
+                      />
+                    </div> :
                     null
                 }
               </Col>
@@ -243,7 +230,7 @@ const ReposBlock = React.createClass({
       <div>
         <p>{reposLength} repo{reposLength !== 1 ? 's' : ''}</p>
         <Row ref="masonryContainer">
-          {repos}
+          {reposBlock}
         </Row>
       </div>
     );

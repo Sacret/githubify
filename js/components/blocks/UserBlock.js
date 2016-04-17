@@ -21,19 +21,19 @@ const UserBlock = React.createClass({
           openUser ?
             <Row>
               <Col md={2} xs={4} className="user-block-avatar">
-                <a href={openUser.html_url}>
+                <a href={openUser.html_url} target="_blank">
                   <img
                     src={openUser.avatar_url}
                     className="user-block-avatar-img img-responsive"
                   />
                 </a>
               </Col>
-              <Col md={6} xs={8} className="user-block-main-info">
+              <Col md={6} xs={6} className="user-block-main-info">
                 <ShareBlock name={openUser.login} />
                 <p className="user-block-main-info-name">{openUser.name}</p>
                 <p className="user-block-main-info-login">{openUser.login}</p>
               </Col>
-              <Col md={4} xs={12} className="user-block-github">
+              <Col md={4} xs={2} className="user-block-github">
                 <SocialLinksBlock />
               </Col>
             </Row> :

@@ -38,7 +38,6 @@ const LoginPage = React.createClass({
 
   render() {
     const userStore = this.state.userStore;
-    console.log('userStore', userStore);
     //
     return (
       <Grid fluid={true} className="login-page">

@@ -7,8 +7,7 @@ import _ from 'lodash';
 import Config from '../config/Config';
 //
 import ReposActions from '../actions/ReposActions';
-import LanguagesActions from '../actions/LanguagesActions';
-import TagsActions from '../actions/TagsActions';
+import FilterActions from '../actions/FilterActions';
 
 /**
  *  ReposStore processes repos info
@@ -18,25 +17,23 @@ const ReposStore = Reflux.createStore({
   reposInfo: {
     repos: [],
     filteredRepos: [],
-    alertType: '',
-    alertMessage: '',
+    languages: [],
     isShowingOwner: false,
     username: null
   },
 
-  getRepos(username, page, filter, searchStr) {
+  initRepos() {
+    this.reposInfo.repos = [];
+    this.reposInfo.filteredRepos = [];
+  },
+
+  getRepos(username, page, filter) {
     const _this = this;
     let reposUrl = 'repos';
-    if (page == 1) {
-      this.reposInfo.repos = [];
-    }
     if (filter == 'starred') {
       reposUrl = 'starred';
     }
-    if (!username) {
-      username = this.reposInfo.username;
-    }
-    this.reposInfo.isShowingOwner = filter == 'starred' || filter == 'member';
+    this.reposInfo.isShowingOwner = _.includes(['starred', 'member'], filter);
     const includeForks = filter == 'forks';
     //
     const requestUrl = Config.GithubApiUrl + 'users/' + username + '/' + reposUrl;
@@ -51,61 +48,58 @@ const ReposStore = Reflux.createStore({
       .end(function(err, res) {
         if (err != null) {
           console.error(requestUrl, res.status, err.toString());
-          _this.reposInfo = {
-            alertType: 'danger',
-            alertMessage: 'Something went wrong!'
-          };
           _this.trigger(_this.reposInfo);
           return;
         }
         console.log('success GET-request: ' + requestUrl, res);
         //
         let newRepos = res.body;
-        newRepos = _.filter(newRepos, (repo) => {
-          return includeForks ? repo.fork : !repo.fork;
-        });
+        if (_.includes(['owner', 'forks'], filter)) {
+          newRepos = _.filter(newRepos, (repo) => {
+            return includeForks ? repo.fork : !repo.fork;
+          });
+        }
         //
         _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
-        _this.reposInfo.filteredRepos = searchStr && searchStr.length ?
-          _.filter(_this.reposInfo.repos, repo => {
-            return _.includes(repo.name.toLowerCase(), searchStr.toLowerCase());
-          }) :
-          _this.reposInfo.repos;
+        _this.reposInfo.filteredRepos = _this.reposInfo.repos;
         //
-        if (res.body.length == Config.PerPage) {
-          _this.getRepos(username, page + 1, filter, searchStr)
-        }
-        _this.trigger(_this.reposInfo);
         //
         const languages = _.chain(_this.reposInfo.repos)
           .pluck('language')
           .uniq()
           .compact()
           .value();
-        LanguagesActions.setLanguages(languages);
-        LanguagesActions.setActiveLanguages([]);
-        TagsActions.setActiveTags([]);
+        _this.reposInfo.languages = languages;
+        _this.trigger(_this.reposInfo);
+        //
+        if (res.body.length == Config.PerPage) {
+          _this.getRepos(username, page + 1, filter);
+        }
+        else {
+          FilterActions.setDefaultFilters(true, false);
+        }
       });
   },
 
-  filterRepos(filterReposIds, searchStr) {
-    let newRepos = [];
-    if (filterReposIds) {
-      newRepos = _.filter(this.reposInfo.repos, (repo) => {
-        return _.includes(filterReposIds, repo.id);
+  filterRepos(filters) {
+    const { tags, tagReposIds, languages, searchStr } = filters;
+    let newRepos = this.reposInfo.repos;
+    if (tags && tags.length) {
+      newRepos = _.filter(newRepos, (repo) => {
+        return _.includes(tagReposIds, repo.id);
       });
     }
-    else {
-      newRepos = this.reposInfo.repos;
+    if (languages && languages.length) {
+      newRepos = _.filter(newRepos, (repo) => {
+        return _.includes(languages, repo.language);
+      });
     }
-    if (!searchStr.length) {
-      this.reposInfo.filteredRepos = newRepos;
-    }
-    else {
-      this.reposInfo.filteredRepos = _.filter(newRepos, repo => {
+    if (searchStr && searchStr.length) {
+      newRepos = _.filter(newRepos, repo => {
         return _.includes(repo.name.toLowerCase(), searchStr.toLowerCase());
       });
     }
+    this.reposInfo.filteredRepos = newRepos;
     this.trigger(this.reposInfo);
   }
 

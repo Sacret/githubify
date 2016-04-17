@@ -17,39 +17,32 @@ const FilterBlock = React.createClass({
 
   mixins: [Reflux.connect(FilterStore, 'filterStore')],
 
-  componentDidMount() {
-    FilterActions.getFilters();
-  },
-
-  filterRepos(filterTitle) {
-    FilterActions.setFilter(this.props.uname, filterTitle);
+  filterRepos(filter) {
+    FilterActions.setFilter(this.props.uname, filter);
   },
 
   render() {
     const filterStore = this.state.filterStore;
-    console.log('filterStore', filterStore);
+    const activeFilter = filterStore ? filterStore.filter : 'all';
     //
-    let filters = 'There are no filters for now!';
-    if (filterStore && this.props.openUser) {
-      filters = _.map(filterStore.filters, (filter, index) => {
-        return (
-          <span
-            className={'filter' + (filter.active ? ' active' : '')}
-            key={'filter' + index}
-            onClick={() => this.filterRepos(filter.title)}
-          >
-            {filter.title}
-          </span>
-        );
-      });
-    }
-    else {
-      filters = '';
-    }
+    const filters = ['all', 'owner', 'forks', 'member', 'starred'];
+    //
+    let filterBlock = 'There are no filters for now!';
+    filterBlock = _.map(filters, (filter, index) => {
+      return (
+        <span
+          className={'filter' + (filter === activeFilter ? ' active' : '')}
+          key={'filter' + index}
+          onClick={() => this.filterRepos(filter)}
+        >
+          {filter}
+        </span>
+      );
+    });
     //
     return (
       <div className="filters-block">
-        {filters}
+        {filterBlock}
       </div>
     );
   }

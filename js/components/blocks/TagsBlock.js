@@ -2,20 +2,21 @@
 
 import React from 'react';
 import Reflux from 'reflux';
+import Rebase from 're-base';
 import _ from 'lodash';
 //
 import { Input, Button, Alert } from 'react-bootstrap';
-import ReactFireMixin from 'reactfire';
 //
 import FontAwesome from 'react-fontawesome';
 //
 import FilterActions from '../../actions/FilterActions';
-import TagsActions from '../../actions/TagsActions';
 //
 import ReposStore from '../../stores/ReposStore';
-import TagsStore from '../../stores/TagsStore';
+import FilterStore from '../../stores/FilterStore';
 //
 import Config from '../../config/Config';
+
+const base = Rebase.createClass(Config.FirebaseUrl);
 
 /**
  *  TagsBlock contains list of all tags
@@ -24,46 +25,33 @@ const TagsBlock = React.createClass({
 
   mixins: [
     Reflux.connect(ReposStore, 'reposStore'),
-    Reflux.connect(TagsStore, 'tagsStore'),
-    ReactFireMixin
+    Reflux.connect(FilterStore, 'filterStore')
   ],
 
   componentDidMount() {
-    TagsActions.setActiveTags([]);
+    const userID = this.props.openUser.id;
+    const query = this.props.query;
+    const _this = this;
+    base.listenTo('users/github:' + userID + '/tags', {
+      context: this,
+      asArray: true,
+      then(tags) {
+        if (query.tags && query.tags.length) {
+          const tagReposIds = _this.getTagReposIds(query.tags);
+          FilterActions.setTagsReposIds(tagReposIds);
+        }
+        FilterActions.setDefaultFilters(false, true);
+      }
+    })
   },
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextProps.openUser && (!nextState || !nextState.tags)) {
-      const userID = nextProps.openUser.id;
-      const ref = new Firebase(Config.FirebaseUrl + 'users/github:' + userID + '/tags');
-      this.bindAsArray(ref, 'tags');
-    }
-  },
-
-  filterReposByTags(event, tag) {
-    const tagsStore = this.state.tagsStore;
-    const activeTags = tagsStore;
-    let newActiveTags = [];
-    //
-    const openUserName = this.props.openUser.login;
-    const isRemoving = ~event.target.className.indexOf('tag-remove-icon');
-    if (isRemoving) {
-      const userID = this.props.openUser.id;
-      const itemUrl = Config.FirebaseUrl + 'users/github:' + userID + '/tags/' + tag['.key'];
-      const itemRef = new Firebase(itemUrl);
-      itemRef.remove();
-      newActiveTags = _.difference(activeTags, [tag.title]);
-    }
-    else {
-      newActiveTags = _.xor(activeTags, [tag.title]);
-    }
-    //
-    const tags = this.state ? this.state.tags : null;
+  getTagReposIds(activeTags) {
+    const tags = this.props.tags;
     const reposStore = this.state.reposStore;
-    const filteredReposIds = newActiveTags.length ?
+    const tagReposIds = reposStore && activeTags.length ?
       _(tags)
         .filter((tag) => {
-          return _.includes(newActiveTags, tag.title);
+          return _.includes(activeTags, tag.key);
         })
         .map((tag) => {
           return _(tag.repos).values().pluck('id').value();
@@ -74,27 +62,49 @@ const TagsBlock = React.createClass({
       _(reposStore.repos)
         .pluck('id')
         .value();
-    FilterActions.setFilterTags(openUserName, filteredReposIds);
-    TagsActions.setActiveTags(newActiveTags);
+    return tagReposIds;
+  },
+
+  filterReposByTags(event, tag) {
+    const filterStore = this.state.filterStore;
+    let activeTags = filterStore ?
+      filterStore.tags :
+      [];
+    //
+    const openUserName = this.props.openUser.login;
+    const tagKey = tag.key;
+    const isRemoving = event && ~event.target.className.indexOf('tag-remove-icon');
+    if (isRemoving) {
+      this.props.setFirebaseTags(tagKey);
+      activeTags = _.difference(activeTags, [tagKey]);
+    }
+    else {
+      activeTags = _.xor(activeTags, [tagKey]);
+    }
+    //
+    const tagReposIds = this.getTagReposIds(activeTags);
+    FilterActions.setTagsReposIds(tagReposIds);
+    FilterActions.setTags(activeTags);
   },
 
   render() {
-    const tagsList = this.state ? _.sortBy(this.state.tags, 'title') : null;
-    const tagsStore = this.state.tagsStore;
-    console.log('tagsList', tagsList);
+    const tagsList = this.props.tags ?
+      _.sortBy(this.props.tags, 'key') :
+      null;
+    const filterStore = this.state.filterStore;
     //
-    let tags = null;
-    const isCurrentUser = this.props.openUser &&
+    let tagsBlock = null;
+    const isCurrentUser = this.props.isLoggedIn && this.props.openUser &&
       ('github:' + this.props.openUser.id == this.props.uid);
     const isTagsListEmpty = tagsList && !tagsList.length;
     if (isCurrentUser && isTagsListEmpty) {
-      tags = <p>You don't have any tags yet. Fell free to add them</p>;
+      tagsBlock = <p>You don't have any tags yet. Fell free to add them</p>;
     }
     else if (!isCurrentUser && isTagsListEmpty) {
-      tags = <p>
+      tagsBlock = <p>
         Unfortunately this user doesn't have any tags on githubify.
         { this.props.openUser.email ?
-            <span>Let him/her know about it on email:&nbsp;
+            <span>&nbsp;Let him/her know about it on email:&nbsp;
               <a
                 href={'mailto:' + this.props.openUser.email + '?subject=githubify.me'}
               >
@@ -106,18 +116,18 @@ const TagsBlock = React.createClass({
       </p>;
     }
     if (tagsList && tagsList.length && this.props.openUser) {
-      tags = _.map(tagsList, (tag) => {
-        let activeClass = _.includes(tagsStore, tag.title) ?
+      tagsBlock = _.map(tagsList, (tag) => {
+        let activeClass = filterStore && _.includes(filterStore.tags, tag.key) ?
           ' active' :
           '';
         //
         return (
           <span
             className={'tag' + activeClass}
-            key={'tag-' + tag.title}
+            key={'tag-' + tag.key}
             onClick={(e) => this.filterReposByTags(e, tag)}
           >
-            {tag.title}
+            {tag.key}
             { 'github:' + this.props.openUser.id == this.props.uid ?
                 <FontAwesome
                   className="tag-remove-icon"
@@ -132,7 +142,7 @@ const TagsBlock = React.createClass({
     //
     return (
       <div className="tags-block">
-        {tags}
+        {tagsBlock}
       </div>
     );
   }

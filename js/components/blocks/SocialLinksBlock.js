@@ -18,7 +18,10 @@ const SocialLinksBlock = React.createClass({
             className="social-links-block-twitter"
             target="_blank"
           >
-            <FontAwesome name="twitter"/>Follow @Githubifyme
+            <FontAwesome name="twitter"/>
+            <span className="social-text">
+              Follow @Githubifyme
+            </span>
           </a>
         </div>
         <div className="clearfix">
@@ -27,7 +30,10 @@ const SocialLinksBlock = React.createClass({
             className="social-links-block-github"
             target="_blank"
           >
-            <FontAwesome name="github" />Fork repo on Github
+            <FontAwesome name="github" />
+            <span className="social-text">
+              Fork repo on Github
+            </span>
           </a>
         </div>
       </div>

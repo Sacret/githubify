@@ -8,7 +8,6 @@ import Config from '../config/Config';
 //
 import FilterActions from '../actions/FilterActions';
 import ReposActions from '../actions/ReposActions';
-import TagsActions from '../actions/TagsActions';
 
 /**
  *  FilterStore processes filter options info
@@ -16,106 +15,80 @@ import TagsActions from '../actions/TagsActions';
 const FilterStore = Reflux.createStore({
   listenables: [FilterActions],
   filterInfo: {
-    filters: [],
-    currentFilter: 'all',
+    filter: 'all',
+    tags: [],
+    languages: [],
     searchStr: '',
+    //
+    defaultFilters: null,
     tagReposIds: [],
-    languageReposIds: []
+    isAllRepos: false,
+    isAllTags: false
   },
 
-  getFilters() {
-    this.filterInfo.filters = [{
-      title: 'all',
-      active: true
-    }, {
-      title: 'owner',
-      active: false
-    }, {
-      title: 'forks',
-      active: false
-    }, {
-      title: 'member',
-      active: false
-    }, {
-      title: 'starred',
-      active: false
-    }];
+  getFilters(filter) {
+    this.filterInfo = {
+      filter: filter || 'all',
+      tags: [],
+      languages: [],
+      searchStr: '',
+      defaultFilters: this.filterInfo.defaultFilters
+    };
     this.trigger(this.filterInfo);
   },
 
-  setFilter(username, filterTitle) {
-    const _this = this;
-    let actualFilterTitle = 'all';
-    _.forEach(_this.filterInfo.filters, (filter, index) => {
-      if (filter.title == filterTitle) {
-        let activeStatus = _this.filterInfo.filters[index].active;
-        _this.filterInfo.filters[index].active = !activeStatus;
-        if (_this.filterInfo.filters[index].active) {
-          actualFilterTitle = filterTitle;
-          _this.filterInfo.currentFilter = filterTitle;
-        }
-        else {
-          _this.filterInfo.currentFilter = 'all';
-        }
-      }
-      else {
-        _this.filterInfo.filters[index].active = false;
-      }
-    });
-    //
-    if (!(_.filter(_this.filterInfo.filters, { 'active': true })).length) {
-      _this.filterInfo.filters[0].active = true;
-    }
-    //
-    ReposActions.getRepos(username, 1, actualFilterTitle, _this.filterInfo.searchStr);
-    _this.trigger(_this.filterInfo);
+  getDefaultFilters(defaultFilters) {
+    this.filterInfo.defaultFilters = defaultFilters;
   },
 
-  setFilterTags(username, tagReposIds) {
+  setFilter(username, filter) {
+    ReposActions.initRepos();
+    ReposActions.getRepos(username, 1, filter);
+    this.getFilters(filter);
+  },
+
+  setTags(tags) {
+    this.filterInfo.tags = tags;
+    this.setFilters();
+  },
+
+  setTagsReposIds(tagReposIds) {
     this.filterInfo.tagReposIds = tagReposIds;
-    const reposIds = this.getCombineReposIds();
-    ReposActions.filterRepos(reposIds, this.filterInfo.searchStr);
-    this.trigger(this.filterInfo);
   },
 
-  setFilterLanguages(username, languageReposIds) {
-    this.filterInfo.languageReposIds = languageReposIds;
-    const reposIds = this.getCombineReposIds();
-    ReposActions.filterRepos(reposIds, this.filterInfo.searchStr);
-    this.trigger(this.filterInfo);
+  setLanguages(languages) {
+    this.filterInfo.languages = languages;
+    this.setFilters();
   },
 
-  setSearch(username, searchStr) {
+  setSearch( searchStr) {
     this.filterInfo.searchStr = searchStr;
-    const reposIds = this.getCombineReposIds();
-    ReposActions.filterRepos(reposIds, this.filterInfo.searchStr);
+    this.setFilters();
+  },
+
+  setFilters() {
+    ReposActions.filterRepos(this.filterInfo);
     this.trigger(this.filterInfo);
   },
 
-  getCombineReposIds() {
-    const tagReposIds = this.filterInfo.tagReposIds;
-    const languageReposIds = this.filterInfo.languageReposIds;
-    if (!tagReposIds.length && !languageReposIds.length) {
-      return null;
+  setDefaultFilters(isAllRepos, isAllTags) {
+    if (isAllRepos) {
+      this.filterInfo.isAllRepos = true;
     }
-    if (!tagReposIds.length) {
-      return languageReposIds;
+    if (isAllTags) {
+      this.filterInfo.isAllTags = true;
     }
-    if (!languageReposIds.length) {
-      return tagReposIds;
+    this.trigger(this.filterInfo);
+    if (this.filterInfo.isAllRepos && this.filterInfo.isAllTags && this.filterInfo.defaultFilters) {
+      const { filter, languages, tags, searchStr } = this.filterInfo.defaultFilters;
+      //
+      this.filterInfo.filter = filter || 'all';
+      this.filterInfo.languages = languages || [];
+      this.filterInfo.tags = tags || [];
+      this.filterInfo.searchStr = searchStr || '';
+      this.setFilters();
+      this.filterInfo.defaultFilters = null;
     }
-    return _.intersection(tagReposIds, languageReposIds);
-  },
-
-  clearFilters(username) {
-    this.filterInfo.currentFilter = 'all';
-    this.filterInfo.searchStr = '';
-    this.filterInfo.tagReposIds = [];
-    this.filterInfo.languageReposIds = [];
-    TagsActions.setActiveTags([]);
-    const reposIds = this.getCombineReposIds();
-    ReposActions.getRepos(username, 1, 'all');
-    this.getFilters();
   }
 
 });

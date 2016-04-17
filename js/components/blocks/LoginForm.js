@@ -25,11 +25,10 @@ const LoginForm = React.createClass({
 
   render() {
     const userStore = this.state.userStore;
-    console.log('userStore', userStore);
     //
     return (
       <div className="container login-container">
-        <p className="login-header">
+        <p className="login-header text-center">
           GITHUBIFY.<span className="header-title">me</span>
         </p>
         <h4 className="login-page-paragraph">
@@ -46,15 +45,6 @@ const LoginForm = React.createClass({
           {
             !userStore || userStore && !userStore.isLoggedIn ?
               <form className="form-horizontal">
-                {
-                  userStore && userStore.alertType ?
-                    <div className="clearfix">
-                      <Alert bsStyle={userStore.alertType}>
-                        {userStore.alertMessage}
-                      </Alert>
-                    </div> :
-                    null
-                }
                 <Button
                   bsStyle="primary"
                   className="center-block text-center"
