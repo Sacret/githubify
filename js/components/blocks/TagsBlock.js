@@ -28,29 +28,30 @@ const TagsBlock = React.createClass({
     Reflux.connect(FilterStore, 'filterStore')
   ],
 
-  filterReposByTags(event, tag) {
-    const filterStore = this.state.filterStore;
-    let activeTags = filterStore ?
-      filterStore.tags :
-      [];
-    //
-    const openUserName = this.props.openUser.login;
-    const tagKey = tag.key;
-    const isRemoving = ~event.target.className.indexOf('tag-remove-icon');
-    if (isRemoving) {
-      this.props.setFirebaseTags(tagKey);
-      activeTags = _.difference(activeTags, [tagKey]);
-    }
-    else {
-      activeTags = _.xor(activeTags, [tagKey]);
-    }
-    //
-    const tags = this.state ? this.props.tags : null;
+  componentDidMount() {
+    const userID = this.props.openUser.id;
+    const query = this.props.query;
+    const _this = this;
+    base.listenTo('users/github:' + userID + '/tags', {
+      context: this,
+      asArray: true,
+      then(tags) {
+        if (query.tags && query.tags.length) {
+          const tagReposIds = _this.getTagReposIds(query.tags);
+          FilterActions.setTagsReposIds(tagReposIds);
+        }
+        FilterActions.setDefaultFilters(false, true);
+      }
+    })
+  },
+
+  getTagReposIds(activeTags) {
+    const tags = this.props.tags;
     const reposStore = this.state.reposStore;
-    const tagReposIds = activeTags.length ?
+    const tagReposIds = reposStore && activeTags.length ?
       _(tags)
         .filter((tag) => {
-          return _.includes(activeTags, tagKey);
+          return _.includes(activeTags, tag.key);
         })
         .map((tag) => {
           return _(tag.repos).values().pluck('id').value();
@@ -61,7 +62,29 @@ const TagsBlock = React.createClass({
       _(reposStore.repos)
         .pluck('id')
         .value();
-    FilterActions.setTags(openUserName, activeTags, tagReposIds);
+    return tagReposIds;
+  },
+
+  filterReposByTags(event, tag) {
+    const filterStore = this.state.filterStore;
+    let activeTags = filterStore ?
+      filterStore.tags :
+      [];
+    //
+    const openUserName = this.props.openUser.login;
+    const tagKey = tag.key;
+    const isRemoving = event && ~event.target.className.indexOf('tag-remove-icon');
+    if (isRemoving) {
+      this.props.setFirebaseTags(tagKey);
+      activeTags = _.difference(activeTags, [tagKey]);
+    }
+    else {
+      activeTags = _.xor(activeTags, [tagKey]);
+    }
+    //
+    const tagReposIds = this.getTagReposIds(activeTags);
+    FilterActions.setTagsReposIds(tagReposIds);
+    FilterActions.setTags(activeTags);
   },
 
   render() {
@@ -94,7 +117,7 @@ const TagsBlock = React.createClass({
     }
     if (tagsList && tagsList.length && this.props.openUser) {
       tagsBlock = _.map(tagsList, (tag) => {
-        let activeClass = _.includes(filterStore.tags, tag.key) ?
+        let activeClass = filterStore && _.includes(filterStore.tags, tag.key) ?
           ' active' :
           '';
         //

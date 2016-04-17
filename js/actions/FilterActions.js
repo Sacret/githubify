@@ -7,10 +7,14 @@ import Reflux from 'reflux';
  */
 const FilterActions = Reflux.createActions([
   'getFilters',
+  'getDefaultFilters',
   'setFilter',
   'setTags',
+  'setTagsReposIds',
   'setLanguages',
-  'setSearch'
+  'setSearch',
+  'setFilters',
+  'setDefaultFilters',
 ]);
 
 export default FilterActions;

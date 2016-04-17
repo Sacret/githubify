@@ -26,11 +26,11 @@ const SearchBlock = React.createClass({
 
   handleChange() {
     const searchStr = this.refs.search.getValue().trim();
-    FilterActions.setSearch(this.props.uname, searchStr);
+    FilterActions.setSearch(searchStr);
   },
 
   clearSearch() {
-    FilterActions.setSearch(this.props.uname, '');
+    FilterActions.setSearch('');
   },
 
   render() {

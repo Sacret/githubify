@@ -7,6 +7,7 @@ import _ from 'lodash';
 import Config from '../config/Config';
 //
 import ReposActions from '../actions/ReposActions';
+import FilterActions from '../actions/FilterActions';
 
 /**
  *  ReposStore processes repos info
@@ -23,6 +24,7 @@ const ReposStore = Reflux.createStore({
 
   initRepos() {
     this.reposInfo.repos = [];
+    this.reposInfo.filteredRepos = [];
   },
 
   getRepos(username, page, filter) {
@@ -73,23 +75,26 @@ const ReposStore = Reflux.createStore({
         if (res.body.length == Config.PerPage) {
           _this.getRepos(username, page + 1, filter);
         }
+        else {
+          FilterActions.setDefaultFilters(true, false);
+        }
       });
   },
 
   filterRepos(filters) {
     const { tags, tagReposIds, languages, searchStr } = filters;
     let newRepos = this.reposInfo.repos;
-    if (tags.length) {
+    if (tags && tags.length) {
       newRepos = _.filter(newRepos, (repo) => {
         return _.includes(tagReposIds, repo.id);
       });
     }
-    if (languages.length) {
+    if (languages && languages.length) {
       newRepos = _.filter(newRepos, (repo) => {
         return _.includes(languages, repo.language);
       });
     }
-    if (searchStr.length) {
+    if (searchStr && searchStr.length) {
       newRepos = _.filter(newRepos, repo => {
         return _.includes(repo.name.toLowerCase(), searchStr.toLowerCase());
       });

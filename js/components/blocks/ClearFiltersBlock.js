@@ -27,8 +27,8 @@ const ClearFiltersBlock = React.createClass({
     const isFiltered = filterStore &&
       (
         filterStore.filter !== 'all' ||
-        filterStore.tags.length ||
-        filterStore.languages.length ||
+        filterStore.tags && filterStore.tags.length ||
+        filterStore.languages && filterStore.languages.length ||
         filterStore.searchStr.length
       );
     //

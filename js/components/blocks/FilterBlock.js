@@ -28,19 +28,17 @@ const FilterBlock = React.createClass({
     const filters = ['all', 'owner', 'forks', 'member', 'starred'];
     //
     let filterBlock = 'There are no filters for now!';
-    if (filterStore) {
-      filterBlock = _.map(filters, (filter, index) => {
-        return (
-          <span
-            className={'filter' + (filter === activeFilter ? ' active' : '')}
-            key={'filter' + index}
-            onClick={() => this.filterRepos(filter)}
-          >
-            {filter}
-          </span>
-        );
-      });
-    }
+    filterBlock = _.map(filters, (filter, index) => {
+      return (
+        <span
+          className={'filter' + (filter === activeFilter ? ' active' : '')}
+          key={'filter' + index}
+          onClick={() => this.filterRepos(filter)}
+        >
+          {filter}
+        </span>
+      );
+    });
     //
     return (
       <div className="filters-block">

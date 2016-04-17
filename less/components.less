@@ -34,7 +34,7 @@
   font-size: @font-size-h5;
 }
 
-.user-block .fa {
+.social-links-block .fa {
   margin-right: 5px;
   width: 15px;
 }
@@ -132,6 +132,7 @@
   display: inline-block;
   max-width: 100%;
   position: relative;
+  cursor: default;
 }
 
 .repo-language-tag {
@@ -306,4 +307,18 @@
 .clear-filters-block-inner {
   display: block;
   margin-bottom: 10px;
+}
+
+.share-block-share-button-link {
+  color: #fff;
+  background-color: @brand-primary;
+  border-radius: 50%;
+  font-size: 17px;
+  padding: 7px;
+  height: 31px;
+  width: 30px;
+  cursor: pointer;
+  &:hover {
+    background: lighten(@brand-primary, 10%);
+  }
 }

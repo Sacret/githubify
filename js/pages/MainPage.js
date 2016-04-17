@@ -39,6 +39,11 @@ const MainPage = React.createClass({
   componentDidMount() {
     UserActions.isLoggedIn();
     UserActions.getUser(this.props.params.uname);
+    //
+    const filter = this.props.location.query.filter || 'all';
+    ReposActions.getRepos(this.props.params.uname, 1, filter);
+    FilterActions.getFilters();
+    FilterActions.getDefaultFilters(this.props.location.query);
   },
 
   componentDidUpdate(prevProps, prevState) {
@@ -111,6 +116,7 @@ const MainPage = React.createClass({
                         uid={userStore.uid}
                         openUser={userStore.openUser}
                         isLoggedIn={userStore.isLoggedIn}
+                        query={this.props.location.query}
                         tags={this.state.tags}
                         setFirebaseTags={this.setFirebaseTags}
                       />

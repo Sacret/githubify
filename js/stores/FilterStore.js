@@ -20,39 +20,48 @@ const FilterStore = Reflux.createStore({
     languages: [],
     searchStr: '',
     //
-    tagReposIds: []
+    defaultFilters: null,
+    tagReposIds: [],
+    isAllRepos: false,
+    isAllTags: false
   },
 
-  getFilters() {
+  getFilters(filter) {
     this.filterInfo = {
-      filter: 'all',
+      filter: filter || 'all',
       tags: [],
       languages: [],
-      searchStr: ''
+      searchStr: '',
+      defaultFilters: this.filterInfo.defaultFilters
     };
     this.trigger(this.filterInfo);
   },
 
-  setFilter(username, filter) {
-    ReposActions.initRepos();
-    ReposActions.getRepos(username, 1, filter, this.filterInfo.searchStr);
-    this.getFilters();
-    this.filterInfo.filter = filter;
-    this.trigger(this.filterInfo);
+  getDefaultFilters(defaultFilters) {
+    this.filterInfo.defaultFilters = defaultFilters;
   },
 
-  setTags(username, tags, tagReposIds) {
+  setFilter(username, filter) {
+    ReposActions.initRepos();
+    ReposActions.getRepos(username, 1, filter);
+    this.getFilters(filter);
+  },
+
+  setTags(tags) {
     this.filterInfo.tags = tags;
-    this.filterInfo.tagReposIds = tagReposIds;
     this.setFilters();
   },
 
-  setLanguages(username, languages) {
+  setTagsReposIds(tagReposIds) {
+    this.filterInfo.tagReposIds = tagReposIds;
+  },
+
+  setLanguages(languages) {
     this.filterInfo.languages = languages;
     this.setFilters();
   },
 
-  setSearch(username, searchStr) {
+  setSearch( searchStr) {
     this.filterInfo.searchStr = searchStr;
     this.setFilters();
   },
@@ -60,6 +69,26 @@ const FilterStore = Reflux.createStore({
   setFilters() {
     ReposActions.filterRepos(this.filterInfo);
     this.trigger(this.filterInfo);
+  },
+
+  setDefaultFilters(isAllRepos, isAllTags) {
+    if (isAllRepos) {
+      this.filterInfo.isAllRepos = true;
+    }
+    if (isAllTags) {
+      this.filterInfo.isAllTags = true;
+    }
+    this.trigger(this.filterInfo);
+    if (this.filterInfo.isAllRepos && this.filterInfo.isAllTags && this.filterInfo.defaultFilters) {
+      const { filter, languages, tags, searchStr } = this.filterInfo.defaultFilters;
+      //
+      this.filterInfo.filter = filter || 'all';
+      this.filterInfo.languages = languages || [];
+      this.filterInfo.tags = tags || [];
+      this.filterInfo.searchStr = searchStr || '';
+      this.setFilters();
+      this.filterInfo.defaultFilters = null;
+    }
   }
 
 });

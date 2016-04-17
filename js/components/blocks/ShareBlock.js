@@ -1,12 +1,20 @@
 'use strict';
 
 import React from 'react';
-
+import Reflux from 'reflux';
+import queryString from 'query-string';
+//
+import FontAwesome from 'react-fontawesome';
+//
+import { OverlayTrigger, Popover, Input } from 'react-bootstrap';
+//
 import {
   ShareButtons,
   ShareCounts,
   generateShareIcon
 } from 'react-share';
+//
+import FilterStore from '../../stores/FilterStore';
 
 const {
   FacebookShareButton,
@@ -27,8 +35,37 @@ const PinterestIcon = generateShareIcon('pinterest');
  */
 const ShareBlock = React.createClass({
 
+  mixins: [
+    Reflux.connect(FilterStore, 'filterStore')
+  ],
+
+  handleFocus(e) {
+    e.target.select();
+  },
+
   render() {
-    const shareUrl = 'http://githubify.me/' + (this.props.name ? this.props.name : '');
+    const filterStore = this.state.filterStore;
+    //
+    let appliedFilter = '';
+    const isFiltered = filterStore &&
+      (
+        filterStore.filter !== 'all' ||
+        filterStore.tags && filterStore.tags.length ||
+        filterStore.languages && filterStore.languages.length ||
+        filterStore.searchStr.length
+      );
+    if (isFiltered) {
+      appliedFilter = '?' +
+        queryString.stringify({
+          filter: filterStore.filter,
+          searchStr: filterStore.searchStr,
+          tags: filterStore.tags,
+          languages: filterStore.languages
+        });
+    }
+    //
+    const shareUrl = 'http://githubify.me/' +
+      (this.props.name ? this.props.name : '') + appliedFilter;
     const title = 'Githubify.me (place to manage and organize tags for your repos)';
     //
     return (
@@ -74,6 +111,29 @@ const ShareBlock = React.createClass({
               size={32}
               round={true} />
           </LinkedinShareButton>
+        </div>
+
+        <div className="share-block-info">
+          <OverlayTrigger
+            trigger="click"
+            placement="bottom"
+            rootClose
+            overlay={
+              <Popover title="Copy link and share with friends">
+                <Input
+                  type="text"
+                  value={shareUrl}
+                  autoFocus
+                  onFocus={this.handleFocus}
+                />
+              </Popover>
+            }
+          >
+            <FontAwesome
+              name="link"
+              className="share-block-share-button share-block-share-button-link"
+            />
+          </OverlayTrigger>
         </div>
       </div>
     );

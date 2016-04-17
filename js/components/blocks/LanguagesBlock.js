@@ -28,7 +28,7 @@ const LanguagesBlock = React.createClass({
   filterReposByLanguages(language) {
     const filterStore = this.state.filterStore;
     const activeLanguages = _.xor(filterStore.languages, [language]);
-    FilterActions.setLanguages(this.props.uname, activeLanguages);
+    FilterActions.setLanguages(activeLanguages);
   },
 
   render() {
@@ -36,10 +36,10 @@ const LanguagesBlock = React.createClass({
     const filterStore = this.state.filterStore;
     //
     let languagesBlock = <p>There are no languages for now!</p>;
-    if (reposStore && filterStore) {
+    if (reposStore) {
       const sortedLanguages = _.sortBy(reposStore.languages);
       languagesBlock = _.map(sortedLanguages, (language) => {
-        let activeClass = _.includes(filterStore.languages, language) ?
+        let activeClass = filterStore && _.includes(filterStore.languages, language) ?
           ' active' :
           '';
         //
