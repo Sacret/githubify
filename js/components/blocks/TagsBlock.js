@@ -28,6 +28,12 @@ const TagsBlock = React.createClass({
     Reflux.connect(FilterStore, 'filterStore')
   ],
 
+  getInitialState() {
+    return({
+      tagEditingKey: ''
+    });
+  },
+
   componentDidMount() {
     const userID = this.props.openUser.id;
     const query = this.props.query;
@@ -73,18 +79,40 @@ const TagsBlock = React.createClass({
     //
     const openUserName = this.props.openUser.login;
     const tagKey = tag.key;
-    const isRemoving = event && ~event.target.className.indexOf('tag-remove-icon');
+    const targetClassName = event.target.className;
+    const isRemoving = ~targetClassName.indexOf('tag-remove-icon');
+    const isEditing = ~targetClassName.indexOf('tag-edit-icon');
+    if (~targetClassName.indexOf('tag-edit-input')) {
+      return;
+    }
     if (isRemoving) {
       this.props.setFirebaseTags(tagKey);
       activeTags = _.difference(activeTags, [tagKey]);
+    }
+    else if (isEditing) {
+      this.setState({
+        tagEditingKey: tag.key
+      });
     }
     else {
       activeTags = _.xor(activeTags, [tagKey]);
     }
     //
-    const tagReposIds = this.getTagReposIds(this.props.tags, activeTags);
-    FilterActions.setTagsReposIds(tagReposIds);
-    FilterActions.setTags(activeTags);
+    if (!isEditing) {
+      const tagReposIds = this.getTagReposIds(this.props.tags, activeTags);
+      FilterActions.setTagsReposIds(tagReposIds);
+      FilterActions.setTags(activeTags);
+    }
+  },
+
+  handleKeyUp(e) {
+    if (e.keyCode == 13) {
+      this.submitTagEdit();
+    }
+  },
+
+  submitTagEdit() {
+    this.props.editTag(this.state.tagEditingKey, this.refs.inputTagEdit.getValue().trim());
   },
 
   render() {
@@ -120,19 +148,41 @@ const TagsBlock = React.createClass({
         let activeClass = filterStore && _.includes(filterStore.tags, tag.key) ?
           ' active' :
           '';
+        let editingClass = (this.state.tagEditingKey === tag.key) ?
+          ' active editing-tag' :
+          '';
         //
         return (
           <span
-            className={'tag' + activeClass}
+            className={'tag' + activeClass + editingClass}
             key={'tag-' + tag.key}
             onClick={(e) => this.filterReposByTags(e, tag)}
           >
-            {tag.key}
+            { this.state.tagEditingKey !== tag.key ?
+                tag.key :
+                <Input
+                  type="text"
+                  ref="inputTagEdit"
+                  defaultValue={tag.key}
+                  className="tag-edit-input"
+                  onKeyUp={(e) => this.handleKeyUp(e)}
+                />
+            }
             { isCurrentUser ?
-                <FontAwesome
-                  className="tag-remove-icon"
-                  name="times"
-                /> :
+                [
+                  <FontAwesome
+                    key="tag-remove-icon"
+                    className="tag-icon tag-remove-icon"
+                    name="times"
+                    title="Remove tag"
+                  />,
+                  <FontAwesome
+                    key="tag-edit-icon"
+                    className="tag-icon tag-edit-icon"
+                    name="pencil"
+                    title="Edit tag"
+                  />
+                ]:
                 null
             }
           </span>
