@@ -105,14 +105,24 @@ const TagsBlock = React.createClass({
     }
   },
 
-  handleKeyUp(e) {
+  handleKeyUp(e, tag) {
     if (e.keyCode == 13) {
-      this.submitTagEdit();
+      this.submitTagEdit(tag);
     }
   },
 
-  submitTagEdit() {
-    this.props.editTag(this.state.tagEditingKey, this.refs.inputTagEdit.getValue().trim());
+  submitTagEdit(tag) {
+    const tagName = this.refs.inputTagEdit.getValue().trim();
+    this.props.editTag(this.state.tagEditingKey, tagName, tag);
+    //
+    const filterStore = this.state.filterStore;
+    let activeTags = filterStore ?
+      filterStore.tags :
+      [];
+    activeTags = _.difference(activeTags, [this.state.tagEditingKey]);
+    const tagReposIds = this.getTagReposIds(this.props.tags, activeTags);
+    FilterActions.setTagsReposIds(tagReposIds);
+    FilterActions.setTags(activeTags);
   },
 
   render() {
@@ -165,7 +175,7 @@ const TagsBlock = React.createClass({
                   ref="inputTagEdit"
                   defaultValue={tag.key}
                   className="tag-edit-input"
-                  onKeyUp={(e) => this.handleKeyUp(e)}
+                  onKeyUp={(e) => this.handleKeyUp(e, tag)}
                 />
             }
             { isCurrentUser ?
