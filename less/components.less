@@ -90,6 +90,7 @@
 
 .tag {
   .tag-decorations(@brand-primary);
+  .no-select();
   font-size: @font-size-h4;
   margin-right: 5px;
   margin-bottom: 5px;
@@ -105,19 +106,42 @@
 }
 
 .tag, .repo-tag {
-  .tag-remove-icon {
+  .tag-icon {
     visibility: hidden;
     position: absolute;
     right: 3px;
-    top: 3px;
     font-size: 10px;
     cursor: pointer;
   }
+  .tag-remove-icon {
+    top: 3px;
+  }
+  .tag-edit-icon {
+    bottom: 3px;
+  }
   &:hover {
-    .tag-remove-icon {
+    .tag-icon {
       visibility: initial;
+      &:hover {
+        font-size: 16px;
+      }
     }
   }
+}
+
+.editing-tag {
+  .tag-icon {
+    visibility: hidden !important;
+  }
+  .form-group {
+    margin-bottom: 0;
+  }
+}
+
+.tag-edit-input {
+  color: darken(@brand-primary, 10%);
+  border: 1px solid @brand-primary;
+  font-size: @font-size-h4;
 }
 
 .repo-tag {

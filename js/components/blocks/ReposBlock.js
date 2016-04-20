@@ -145,7 +145,7 @@ const ReposBlock = React.createClass({
                 {tag.key}
                 { isCurrentUser ?
                     <FontAwesome
-                      className="tag-remove-icon"
+                      className="tag-icon tag-remove-icon"
                       name="times"
                       onClick={() => this.removeRepoTag(tag.key, tag.repos, repo.id)}
                     /> :

@@ -78,6 +78,11 @@ const MainPage = React.createClass({
     });
   },
 
+  editTag(oldTagKey, newTagKey, tag) {
+    this.setFirebaseTags(oldTagKey);
+    this.setFirebaseTagRepos(newTagKey, tag.repos);
+  },
+
   render() {
     const userStore = this.state.userStore;
     //
@@ -118,6 +123,7 @@ const MainPage = React.createClass({
                         query={this.props.location.query}
                         tags={this.state.tags}
                         setFirebaseTags={this.setFirebaseTags}
+                        editTag={this.editTag}
                       />
                     </div>
                   </Row>,
