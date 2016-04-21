@@ -78,9 +78,20 @@ const MainPage = React.createClass({
     });
   },
 
-  editTag(oldTagKey, newTagKey, tag) {
-    this.setFirebaseTags(oldTagKey);
-    this.setFirebaseTagRepos(newTagKey, tag.repos);
+  editTag(oldTagKey, newTagKey, tag, callback) {
+    const userStore = this.state.userStore;
+    const userID = userStore.openUser.id;
+    base.post('users/github:' + userID + '/tags/' + newTagKey, {
+      data: { repos: tag.repos },
+      then() {
+        base.post('users/github:' + userID + '/tags/' + oldTagKey, {
+          data: null,
+          then() {
+            callback();
+          }
+        });
+      }
+    });
   },
 
   render() {

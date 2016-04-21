@@ -113,16 +113,16 @@ const TagsBlock = React.createClass({
 
   submitTagEdit(tag) {
     const tagName = this.refs.inputTagEdit.getValue().trim();
-    this.props.editTag(this.state.tagEditingKey, tagName, tag);
-    //
-    const filterStore = this.state.filterStore;
-    let activeTags = filterStore ?
-      filterStore.tags :
-      [];
-    activeTags = _.difference(activeTags, [this.state.tagEditingKey]);
-    const tagReposIds = this.getTagReposIds(this.props.tags, activeTags);
-    FilterActions.setTagsReposIds(tagReposIds);
-    FilterActions.setTags(activeTags);
+    this.props.editTag(this.state.tagEditingKey, tagName, tag, () => {
+      const filterStore = this.state.filterStore;
+      let activeTags = filterStore ?
+        filterStore.tags :
+        [];
+      activeTags = _.difference(activeTags, [this.state.tagEditingKey]);
+      const tagReposIds = this.getTagReposIds(this.props.tags, activeTags);
+      FilterActions.setTagsReposIds(tagReposIds);
+      FilterActions.setTags(activeTags);
+    });
   },
 
   render() {
