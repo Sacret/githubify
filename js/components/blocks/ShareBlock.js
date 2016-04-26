@@ -47,25 +47,31 @@ const ShareBlock = React.createClass({
     const filterStore = this.state.filterStore;
     //
     let appliedFilter = '';
-    const isFiltered = filterStore &&
-      (
-        filterStore.filter !== 'all' ||
-        filterStore.tags && filterStore.tags.length ||
-        filterStore.languages && filterStore.languages.length ||
-        filterStore.searchStr.length
-      );
-    if (isFiltered) {
-      appliedFilter = '?' +
-        queryString.stringify({
-          filter: filterStore.filter,
-          searchStr: filterStore.searchStr,
-          tags: filterStore.tags,
-          languages: filterStore.languages
-        });
+    if (filterStore) {
+      const { filter, searchStr, tags, languages} = filterStore;
+      const isFiltered = filter !== 'all' ||
+        tags && tags.length ||
+        languages && languages.length ||
+        searchStr.length;
+      if (isFiltered) {
+        const filters = {
+          filter: filter
+        };
+        if (searchStr.length) {
+          filters.searchStr = searchStr;
+        }
+        if (tags && tags.length) {
+          filters.tags = tags;
+        }
+        if (languages && languages.length) {
+          filters.languages = languages;
+        }
+        appliedFilter = '?' + queryString.stringify(filters);
+      }
     }
     //
     const shareUrl = 'https://githubify.me/' +
-      (this.props.name ? this.props.name : '') + appliedFilter;
+      (this.props.name || '') + appliedFilter;
     const title = 'Githubify.me (place to manage and organize tags for your repos)';
     //
     return (
