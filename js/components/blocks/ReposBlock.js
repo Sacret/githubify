@@ -9,7 +9,7 @@ import createFragment from 'react-addons-create-fragment';
 import { Typeahead } from 'react-typeahead';
 import Highlight from 'react-highlighter';
 //
-import { Row, Col, Thumbnail, Button } from 'react-bootstrap';
+import { Row, Col, Thumbnail, Button, FormGroup, FormControl } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import MasonryMixin from 'react-masonry-mixin';
 //
@@ -228,7 +228,22 @@ const ReposBlock = React.createClass({
     //
     return (
       <div>
-        <p>{reposLength} repo{reposLength !== 1 ? 's' : ''}</p>
+        <Row key="repos-top-block">
+          <Col xs={9} key="repos-top-block-count">
+            <p>{reposLength} repo{reposLength !== 1 ? 's' : ''}</p>
+          </Col>
+          <Col xs={3} key="repos-top-block-select">
+            <form>
+              <FormGroup controlId="formControlsSelect">
+                <FormControl componentClass="select" placeholder="Sort by">
+                  <option value="date">Updated date</option>
+                  <option value="title">Title</option>
+                  <option value="star">Stars</option>
+                </FormControl>
+              </FormGroup>
+            </form>
+          </Col>
+        </Row>
         <Row ref="masonryContainer">
           {reposBlock}
         </Row>
