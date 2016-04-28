@@ -3,7 +3,7 @@
 import React from 'react';
 import Reflux from 'reflux';
 //
-import { Input, Button, Alert } from 'react-bootstrap';
+import { Button, Alert } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 //
 import ShareBlock from './ShareBlock';

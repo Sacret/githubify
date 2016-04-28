@@ -20,6 +20,9 @@ const FilterStore = Reflux.createStore({
     languages: [],
     searchStr: '',
     //
+    sort: 'name',
+    direction: 'asc',
+    //
     defaultFilters: null,
     tagReposIds: [],
     isAllRepos: false,
@@ -61,8 +64,14 @@ const FilterStore = Reflux.createStore({
     this.setFilters();
   },
 
-  setSearch( searchStr) {
+  setSearch(searchStr) {
     this.filterInfo.searchStr = searchStr;
+    this.setFilters();
+  },
+
+  setSorting(sorting) {
+    this.filterInfo.sort = sorting.sort;
+    this.filterInfo.direction = sorting.direction;
     this.setFilters();
   },
 

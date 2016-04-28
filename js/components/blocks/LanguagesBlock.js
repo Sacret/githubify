@@ -4,7 +4,7 @@ import React from 'react';
 import Reflux from 'reflux';
 import _ from 'lodash';
 //
-import { Input, Button, Alert } from 'react-bootstrap';
+import { Button, Alert } from 'react-bootstrap';
 //
 import FontAwesome from 'react-fontawesome';
 //
