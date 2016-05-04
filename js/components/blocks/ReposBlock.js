@@ -258,6 +258,13 @@ const ReposBlock = React.createClass({
                 }
                 <small className="repo-updated">
                   Updated on {moment(repo.updated_at).format('MMM D, YYYY')}
+                  <span className="pull-right">
+                    <FontAwesome
+                      className=""
+                      name="star"
+                    />
+                    &nbsp;{repo.stargazers_count}
+                  </span>
                 </small>
                 <div className="clearfix">
                   {tagsBlock}
