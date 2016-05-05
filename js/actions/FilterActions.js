@@ -13,8 +13,9 @@ const FilterActions = Reflux.createActions([
   'setTagsReposIds',
   'setLanguages',
   'setSearch',
+  'setSorting',
   'setFilters',
-  'setDefaultFilters',
+  'setDefaultFilters'
 ]);
 
 export default FilterActions;

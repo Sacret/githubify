@@ -47,25 +47,39 @@ const ShareBlock = React.createClass({
     const filterStore = this.state.filterStore;
     //
     let appliedFilter = '';
-    const isFiltered = filterStore &&
-      (
-        filterStore.filter !== 'all' ||
-        filterStore.tags && filterStore.tags.length ||
-        filterStore.languages && filterStore.languages.length ||
-        filterStore.searchStr.length
-      );
-    if (isFiltered) {
-      appliedFilter = '?' +
-        queryString.stringify({
-          filter: filterStore.filter,
-          searchStr: filterStore.searchStr,
-          tags: filterStore.tags,
-          languages: filterStore.languages
-        });
+    if (filterStore) {
+      const { filter, searchStr, tags, languages, sort, direction } = filterStore;
+      const [ isFilter, isTags, isLanguages, isSearch, isSort ] = [
+        filter !== 'all',
+        tags && tags.length,
+        languages && languages.length,
+        searchStr.length,
+        sort && direction && !(sort == 'name' && direction == 'asc')
+      ];
+      const isFiltered = isFilter || isTags || isLanguages || isSearch || isSort;
+      if (isFiltered) {
+        const filters = {
+          filter: filter
+        };
+        if (isSearch) {
+          filters.searchStr = searchStr;
+        }
+        if (isTags) {
+          filters.tags = tags;
+        }
+        if (isLanguages) {
+          filters.languages = languages;
+        }
+        if (isSort) {
+          filters.sort = sort;
+          filters.direction = direction;
+        }
+        appliedFilter = '?' + queryString.stringify(filters);
+      }
     }
     //
     const shareUrl = 'https://githubify.me/' +
-      (this.props.name ? this.props.name : '') + appliedFilter;
+      (this.props.name || '') + appliedFilter;
     const title = 'Githubify.me (place to manage and organize tags for your repos)';
     //
     return (

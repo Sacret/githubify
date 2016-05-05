@@ -1,6 +1,6 @@
 {
   "name": "githubify.me",
-  "version": "3.2.1",
+  "version": "3.2.4",
   "private": true,
   "devDependencies": {
     "babel-preset-es2015": "6.1.18",
@@ -31,7 +31,7 @@
     "react": "0.14.6",
     "react-addons-create-fragment": "0.14.2",
     "react-addons-update": "0.14.2",
-    "react-bootstrap": "0.27.3",
+    "react-bootstrap": "0.28.5",
     "react-dom": "0.14.2",
     "react-fontawesome": "0.3.3",
     "react-highlighter": "0.3.1",

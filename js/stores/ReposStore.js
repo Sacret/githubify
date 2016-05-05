@@ -19,7 +19,10 @@ const ReposStore = Reflux.createStore({
     filteredRepos: [],
     languages: [],
     isShowingOwner: false,
-    username: null
+    username: null,
+    //
+    sort: 'name',
+    direction: 'asc'
   },
 
   initRepos() {
@@ -61,6 +64,7 @@ const ReposStore = Reflux.createStore({
         }
         //
         _this.reposInfo.repos = _.union(_this.reposInfo.repos, newRepos);
+        _this.reposInfo.repos = _.sortByOrder(_this.reposInfo.repos, _this.reposInfo.sort, _this.reposInfo.direction);
         _this.reposInfo.filteredRepos = _this.reposInfo.repos;
         //
         //
@@ -82,7 +86,7 @@ const ReposStore = Reflux.createStore({
   },
 
   filterRepos(filters) {
-    const { tags, tagReposIds, languages, searchStr } = filters;
+    const { tags, tagReposIds, languages, searchStr, sort, direction } = filters;
     let newRepos = this.reposInfo.repos;
     if (tags && tags.length) {
       newRepos = _.filter(newRepos, (repo) => {
@@ -95,9 +99,14 @@ const ReposStore = Reflux.createStore({
       });
     }
     if (searchStr && searchStr.length) {
-      newRepos = _.filter(newRepos, repo => {
+      newRepos = _.filter(newRepos, (repo) => {
         return _.includes(repo.name.toLowerCase(), searchStr.toLowerCase());
       });
+    }
+    if (sort) {
+      newRepos = _.sortByOrder(newRepos, sort, direction);
+      this.reposInfo.sort = sort;
+      this.reposInfo.direction = direction;
     }
     this.reposInfo.filteredRepos = newRepos;
     this.trigger(this.reposInfo);
