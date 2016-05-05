@@ -48,23 +48,31 @@ const ShareBlock = React.createClass({
     //
     let appliedFilter = '';
     if (filterStore) {
-      const { filter, searchStr, tags, languages} = filterStore;
-      const isFiltered = filter !== 'all' ||
-        tags && tags.length ||
-        languages && languages.length ||
-        searchStr.length;
+      const { filter, searchStr, tags, languages, sort, direction } = filterStore;
+      const [ isFilter, isTags, isLanguages, isSearch, isSort ] = [
+        filter !== 'all',
+        tags && tags.length,
+        languages && languages.length,
+        searchStr.length,
+        sort && direction && !(sort == 'name' && direction == 'asc')
+      ];
+      const isFiltered = isFilter || isTags || isLanguages || isSearch || isSort;
       if (isFiltered) {
         const filters = {
           filter: filter
         };
-        if (searchStr.length) {
+        if (isSearch) {
           filters.searchStr = searchStr;
         }
-        if (tags && tags.length) {
+        if (isTags) {
           filters.tags = tags;
         }
-        if (languages && languages.length) {
+        if (isLanguages) {
           filters.languages = languages;
+        }
+        if (isSort) {
+          filters.sort = sort;
+          filters.direction = direction;
         }
         appliedFilter = '?' + queryString.stringify(filters);
       }

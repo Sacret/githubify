@@ -35,6 +35,10 @@ const FilterStore = Reflux.createStore({
       tags: [],
       languages: [],
       searchStr: '',
+      //
+      sort: 'name',
+      direction: 'asc',
+      //
       defaultFilters: this.filterInfo.defaultFilters
     };
     this.trigger(this.filterInfo);
@@ -89,7 +93,7 @@ const FilterStore = Reflux.createStore({
     }
     this.trigger(this.filterInfo);
     if (this.filterInfo.isAllRepos && this.filterInfo.isAllTags && this.filterInfo.defaultFilters) {
-      const { filter, searchStr } = this.filterInfo.defaultFilters;
+      const { filter, searchStr, sort, direction } = this.filterInfo.defaultFilters;
       let { languages, tags } = this.filterInfo.defaultFilters;
       if (tags && !_.isArray(tags)) {
         tags = [tags];
@@ -102,6 +106,8 @@ const FilterStore = Reflux.createStore({
       this.filterInfo.languages = languages || [];
       this.filterInfo.tags = tags || [];
       this.filterInfo.searchStr = searchStr || '';
+      this.filterInfo.sort = sort || 'name';
+      this.filterInfo.direction = direction || 'asc';
       this.setFilters();
       this.filterInfo.defaultFilters = null;
     }
