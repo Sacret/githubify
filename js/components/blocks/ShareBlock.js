@@ -58,9 +58,10 @@ const ShareBlock = React.createClass({
       ];
       const isFiltered = isFilter || isTags || isLanguages || isSearch || isSort;
       if (isFiltered) {
-        const filters = {
-          filter: filter
-        };
+        const filters = {};
+        if (isFilter) {
+          filters.filter = filter;
+        }
         if (isSearch) {
           filters.searchStr = searchStr;
         }
