@@ -9,9 +9,11 @@ import createFragment from 'react-addons-create-fragment';
 import { Typeahead } from 'react-typeahead';
 import Highlight from 'react-highlighter';
 //
-import { Row, Col, Thumbnail, Button, Input } from 'react-bootstrap';
+import { Row, Col, Thumbnail } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import MasonryMixin from 'react-masonry-mixin';
+//
+import SortingBlock from './SortingBlock';
 //
 import ReposActions from '../../actions/ReposActions';
 import UserActions from '../../actions/UserActions';
@@ -117,62 +119,6 @@ const ReposBlock = React.createClass({
 
   handleUsernameClick(username) {
     History.pushState(null, username);
-  },
-
-  handleSortSelect() {
-    const sort = this.refs.sort.getValue();
-    let sorting = {};
-    switch(sort) {
-      case 'titleAsc':
-        sorting = {
-          sort: 'name',
-          direction: 'asc'
-        };
-        break;
-      case 'titleDesc':
-        sorting =  {
-          sort: 'name',
-          direction: 'desc'
-        };
-        break;
-      case 'createdAsc':
-        sorting =  {
-          sort: 'created_at',
-          direction: 'asc'
-        };
-        break;
-      case 'createdDesc':
-        sorting =  {
-          sort: 'created_at',
-          direction: 'desc'
-        };
-        break;
-      case 'updatedAsc':
-        sorting =  {
-          sort: 'updated_at',
-          direction: 'asc'
-        };
-        break;
-      case 'updatedDesc':
-        sorting =  {
-          sort: 'updated_at',
-          direction: 'desc'
-        };
-        break;
-      case 'starsAsc':
-        sorting =  {
-          sort: 'stargazers_count',
-          direction: 'asc'
-        };
-        break;
-      case 'starsDesc':
-        sorting =  {
-          sort: 'stargazers_count',
-          direction: 'desc'
-        };
-        break;
-    }
-    FilterActions.setSorting(sorting);
   },
 
   render() {
@@ -299,23 +245,7 @@ const ReposBlock = React.createClass({
             </p>
           </Col>
           <Col md={3} xs={6} key="repos-top-block-select">
-            <form className="repos-block-sort-input">
-              <Input
-                type="select"
-                placeholder="Sort by"
-                ref="sort"
-                onChange={this.handleSortSelect}
-              >
-                <option value="titleAsc">Title (asc)</option>
-                <option value="titleDesc">Title (desc)</option>
-                <option value="createdAsc">Created date (asc)</option>
-                <option value="createdDesc">Created date (desc)</option>
-                <option value="updatedAsc">Updated date (asc)</option>
-                <option value="updatedDesc">Updated date (desc)</option>
-                <option value="starsAsc">Stars (asc)</option>
-                <option value="starsDesc">Stars (desc)</option>
-              </Input>
-            </form>
+            <SortingBlock />
           </Col>
         </Row>
         <Row ref="masonryContainer">
