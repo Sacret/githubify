@@ -9,13 +9,16 @@ import createFragment from 'react-addons-create-fragment';
 import { Typeahead } from 'react-typeahead';
 import Highlight from 'react-highlighter';
 //
-import { Row, Col, Thumbnail, Button, Input } from 'react-bootstrap';
+import { Row, Col, Thumbnail } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import MasonryMixin from 'react-masonry-mixin';
+//
+import SortingBlock from './SortingBlock';
 //
 import ReposActions from '../../actions/ReposActions';
 import UserActions from '../../actions/UserActions';
 import FilterActions from '../../actions/FilterActions';
+import ModalActions from '../../actions/ModalActions';
 //
 import ReposStore from '../../stores/ReposStore';
 import FilterStore from '../../stores/FilterStore';
@@ -43,35 +46,36 @@ const ReposBlock = React.createClass({
 
   addTag(tagName, repoID) {
     const userID = this.props.openUser.id;
-    const newTag = base.push('users/github:' + userID + '/tags/' + tagName + '/repos', {
-      data: {
-        id: repoID
-      }
-    });
+    const tagsStore = this.props.tags;
+    if (tagsStore.length <= 50) {
+      const newTag = base.push('users/github:' + userID + '/tags/' + tagName + '/repos', {
+        data: {
+          id: repoID
+        }
+      });
+    }
+    else {
+      ModalActions.showModal();
+    }
   },
 
   addRepoTag(index, repo) {
     const tagsStore = this.props.tags;
-    if (tagsStore.length < 30) {
-      const _this = this;
-      const tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
-      const tagNamesArray = tagNames.split(',');
-      //
-      _.forEach(tagNamesArray, (tagName) => {
-        let correctTagName = _.trunc(tagName.trim(), {
-          length: 50,
-          omission: ''
-        });
-        if (correctTagName.length && !_.includes(repo.tags, correctTagName)) {
-          _this.addTag(correctTagName.replace(/<|>/g, ''), repo.id);
-        }
+    const _this = this;
+    const tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
+    const tagNamesArray = tagNames.split(',');
+    //
+    _.forEach(tagNamesArray, (tagName) => {
+      let correctTagName = _.trunc(tagName.trim(), {
+        length: 50,
+        omission: ''
       });
-      //
-      _this.typeaheadBlur(null, index, true);
-    }
-    else {
-
-    }
+      if (correctTagName.length && !_.includes(repo.tags, correctTagName)) {
+        _this.addTag(correctTagName.replace(/<|>/g, ''), repo.id);
+      }
+    });
+    //
+    _this.typeaheadBlur(null, index, true);
   },
 
   removeRepoTag(tagKey, tagRepos, repoID) {
@@ -117,62 +121,6 @@ const ReposBlock = React.createClass({
 
   handleUsernameClick(username) {
     History.pushState(null, username);
-  },
-
-  handleSortSelect() {
-    const sort = this.refs.sort.getValue();
-    let sorting = {};
-    switch(sort) {
-      case 'titleAsc':
-        sorting = {
-          sort: 'name',
-          direction: 'asc'
-        };
-        break;
-      case 'titleDesc':
-        sorting =  {
-          sort: 'name',
-          direction: 'desc'
-        };
-        break;
-      case 'createdAsc':
-        sorting =  {
-          sort: 'created_at',
-          direction: 'asc'
-        };
-        break;
-      case 'createdDesc':
-        sorting =  {
-          sort: 'created_at',
-          direction: 'desc'
-        };
-        break;
-      case 'updatedAsc':
-        sorting =  {
-          sort: 'updated_at',
-          direction: 'asc'
-        };
-        break;
-      case 'updatedDesc':
-        sorting =  {
-          sort: 'updated_at',
-          direction: 'desc'
-        };
-        break;
-      case 'starsAsc':
-        sorting =  {
-          sort: 'stargazers_count',
-          direction: 'asc'
-        };
-        break;
-      case 'starsDesc':
-        sorting =  {
-          sort: 'stargazers_count',
-          direction: 'desc'
-        };
-        break;
-    }
-    FilterActions.setSorting(sorting);
   },
 
   render() {
@@ -299,23 +247,7 @@ const ReposBlock = React.createClass({
             </p>
           </Col>
           <Col md={3} xs={6} key="repos-top-block-select">
-            <form className="repos-block-sort-input">
-              <Input
-                type="select"
-                placeholder="Sort by"
-                ref="sort"
-                onChange={this.handleSortSelect}
-              >
-                <option value="titleAsc">Title (asc)</option>
-                <option value="titleDesc">Title (desc)</option>
-                <option value="createdAsc">Created date (asc)</option>
-                <option value="createdDesc">Created date (desc)</option>
-                <option value="updatedAsc">Updated date (asc)</option>
-                <option value="updatedDesc">Updated date (desc)</option>
-                <option value="starsAsc">Stars (asc)</option>
-                <option value="starsDesc">Stars (desc)</option>
-              </Input>
-            </form>
+            <SortingBlock />
           </Col>
         </Row>
         <Row ref="masonryContainer">

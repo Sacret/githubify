@@ -36,8 +36,8 @@ const FilterStore = Reflux.createStore({
       languages: [],
       searchStr: '',
       //
-      sort: 'name',
-      direction: 'asc',
+      sort: this.filterInfo.sort || 'name',
+      direction: this.filterInfo.direction || 'asc',
       //
       defaultFilters: this.filterInfo.defaultFilters
     };
