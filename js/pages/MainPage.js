@@ -18,6 +18,7 @@ import SearchBlock from '../components/blocks/SearchBlock';
 import TagsBlock from '../components/blocks/TagsBlock';
 import UserBlock from '../components/blocks/UserBlock';
 import UserMenu from '../components/menus/UserMenu';
+import TagLimitModal from '../components/modals/TagLimitModal';
 //
 import FilterActions from '../actions/FilterActions';
 import ReposActions from '../actions/ReposActions';
@@ -180,6 +181,7 @@ const MainPage = React.createClass({
                 /> :
                 <LoadingBlock />
             }
+            <TagLimitModal />
           </Col>
         </Row>
       </Grid>

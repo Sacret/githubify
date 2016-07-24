@@ -18,6 +18,7 @@ import SortingBlock from './SortingBlock';
 import ReposActions from '../../actions/ReposActions';
 import UserActions from '../../actions/UserActions';
 import FilterActions from '../../actions/FilterActions';
+import ModalActions from '../../actions/ModalActions';
 //
 import ReposStore from '../../stores/ReposStore';
 import FilterStore from '../../stores/FilterStore';
@@ -45,35 +46,36 @@ const ReposBlock = React.createClass({
 
   addTag(tagName, repoID) {
     const userID = this.props.openUser.id;
-    const newTag = base.push('users/github:' + userID + '/tags/' + tagName + '/repos', {
-      data: {
-        id: repoID
-      }
-    });
+    const tagsStore = this.props.tags;
+    if (tagsStore.length <= 50) {
+      const newTag = base.push('users/github:' + userID + '/tags/' + tagName + '/repos', {
+        data: {
+          id: repoID
+        }
+      });
+    }
+    else {
+      ModalActions.showModal();
+    }
   },
 
   addRepoTag(index, repo) {
     const tagsStore = this.props.tags;
-    if (tagsStore.length < 30) {
-      const _this = this;
-      const tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
-      const tagNamesArray = tagNames.split(',');
-      //
-      _.forEach(tagNamesArray, (tagName) => {
-        let correctTagName = _.trunc(tagName.trim(), {
-          length: 50,
-          omission: ''
-        });
-        if (correctTagName.length && !_.includes(repo.tags, correctTagName)) {
-          _this.addTag(correctTagName.replace(/<|>/g, ''), repo.id);
-        }
+    const _this = this;
+    const tagNames = _this.refs['typeahead' + index].refs.entry.value.trim();
+    const tagNamesArray = tagNames.split(',');
+    //
+    _.forEach(tagNamesArray, (tagName) => {
+      let correctTagName = _.trunc(tagName.trim(), {
+        length: 50,
+        omission: ''
       });
-      //
-      _this.typeaheadBlur(null, index, true);
-    }
-    else {
-
-    }
+      if (correctTagName.length && !_.includes(repo.tags, correctTagName)) {
+        _this.addTag(correctTagName.replace(/<|>/g, ''), repo.id);
+      }
+    });
+    //
+    _this.typeaheadBlur(null, index, true);
   },
 
   removeRepoTag(tagKey, tagRepos, repoID) {
