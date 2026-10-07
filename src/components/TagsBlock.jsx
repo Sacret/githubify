@@ -57,14 +57,14 @@ export default function TagsBlock({ tags, openUser, isOwner }) {
 
   let content;
   if (!tags.length && isOwner) {
-    content = <p>You don't have any tags yet. Feel free to add them</p>;
+    content = <p>You don't have any tags yet. Feel free to add some!</p>;
   }
   else if (!tags.length) {
     content = (
       <p>
-        Unfortunately this user doesn't have any tags on githubify.
+        Unfortunately, this user doesn't have any tags on Githubify yet.
         {openUser.email ?
-          <span>&nbsp;Let them know about it on email:&nbsp;
+          <span>&nbsp;Let them know by email:&nbsp;
             <a href={'mailto:' + openUser.email + '?subject=githubify.me'}>
               {openUser.email}
             </a>

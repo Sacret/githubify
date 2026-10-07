@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router';
 
-const TITLE = 'Githubify.me (place to manage and organize tags for your repos)';
+const TITLE = 'Githubify.me: a place to manage and organize tags for your GitHub repos';
 
 /**
  *  ShareBlock contains share links for current page with applied filters

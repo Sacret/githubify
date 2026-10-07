@@ -10,13 +10,13 @@ export default function UserMenu({ user }) {
     return null;
   }
   if (!user) {
-    return <button type="button" className="btn-link" onClick={login}>Login</button>;
+    return <button type="button" className="btn-link" onClick={login}>Log in</button>;
   }
   return (
     <div>
       <Link to={'/' + user.login}>{user.login}</Link>
       <span className="logged-in-user-divider" />
-      <button type="button" className="btn-link" onClick={logout}>Logout</button>
+      <button type="button" className="btn-link" onClick={logout}>Log out</button>
     </div>
   );
 }

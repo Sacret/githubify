@@ -10,7 +10,7 @@ export default function EmptyUserBlock({ user, message }) {
         <h3>{message}</h3>
         {user ?
           <p>You can visit <Link to={'/' + user.login}>your page</Link></p> :
-          <p>You can visit <Link to="/">home page</Link></p>
+          <p>You can visit the <Link to="/">home page</Link></p>
         }
       </div>
     </div>

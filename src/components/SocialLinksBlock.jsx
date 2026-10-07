@@ -13,7 +13,7 @@ export default function SocialLinksBlock() {
         >
           <i className="fa fa-github" />
           <span className="social-text">
-            Fork repo on Github
+            Fork repo on GitHub
           </span>
         </a>
       </div>

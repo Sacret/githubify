@@ -1,14 +1,16 @@
 Githubify
 =======================
 
-Place where you can easily manage and organize tags for your Github repositories. You will have ability to set tags for your own repos, forks, repositories that you have been added to as a collaborator and even starred repos!
+A place where you can easily manage and organize tags for your GitHub repositories. You can tag your own repos, forks, repositories you've been added to as a collaborator, and even starred ones!
 
-![Image of Githubify](http://sacret.ru/sites/default/files/styles/gallery_image_full/public/portfolio/githubifyme_0.png)
+Live site: https://githubify.sacret.ru
+
+![Githubify](public/og-image.jpg)
 
 Installation
 ------------
 
-To install the application you need Node.js 20+ and npm
+To install the application, you need Node.js 20+ and npm.
 
 -   Clone the repository:
 
@@ -23,18 +25,18 @@ To install the application you need Node.js 20+ and npm
     npm install
     ```
 
--   Setup Firebase config:
+-   Set up the Firebase config:
 
     ```bash
     cp .env.example .env.local
     ```
 
-    and put settings of your Firebase web app to `.env.local`
+    and put your Firebase web app settings into `.env.local`
 
--   In Firebase console enable **GitHub** sign-in provider and apply
-    database rules from `database.rules.json`
+-   In the Firebase console, enable the **GitHub** sign-in provider and apply
+    the database rules from `database.rules.json`
 
--   Run dev server:
+-   Run the dev server:
 
     ```bash
     npm run dev
@@ -50,9 +52,9 @@ Deployment
 ----------
 
 The site is deployed to Beget hosting with `rsync` over SSH. You need
-`sshpass` (`brew install sshpass`)
+`sshpass` (`brew install sshpass`).
 
--   Fill SSH access in `.env.deploy` (see `.env.deploy.example`)
+-   Fill in SSH credentials in `.env.deploy` (see `.env.deploy.example`)
 
 -   Build and upload `dist/` to the server:
 

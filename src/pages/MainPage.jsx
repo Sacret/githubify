@@ -19,8 +19,8 @@ import UserMenu from '../components/UserMenu';
 
 function errorMessage(error) {
   return error.isRateLimit ?
-    'GitHub API rate limit exceeded. Please try again later' :
-    'Unable to load data from GitHub';
+    'GitHub API rate limit exceeded. Please try again later.' :
+    'Unable to load data from GitHub.';
 }
 
 /**
@@ -66,7 +66,7 @@ export default function MainPage({ uname }) {
       <EmptyUserBlock
         user={user}
         message={openUser.error.status === 404 ?
-          'Github user ' + uname + " doesn't exist" :
+          'GitHub user ' + uname + " doesn't exist" :
           errorMessage(openUser.error)}
       />
     );

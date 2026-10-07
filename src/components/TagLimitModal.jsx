@@ -16,7 +16,7 @@ export default function TagLimitModal({ onHide }) {
               <h4 className="modal-title">Oops...</h4>
             </div>
             <div className="modal-body">
-              <p>Unfortunately you can't add more than {MAX_TAGS} tags</p>
+              <p>Unfortunately, you can't add more than {MAX_TAGS} tags.</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-default" onClick={onHide}>
