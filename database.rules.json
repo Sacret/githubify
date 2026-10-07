@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "users": {
+      "$user": {
+        ".read": true,
+        ".write": "auth != null && auth.token.firebase.identities['github.com'] != null && $user === 'github:' + auth.token.firebase.identities['github.com'][0]",
+        "tags": {
+          "$tag": {
+            ".validate": "$tag.length <= 50"
+          }
+        }
+      }
+    }
+  }
+}
