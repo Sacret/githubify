@@ -92,6 +92,23 @@
   margin-top: 20px;
 }
 
+// On mobile share icons are smaller to fit in one row
+.user-block-main-info .share-block {
+  @media (max-width: @screen-xs-max) {
+    display: flex;
+    gap: 6px;
+    .share-block-info {
+      margin: 0;
+    }
+    .share-block-share-button {
+      width: 26px;
+      height: 26px;
+      line-height: 26px;
+      font-size: 14px;
+    }
+  }
+}
+
 .user-block-main-info-link {
   display: inline-block;
   max-width: 100%;
@@ -239,8 +256,10 @@
 }
 
 .filter {
+  display: inline-block;
   font-size: @font-size-h4;
   margin-right: 5px;
+  margin-bottom: 5px;
   background: lighten(@gray-lighter, 2%);
   border: 1px solid lighten(@gray-light, 35%);
   border-radius: 7px;
