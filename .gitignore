@@ -1,5 +1,6 @@
 # alphabetized
 .DS_Store
+.env.deploy
 .env.local
 dist/
 node_modules/

@@ -45,3 +45,17 @@ To install the application you need Node.js 20+ and npm
     ```bash
     npm run build
     ```
+
+Deployment
+----------
+
+The site is deployed to Beget hosting with `rsync` over SSH. You need
+`sshpass` (`brew install sshpass`)
+
+-   Fill SSH access in `.env.deploy` (see `.env.deploy.example`)
+
+-   Build and upload `dist/` to the server:
+
+    ```bash
+    npm run deploy
+    ```
