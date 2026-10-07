@@ -1,6 +1,50 @@
 .login-page {
-  height: 100vh;
+  min-height: 100vh;
+}
+
+.login-intro {
   background-color: #fff;
+  border-bottom: 1px solid @gray-lighter;
+}
+
+.login-form {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.login-share {
+  @media (max-width: @screen-xs-max) {
+    margin-top: 25px;
+    text-align: center;
+    .share-block {
+      display: table;
+      margin: 5px auto 0;
+    }
+  }
+}
+
+// Login button stays centered, share block goes to the left edge
+@media (min-width: @screen-sm-min) {
+  .login-form {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    // Bootstrap clearfix pseudo-elements would become grid items
+    &:before, &:after {
+      content: none;
+    }
+    .btn {
+      grid-column: 2;
+      margin: 0;
+    }
+  }
+  .login-share {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 }
 
 .header-title {
