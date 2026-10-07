@@ -17,6 +17,9 @@ export default function LoginForm() {
       <h4 className="login-page-paragraph">
         <strong>Note:</strong> maximum count of tags per user is {MAX_TAGS}, max length of tag title is {MAX_TAG_LENGTH}
       </h4>
+      <h4 className="login-page-paragraph">
+        <strong>A bit of history:</strong> this project was created in December 2015 to make it easier to work with a large number of repositories. In February 2017 GitHub introduced <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics" target="_blank" rel="noreferrer">topics</a>, which provide the same functionality, so the project has lost its relevance. Still, I've kept it in working order as a memento.
+      </h4>
       <img
         src="/img/example.png"
         className="center-block example-tags img-responsive"
