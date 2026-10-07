@@ -1,11 +1,14 @@
 #!/bin/bash
 set -e
 
-# Load deploy settings
+# Load deploy settings. The file is parsed line by line, not sourced,
+# so the password may contain any characters
 if [ -f .env.deploy ]; then
-  set -a
-  source .env.deploy
-  set +a
+  while IFS='=' read -r key value || [ -n "$key" ]; do
+    if [[ $key =~ ^DEPLOY_[A-Z_]+$ ]]; then
+      export "$key=${value%$'\r'}"
+    fi
+  done < .env.deploy
 else
   echo "Error: .env.deploy file not found. Copy .env.deploy.example and fill DEPLOY_HOST, DEPLOY_USER, DEPLOY_PASS, DEPLOY_PATH."
   exit 1
@@ -20,7 +23,8 @@ echo "==> Building site..."
 npm run build
 
 echo "==> Deploying to ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}..."
-sshpass -p "${DEPLOY_PASS}" rsync -avz --delete \
+# .well-known is kept on the server for SSL certificate validation
+sshpass -p "${DEPLOY_PASS}" rsync -avz --delete --exclude=.well-known --exclude=.DS_Store \
   dist/ \
   "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}" || RSYNC_EXIT=$?
 
