@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router';
 //
 import { login } from '../auth';
 import { MAX_TAGS, MAX_TAG_LENGTH } from '../tags';
+import { Author } from './Footer';
 import ShareBlock from './ShareBlock';
 
 /**
@@ -29,7 +30,7 @@ export default function LoginForm({ user }) {
             Welcome to the place where you can easily manage and organize tags for your Github repositories. You will have ability to set tags for your own repos, repositories that you have been added to as a member and even starred repos!
           </h4>
           <h4 className="login-page-paragraph">
-            <strong>Note:</strong> maximum count of tags per user is {MAX_TAGS}, max length of tag title is {MAX_TAG_LENGTH}
+            <strong>Note:</strong> maximum count of tags per user is {MAX_TAGS}, max length of tag title is {MAX_TAG_LENGTH}.
           </h4>
           <h4 className="login-page-paragraph">
             <strong>A bit of history:</strong> this project was created in December 2015 to make it easier to work with a large number of repositories. In February 2017 GitHub introduced <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics" target="_blank" rel="noreferrer">topics</a>, which provide the same functionality, so the project has lost its relevance. Still, I've kept it in working order as a memento.
@@ -59,6 +60,9 @@ export default function LoginForm({ user }) {
         <div className="login-share">
           Tell your friends:
           <ShareBlock />
+        </div>
+        <div className="login-author">
+          <Author />
         </div>
       </div>
     </>

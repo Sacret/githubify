@@ -8,11 +8,14 @@ import LoginForm from '../components/LoginForm';
 export default function LoginPage() {
   const user = useAuth();
 
+  if (user === undefined) {
+    return <LoadingBlock />;
+  }
   return (
     <div className="container-fluid login-page">
       <div className="row">
         <div className="col-xs-12 content-block">
-          {user === undefined ? <LoadingBlock /> : <LoginForm user={user} />}
+          <LoginForm user={user} />
         </div>
       </div>
     </div>

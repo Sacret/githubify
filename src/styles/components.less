@@ -1,5 +1,21 @@
-.login-page {
+// Footer is pressed to the bottom of the screen on short pages
+.app {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
+  > :first-child {
+    flex: 1 0 auto;
+    // auto margins of .container-fluid would shrink it in flex layout
+    width: 100%;
+  }
+}
+
+.footer {
+  padding: 20px 0;
+  border-top: 1px solid @gray-lighter;
+  background-color: #fff;
+  color: @gray-light;
+  text-align: center;
 }
 
 .login-intro {
@@ -12,10 +28,15 @@
   padding-bottom: 30px;
 }
 
-.login-share {
-  @media (max-width: @screen-xs-max) {
+.login-share, .login-author {
+  @media (max-width: @screen-sm-max) {
     margin-top: 25px;
     text-align: center;
+  }
+}
+
+.login-share {
+  @media (max-width: @screen-sm-max) {
     .share-block {
       display: table;
       margin: 5px auto 0;
@@ -23,8 +44,13 @@
   }
 }
 
+.login-author {
+  color: @gray-light;
+}
+
 // Login button stays centered, share block goes to the left edge
-@media (min-width: @screen-sm-min) {
+// and author to the right edge
+@media (min-width: @screen-md-min) {
   .login-form {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -44,6 +70,11 @@
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+  .login-author {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
   }
 }
 
@@ -376,16 +407,15 @@
 }
 
 .loading-block, .empty-user-block {
-  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loading-block-inline {
   padding: 40px 0;
 }
 
-.loading-icon, .empty-user-block-content {
-  .vertical-align();
-}
 
 .social-links-block-github {
   background: @brand-primary;
