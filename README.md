@@ -8,7 +8,7 @@ Place where you can easily manage and organize tags for your Github repositories
 Installation
 ------------
 
-To install the application you need npm and gulp
+To install the application you need Node.js 20+ and npm
 
 -   Clone the repository:
 
@@ -23,16 +23,25 @@ To install the application you need npm and gulp
     npm install
     ```
 
--   Setup `Config`:
+-   Setup Firebase config:
 
     ```bash
-    cp js/config/Config.example.js js/config/Config.js
+    cp .env.example .env.local
     ```
 
--   Put actual firebase path to `Config.js`
+    and put settings of your Firebase web app to `.env.local`
 
--   Run `gulp`:
+-   In Firebase console enable **GitHub** sign-in provider and apply
+    database rules from `database.rules.json`
+
+-   Run dev server:
 
     ```bash
-    gulp
+    npm run dev
+    ```
+
+-   Build for production (result is in `dist/`):
+
+    ```bash
+    npm run build
     ```
