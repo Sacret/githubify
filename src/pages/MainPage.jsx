@@ -94,10 +94,13 @@ function UserPage({ user, openUser, repos, filters }) {
           <div className="row user-info">
             <div className="container">
               <div className="row">
-                <div className="col-xs-6">
-                  <h2>GITHUBIFY.<span className="header-title">me</span></h2>
+                <div className="col-xs-8">
+                  <h2 className="main-header">
+                    <img src="/logo.svg" className="logo" alt="" />
+                    GITHUBIFY.<span className="header-title">me</span>
+                  </h2>
                 </div>
-                <div className="col-xs-6">
+                <div className="col-xs-4">
                   <div className="pull-right logged-in-user">
                     <UserMenu user={user} />
                   </div>

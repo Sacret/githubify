@@ -11,6 +11,7 @@ export default function LoginForm() {
       <div className="row login-intro">
         <div className="container">
           <p className="login-header text-center">
+            <img src="/logo.svg" className="logo" alt="" />
             GITHUBIFY.<span className="header-title">me</span>
           </p>
           <h4 className="login-page-paragraph">
