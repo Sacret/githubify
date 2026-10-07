@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router';
 //
 import { useAuth } from '../auth';
 import { filterRepos, useFilters } from '../filters';
@@ -96,8 +97,10 @@ function UserPage({ user, openUser, repos, filters }) {
               <div className="row">
                 <div className="col-xs-8">
                   <h2 className="main-header">
-                    <img src="/logo.svg" className="logo" alt="" />
-                    GITHUBIFY.<span className="header-title">me</span>
+                    <Link to="/" className="main-header-link">
+                      <img src="/logo.svg" className="logo" alt="" />
+                      GITHUBIFY.<span className="header-title">me</span>
+                    </Link>
                   </h2>
                 </div>
                 <div className="col-xs-4">

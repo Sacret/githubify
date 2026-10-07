@@ -56,14 +56,19 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+/**
+ *  Returns github login of signed in user or null if login failed
+ */
 export async function login() {
   try {
     const result = await signInWithPopup(auth, new GithubAuthProvider());
     const githubId = getGithubId(result.user);
     const username = getAdditionalUserInfo(result).username;
     await update(ref(db, userPath(githubId)), { active: true, username });
+    return username;
   } catch (error) {
     console.error('Login failed', error);
+    return null;
   }
 }
 

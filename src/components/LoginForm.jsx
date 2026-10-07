@@ -1,3 +1,5 @@
+import { Link, useNavigate } from 'react-router';
+//
 import { login } from '../auth';
 import { MAX_TAGS, MAX_TAG_LENGTH } from '../tags';
 import ShareBlock from './ShareBlock';
@@ -5,7 +7,16 @@ import ShareBlock from './ShareBlock';
 /**
  *  LoginForm contains authorization form
  */
-export default function LoginForm() {
+export default function LoginForm({ user }) {
+  const navigate = useNavigate();
+
+  async function handleLogin() {
+    const username = await login();
+    if (username) {
+      navigate('/' + username);
+    }
+  }
+
   return (
     <>
       <div className="row login-intro">
@@ -31,14 +42,20 @@ export default function LoginForm() {
         </div>
       </div>
       <div className="container login-form">
-        <button
-          type="button"
-          className="btn btn-primary center-block text-center"
-          onClick={login}
-        >
-          Login with Github
-          <i className="fa fa-github login-button-icon" />
-        </button>
+        {user ?
+          <Link to={'/' + user.login} className="btn btn-primary center-block text-center">
+            Go to my tags
+            <i className="fa fa-tags login-button-icon" />
+          </Link> :
+          <button
+            type="button"
+            className="btn btn-primary center-block text-center"
+            onClick={handleLogin}
+          >
+            Login with Github
+            <i className="fa fa-github login-button-icon" />
+          </button>
+        }
         <div className="login-share">
           Tell your friends:
           <ShareBlock />
