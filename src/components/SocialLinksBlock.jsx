@@ -3,7 +3,7 @@
  */
 export default function SocialLinksBlock() {
   return (
-    <div className="social-links-block">
+    <div className="social-links-block pull-right">
       <div className="clearfix">
         <a
           href="https://github.com/Sacret/githubify"
